@@ -1,0 +1,21 @@
+2020 SUBSYSTEMS
+
+NOTE: all subsystems are subject to change depending on build problems and things. Number of motors and types 
+of motor controllers used may change.
+
+    - Climb - Jordan
+        -1 Spark MAX, handling extension and retraction of scissor-lift.
+
+    - Drivetrain - Jordan
+        -4 Spark MAXes, two on the left, two on the right. Same as the spirit-bot drivetrain, but Sparks, not Talons.
+
+    - Wheel of Fortune - Marc
+        -1 TalonSRX that spins wheel. Other motors TBD based on how it is mounted.
+
+    - Turret - Marc
+        - 1 Spark MAX controlling flywheel
+        - 1 Talon SRX controlling pitch (has limit switches)
+        - 1 Talon SRX controlling yaw (also has limit switches)
+
+    - Ball Pickup & Storage - ???
+        - TBD when subsystem prototype is finished.
