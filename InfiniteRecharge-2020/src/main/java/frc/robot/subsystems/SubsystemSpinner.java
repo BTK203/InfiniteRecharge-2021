@@ -8,17 +8,27 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import com.ctre.phoenix.motorcontrol.*;
 public class SubsystemSpinner extends SubsystemBase {
   /**
    * Creates a new SubsystemSpinner.
    */
-  public SubsystemSpinner() {
 
+  private TalonSRX spinner; 
+
+  public SubsystemSpinner() {
+    spinner = new TalonSRX(Constants.SPINNER_ID);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+  public void startSpinner(double speed) {
+    spinner.set(ControlMode.PercentOutput, speed);
+  }
+
+  public void stopSpinner() {
+    spinner.set(ControlMode.PercentOutput, 0);
   }
 }
