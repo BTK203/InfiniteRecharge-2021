@@ -60,19 +60,25 @@ public class SubsystemSpinner extends SubsystemBase {
         return false;
       case 'G':
         //code for green
-        if((Constants.TARGET_GREEN[0] < sensor.getRed() && sensor.getRed() < Constants.TARGET_GREEN[3]) && (Constants.TARGET_GREEN[1] < sensor.getGreen() && sensor.getGreen() < Constants.TARGET_RED[4]) && (Constants.TARGET_RED[2] < sensor.getBlue() && sensor.getBlue() < Constants.TARGET_RED[5])){
+        if((Constants.TARGET_GREEN[0] < sensor.getRed() && sensor.getRed() < Constants.TARGET_GREEN[3]) && (Constants.TARGET_GREEN[1] < sensor.getGreen() && sensor.getGreen() < Constants.TARGET_GREEN[4]) && (Constants.TARGET_GREEN[2] < sensor.getBlue() && sensor.getBlue() < Constants.TARGET_GREEN[5])){
         stopSpinner();
         return true;
         }
         return false;
       case 'B':
         //code for blue
+        if((Constants.TARGET_BLUE[0] < sensor.getRed() && sensor.getRed() < Constants.TARGET_BLUE[3]) && (Constants.TARGET_BLUE[1] < sensor.getGreen() && sensor.getGreen() < Constants.TARGET_BLUE[4]) && (Constants.TARGET_BLUE[2] < sensor.getBlue() && sensor.getBlue() < Constants.TARGET_BLUE[5])){
         stopSpinner();
         return true;
+        }
+        return false;
       case 'Y':
         //code for yellow
+        if((Constants.TARGET_YELLOW[0] < sensor.getRed() && sensor.getRed() < Constants.TARGET_YELLOW[3]) && (Constants.TARGET_YELLOW[1] < sensor.getGreen() && sensor.getGreen() < Constants.TARGET_YELLOW[4]) && (Constants.TARGET_YELLOW[2] < sensor.getBlue() && sensor.getBlue() < Constants.TARGET_YELLOW[5])){
         stopSpinner();
         return true;
+        }
+        return false;
       default:
         startSpinner(Util.getAndSetDouble("Spin Inhibitor", Constants.SPINNER_SPEED));
         return false;
