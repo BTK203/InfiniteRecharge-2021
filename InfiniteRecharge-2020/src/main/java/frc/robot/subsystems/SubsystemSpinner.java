@@ -8,12 +8,13 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.ColorSensorV3;
 import frc.robot.Constants;
-import com.revrobotics.*;
+import frc.robot.util.Util;
 
 public class SubsystemSpinner extends SubsystemBase {
   /**
@@ -26,7 +27,6 @@ public class SubsystemSpinner extends SubsystemBase {
 
   public SubsystemSpinner() {
     spinner = new TalonSRX(Constants.SPINNER_ID);
-    
     sensor = new ColorSensorV3(i2cPort);
   }
 
@@ -44,5 +44,38 @@ public class SubsystemSpinner extends SubsystemBase {
   public Color getColor() {
     Color detectedColor = sensor.getColor();
     return detectedColor;
+  }
+
+  public void spinRotations() {
+    
+  }
+  public boolean spinColor(char colorToFind) {
+    switch(colorToFind){
+      case 'R':
+        //code for red
+        if((Constants.TARGET_RED[0] < sensor.getRed() && sensor.getRed() < Constants.TARGET_RED[3]) && (Constants.TARGET_RED[1] < sensor.getGreen() && sensor.getGreen() < Constants.TARGET_RED[4]) && (Constants.TARGET_RED[2] < sensor.getBlue() && sensor.getBlue() < Constants.TARGET_RED[5])){
+        stopSpinner();
+        return true;
+        }
+        return false;
+      case 'G':
+        //code for green
+        if((Constants.TARGET_GREEN[0] < sensor.getRed() && sensor.getRed() < Constants.TARGET_GREEN[3]) && (Constants.TARGET_GREEN[1] < sensor.getGreen() && sensor.getGreen() < Constants.TARGET_RED[4]) && (Constants.TARGET_RED[2] < sensor.getBlue() && sensor.getBlue() < Constants.TARGET_RED[5])){
+        stopSpinner();
+        return true;
+        }
+        return false;
+      case 'B':
+        //code for blue
+        stopSpinner();
+        return true;
+      case 'Y':
+        //code for yellow
+        stopSpinner();
+        return true;
+      default:
+        startSpinner(Util.getAndSetDouble("Spin Inhibitor", Constants.SPINNER_SPEED));
+        return false;
+      }
   }
 }
