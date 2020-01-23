@@ -46,8 +46,30 @@ public class SubsystemSpinner extends SubsystemBase {
     return detectedColor;
   }
 
-  public void spinRotations() {
-    
+  public boolean spinRotations(boolean reset) {
+    int rotations;
+    int trueRotations;
+    boolean prevRed;
+    if (reset == true){
+      rotations = 0;
+      trueRotations = 0;
+    }
+    if((Constants.TARGET_RED[0] < sensor.getRed() && sensor.getRed() < Constants.TARGET_RED[3]) && (Constants.TARGET_RED[1] < sensor.getGreen() && sensor.getGreen() < Constants.TARGET_RED[4]) && (Constants.TARGET_RED[2] < sensor.getBlue() && sensor.getBlue() < Constants.TARGET_RED[5])){
+      if(prevRed = false){
+        prevRed = true;
+        rotations++;
+      }
+    }
+
+    if(!((Constants.TARGET_RED[0] < sensor.getRed() && sensor.getRed() < Constants.TARGET_RED[3]) && (Constants.TARGET_RED[1] < sensor.getGreen() && sensor.getGreen() < Constants.TARGET_RED[4]) && (Constants.TARGET_RED[2] < sensor.getBlue() && sensor.getBlue() < Constants.TARGET_RED[5]))){
+      prevRed = false;
+      }
+
+    trueRotations = rotations/2;
+    if (rotations >= 8){
+      return true;
+    }
+    return false;
   }
   public boolean spinColor(char colorToFind) {
     switch(colorToFind){
