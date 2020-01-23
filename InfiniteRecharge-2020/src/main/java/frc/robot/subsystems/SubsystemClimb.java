@@ -7,14 +7,28 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.util.Xbox;
+
 
 public class SubsystemClimb extends SubsystemBase {
   /**
    * Creates a new SubsystemClimb.
    */
-  public SubsystemClimb() {
+  private static CANSparkMax climber;
 
+  public SubsystemClimb() {
+    climber = new CANSparkMax(Constants.CLIMBER_ID, MotorType.kBrushless);
+  }
+
+  public double ascendByController(Joystick controller) {
+    double speed = Xbox.RT(controller) - Xbox.LT(controller);
+    climber.set(speed);
+    return climber.getOutputCurrent();
   }
 
   @Override
