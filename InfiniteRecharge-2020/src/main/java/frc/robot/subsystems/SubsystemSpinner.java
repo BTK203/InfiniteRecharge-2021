@@ -7,17 +7,27 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.*;
+import frc.robot.Constants;
+import com.revrobotics.*;
+
 public class SubsystemSpinner extends SubsystemBase {
   /**
    * Creates a new SubsystemSpinner.
    */
 
   private TalonSRX spinner; 
+  private ColorSensorV3 sensor;
+  private final I2C.Port i2cPort = I2C.Port.kOnboard;
 
   public SubsystemSpinner() {
     spinner = new TalonSRX(Constants.SPINNER_ID);
+    
+    sensor = new ColorSensorV3(i2cPort);
   }
 
   @Override
@@ -30,5 +40,9 @@ public class SubsystemSpinner extends SubsystemBase {
 
   public void stopSpinner() {
     spinner.set(ControlMode.PercentOutput, 0);
+  }
+  public Color getColor() {
+    Color detectedColor = sensor.getColor();
+    return detectedColor;
   }
 }
