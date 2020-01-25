@@ -45,7 +45,7 @@ public class SubsystemSpinner extends SubsystemBase {
     Color detectedColor = sensor.getColor();
     return detectedColor;
   }
-
+  // pass though true to reset the rotations done, otherwise false should always be passed though
   public boolean spinRotations(boolean reset) {
     int rotations;
     int trueRotations;
@@ -71,7 +71,10 @@ public class SubsystemSpinner extends SubsystemBase {
     }
     return false;
   }
+
+  // Pass though R,G,Y, or B to find that color, pass through anything else and it will start the spinner instead
   public boolean spinColor(char colorToFind) {
+    startSpinner(Util.getAndSetDouble("Spin Inhibitor", Constants.SPINNER_SPEED));
     switch(colorToFind){
       case 'R':
         //code for red
