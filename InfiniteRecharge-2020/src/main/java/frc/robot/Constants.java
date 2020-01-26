@@ -7,7 +7,8 @@
 
 package frc.robot;
 
-/* The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
+/**
+ * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants.  This class should not be used for any other purpose.  All constants should be
  * declared globally (i.e. public static).  Do not put anything functional in this class.
  *
@@ -74,4 +75,16 @@ public final class Constants {
      */
     public static final boolean
         SPINNER_INVERT = false;
+    
+    /*
+    * FORMAT: Red_Min, Green_Min, Blue_Min, Red_Max, Green_Max, Blue_Max.
+    */
+    public static final int[]
+        TARGET_RED = {200,0,0,255,25,25},
+        TARGET_GREEN = {0,200,0,25,255,25},
+        TARGET_BLUE = {0,200,200,25,255,255},
+        TARGET_YELLOW = {200,200,0,255,255,25};
+  
+    public static final int
+        SPINNER_SPEED = 1;
 }
