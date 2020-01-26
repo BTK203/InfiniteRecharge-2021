@@ -77,14 +77,14 @@ public final class Constants {
         SPINNER_INVERT = false;
     
     /*
-    * FORMAT: Red_Min,Green_Min,Blue_Min,Red_Max,Green_Max,Blue_Max.
+    * FORMAT: Red_Min, Green_Min, Blue_Min, Red_Max, Green_Max, Blue_Max.
     */
-
     public static final int[]
         TARGET_RED = {200,0,0,255,25,25},
         TARGET_GREEN = {0,200,0,25,255,25},
         TARGET_BLUE = {0,200,200,25,255,255},
         TARGET_YELLOW = {200,200,0,255,255,25};
+  
     public static final int
         SPINNER_SPEED = 1;
 }

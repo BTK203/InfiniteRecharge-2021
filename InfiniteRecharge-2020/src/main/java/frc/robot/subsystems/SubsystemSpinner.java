@@ -34,6 +34,7 @@ public class SubsystemSpinner extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+  
   public void startSpinner(double speed) {
     spinner.set(ControlMode.PercentOutput, speed);
   }
@@ -45,15 +46,18 @@ public class SubsystemSpinner extends SubsystemBase {
     Color detectedColor = sensor.getColor();
     return detectedColor;
   }
+  
   // pass though true to reset the rotations done, otherwise false should always be passed though
   public boolean spinRotations(boolean reset) {
     int rotations;
     int trueRotations;
     boolean prevRed;
+    
     if (reset == true){
       rotations = 0;
       trueRotations = 0;
     }
+    
     if((Constants.TARGET_RED[0] < sensor.getRed() && sensor.getRed() < Constants.TARGET_RED[3]) && (Constants.TARGET_RED[1] < sensor.getGreen() && sensor.getGreen() < Constants.TARGET_RED[4]) && (Constants.TARGET_RED[2] < sensor.getBlue() && sensor.getBlue() < Constants.TARGET_RED[5])){
       if(prevRed = false){
         prevRed = true;
@@ -63,12 +67,13 @@ public class SubsystemSpinner extends SubsystemBase {
 
     if(!((Constants.TARGET_RED[0] < sensor.getRed() && sensor.getRed() < Constants.TARGET_RED[3]) && (Constants.TARGET_RED[1] < sensor.getGreen() && sensor.getGreen() < Constants.TARGET_RED[4]) && (Constants.TARGET_RED[2] < sensor.getBlue() && sensor.getBlue() < Constants.TARGET_RED[5]))){
       prevRed = false;
-      }
+     }
 
     trueRotations = rotations/2;
     if (rotations >= 8){
       return true;
     }
+    
     return false;
   }
 
