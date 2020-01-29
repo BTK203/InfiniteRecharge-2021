@@ -44,7 +44,7 @@ public final class Constants {
      * Spinner IDs
      */
     public static final int
-        SPINNER_ID = 0;
+        SPINNER_ID = 5;
 
     
     /**
