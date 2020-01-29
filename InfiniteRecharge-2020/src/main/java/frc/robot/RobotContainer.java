@@ -10,12 +10,16 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.commands.ToggleCommandDriveFlywheel;
+import frc.robot.commands.ToggleCommandOverrideTurretControl;
 import frc.robot.subsystems.SubsystemClimb;
 import frc.robot.subsystems.SubsystemDrive;
 import frc.robot.subsystems.SubsystemSpinner;
 import frc.robot.subsystems.SubsystemTurret;
+import frc.robot.util.Xbox;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -65,6 +69,13 @@ public class RobotContainer {
     /**
      * Button Commands
      */
+    JoystickButton toggleManualTurretControl = new JoystickButton(OPERATOR, Xbox.RSTICK);
+      toggleManualTurretControl.toggleWhenPressed(
+        new RunCommand(() -> SUB_TURRET.moveTurret(OPERATOR), SUB_TURRET)
+      );
+
+    JoystickButton toggleFlywheel = new JoystickButton(OPERATOR, Xbox.START);
+      toggleFlywheel.toggleWhenPressed(new ToggleCommandDriveFlywheel(SUB_TURRET));
 
 
     /**

@@ -21,10 +21,11 @@ public class SubsystemSpinner extends SubsystemBase {
   private TalonSRX spinner; 
   private ColorSensorV3 sensor;
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
-  int rotations = 0;
-  double trueRotations;
-  Color detectedColor;
-  boolean prevRed = false;
+
+  private int rotations = 0;
+  private double trueRotations;
+  private Color detectedColor;
+  private boolean prevRed = false;
 
   public SubsystemSpinner() {
     spinner = new TalonSRX(Constants.SPINNER_ID);

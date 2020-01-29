@@ -10,7 +10,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -23,11 +22,13 @@ public class SubsystemTurret extends SubsystemBase {
   /**
    * Creates a new SubsystemTurret.
    */
-  TalonSRX 
+  private TalonSRX 
     turretYaw,
     turretPitch;
-  CANSparkMax
+
+  private CANSparkMax
     turretFlywheel;
+
   public SubsystemTurret() {
     turretYaw = new TalonSRX(Constants.TURRET_YAW_ID);
     turretPitch = new TalonSRX(Constants.TURRET_PITCH_ID);
@@ -38,7 +39,11 @@ public class SubsystemTurret extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
-  // Move the turret
+
+  /**
+   * Move the turret
+   * @param controller The controller to use.
+   */
   public void moveTurret(Joystick controller) {
     double speedx;
     double speedy;
@@ -52,7 +57,11 @@ public class SubsystemTurret extends SubsystemBase {
     turretYaw.set(ControlMode.PercentOutput, speedx);
     turretPitch.set(ControlMode.PercentOutput, speedy);
   }
-  // Set the flywheel speed
+
+  /**
+   * Set the flywheel speed
+   * @param speedz The percent to drive (-1 to 1)
+   */
   public void setFlywheelSpeed(double speedz){
     turretFlywheel.set(speedz);
   }
