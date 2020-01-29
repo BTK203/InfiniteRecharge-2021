@@ -7,7 +7,7 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Joystick;
@@ -41,8 +41,12 @@ public class SubsystemDrive extends SubsystemBase {
 
     driveRight = (driveRight < -1 ? -1 : (driveRight > 1 ? 1 : driveRight));
     driveLeft = (driveLeft < -1 ? -1 : (driveLeft > 1 ? 1 : driveRight));
+
+    leftMaster.set(driveLeft);
+    leftSlave.set(driveLeft);
+    rightMaster.set(driveRight);
+    rightSlave.set(driveRight);
   }
-  
   private void setInverts() {
     leftMaster.setInverted(Constants.DRIVE_LEFT_MASTER_INVERT);
     leftSlave.setInverted(Constants.DRIVE_LEFT_SLAVE_INVERT);

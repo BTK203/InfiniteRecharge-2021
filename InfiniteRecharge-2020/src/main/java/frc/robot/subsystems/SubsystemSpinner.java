@@ -18,14 +18,10 @@ import frc.robot.Constants;
 import frc.robot.util.Util;
 
 public class SubsystemSpinner extends SubsystemBase {
-  /**
-   * Creates a new SubsystemSpinner.
-   */
-
   private TalonSRX spinner; 
   private ColorSensorV3 sensor;
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
-  int rotations;
+  int rotations = 0;
   double trueRotations;
   Color detectedColor;
   boolean prevRed = false;
@@ -51,15 +47,13 @@ public class SubsystemSpinner extends SubsystemBase {
   public void stopSpinner() {
     spinner.set(ControlMode.PercentOutput, 0);
   }
+
   public Color getColor() {
     detectedColor = sensor.getColor();
     return detectedColor;
   }
   // pass though true to reset the rotations done, otherwise false should always be passed though
   public boolean spinRotations(boolean reset) {
-  
-
-
     if (reset == true){
       rotations = 0;
       trueRotations = 0;
@@ -74,7 +68,6 @@ public class SubsystemSpinner extends SubsystemBase {
     if(!((Constants.TARGET_RED[0] < detectedColor.red*255 && detectedColor.red*255 < Constants.TARGET_RED[3]) && (Constants.TARGET_RED[1] < detectedColor.green*255 && detectedColor.green*255 < Constants.TARGET_RED[4]) && (Constants.TARGET_RED[2] < detectedColor.blue*255 && detectedColor.blue*255 < Constants.TARGET_RED[5]))){
       prevRed = false;
       }
-
     trueRotations = rotations/2;
     if (trueRotations >= 3){
       return true;
