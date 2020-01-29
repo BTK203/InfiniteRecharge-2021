@@ -46,8 +46,11 @@ public class SubsystemTurret extends SubsystemBase {
     speedx = Xbox.LEFT_X(controller);
     speedy = Xbox.RIGHT_Y(controller);
 
-    turretYaw.set(ControlMode.PercentOutput, Util.getAndSetDouble("Turret Spin Inhibitor Yaw", speedx));
-    turretYaw.set(ControlMode.PercentOutput, Util.getAndSetDouble("Turret Spin Inhibitor Pitch", speedy));
+    speedx = speedx * Util.getAndSetDouble("Turret Spin Inhibitor Yaw", 1);
+    speedy = speedy * Util.getAndSetDouble("Turret Spin Inhibitor Yaw", 1);
+
+    turretYaw.set(ControlMode.PercentOutput, speedx);
+    turretPitch.set(ControlMode.PercentOutput, speedy);
   }
   // Set the flywheel speed
   public void setFlywheelSpeed(double speedz){
