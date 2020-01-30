@@ -69,7 +69,7 @@ public class SubsystemSpinner extends SubsystemBase {
       prevRed = false;
       }
     trueRotations = rotations/2;
-    if (trueRotations >= 3){
+    if (trueRotations >= Util.getAndSetDouble("Total Rotations", 3)){
       return true;
     }
     return false;

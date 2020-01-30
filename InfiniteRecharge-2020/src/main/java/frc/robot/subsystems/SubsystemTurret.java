@@ -10,7 +10,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -46,7 +45,7 @@ public class SubsystemTurret extends SubsystemBase {
     speedx = Xbox.LEFT_X(controller);
     speedy = Xbox.RIGHT_Y(controller);
 
-    speedx = speedx * Util.getAndSetDouble("Turret Spin Inhibitor Yaw", 1);
+    speedx = speedx * Util.getAndSetDouble("Turret Spin Inhibitor Ptch", 1);
     speedy = speedy * Util.getAndSetDouble("Turret Spin Inhibitor Yaw", 1);
 
     turretYaw.set(ControlMode.PercentOutput, speedx);
