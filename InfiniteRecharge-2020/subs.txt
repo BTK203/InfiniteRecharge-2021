@@ -4,7 +4,7 @@ NOTE: all subsystems are subject to change depending on build problems and thing
 of motor controllers used may change.
 
     - Climb (SubsystemClimb) - Jordan
-        -1 Spark MAX, handling extension and retraction of scissor-lift.
+        -2 Spark MAXs, one moving scissor-lift up, other running winch pulling lift down.
 
     - Drivetrain (SubsystemDrive) - Jordan
         -4 Spark MAXes, two on the left, two on the right. Same as the spirit-bot drivetrain, but Sparks, not Talons.
