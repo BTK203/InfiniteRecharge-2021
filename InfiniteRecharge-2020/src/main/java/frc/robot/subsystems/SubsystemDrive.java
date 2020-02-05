@@ -7,26 +7,24 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Constants;
 import frc.robot.util.Xbox;
 
-
-
 public class SubsystemDrive extends SubsystemBase {
-  /**
-   * Creates a new SubsystemDrive.
-   */
   private static CANSparkMax leftMaster;
   private static CANSparkMax leftSlave;
   private static CANSparkMax rightMaster;
   private static CANSparkMax rightSlave;
 
-  private static TalonSRX test;
+  /**
+   * Creates a new SubsystemDrive.
+   */    
 
   public SubsystemDrive() {
     leftMaster = new CANSparkMax(Constants.DRIVE_LEFT_MASTER_ID, MotorType.kBrushless);
@@ -34,6 +32,7 @@ public class SubsystemDrive extends SubsystemBase {
     rightMaster = new CANSparkMax(Constants.DRIVE_RIGHT_MASTER_ID, MotorType.kBrushless);
     rightSlave = new CANSparkMax(Constants.DRIVE_RIGHT_SLAVE_ID, MotorType.kBrushless);
   }
+
 
   /**
    * Drives the drivetrain motors using the passed controller
@@ -47,6 +46,7 @@ public class SubsystemDrive extends SubsystemBase {
 
     double driveRight = throttle - steering;
     double driveLeft = throttle + steering; 
+
 
     driveRight = (driveRight < -1 ? -1 : (driveRight > 1 ? 1 : driveRight));
     driveLeft = (driveLeft < -1 ? -1 : (driveLeft > 1 ? 1 : driveRight));
@@ -62,6 +62,16 @@ public class SubsystemDrive extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
+
+
+    driveRight = (driveRight < -1 ? -1 : (driveRight > 1 ? 1 : driveRight));
+    driveLeft = (driveLeft < -1 ? -1 : (driveLeft > 1 ? 1 : driveRight));
+
+    leftMaster.set(driveLeft);
+    leftSlave.set(driveLeft);
+    rightMaster.set(driveRight);
+    rightSlave.set(driveRight);
+  }
   private void setInverts() {
     leftMaster.setInverted(Constants.DRIVE_LEFT_MASTER_INVERT);
     leftSlave.setInverted(Constants.DRIVE_LEFT_SLAVE_INVERT);
