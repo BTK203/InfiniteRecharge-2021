@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -19,10 +21,11 @@ public class SubsystemDrive extends SubsystemBase {
   private static CANSparkMax leftSlave;
   private static CANSparkMax rightMaster;
   private static CANSparkMax rightSlave;
-  
+
   /**
    * Creates a new SubsystemDrive.
    */    
+
   public SubsystemDrive() {
     leftMaster = new CANSparkMax(Constants.DRIVE_LEFT_MASTER_ID, MotorType.kBrushless);
     leftSlave = new CANSparkMax(Constants.DRIVE_LEFT_SLAVE_ID, MotorType.kBrushless);
@@ -30,6 +33,11 @@ public class SubsystemDrive extends SubsystemBase {
     rightSlave = new CANSparkMax(Constants.DRIVE_RIGHT_SLAVE_ID, MotorType.kBrushless);
   }
 
+
+  /**
+   * Drives the drivetrain motors using the passed controller
+   * @param controller The controller to drive with
+   */
   public void DriveTankByController(Joystick controller) {
     setInverts();
 
@@ -38,6 +46,23 @@ public class SubsystemDrive extends SubsystemBase {
 
     double driveRight = throttle - steering;
     double driveLeft = throttle + steering; 
+
+
+    driveRight = (driveRight < -1 ? -1 : (driveRight > 1 ? 1 : driveRight));
+    driveLeft = (driveLeft < -1 ? -1 : (driveLeft > 1 ? 1 : driveRight));
+
+    leftMaster.set(driveLeft);
+    leftSlave.set(driveLeft);
+    rightMaster.set(driveRight);
+    rightSlave.set(driveRight);
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
+
+
 
     driveRight = (driveRight < -1 ? -1 : (driveRight > 1 ? 1 : driveRight));
     driveLeft = (driveLeft < -1 ? -1 : (driveLeft > 1 ? 1 : driveRight));
@@ -54,8 +79,7 @@ public class SubsystemDrive extends SubsystemBase {
     rightSlave.setInverted(Constants.DRIVE_RIGHT_SLAVE_INVERT);
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  private void test() {
+    
   }
 }
