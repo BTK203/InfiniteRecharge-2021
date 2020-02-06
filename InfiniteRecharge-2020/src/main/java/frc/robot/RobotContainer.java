@@ -65,6 +65,9 @@ public class RobotContainer {
       new RunCommand(() -> SUB_DRIVE.DriveTankByController(DRIVER), SUB_DRIVE)
     );
 
+    SUB_CLIMB.setDefaultCommand(
+      new RunCommand(() -> SUB_CLIMB.ascendByController(OPERATOR), SUB_CLIMB)
+    );
 
     /**
      * Button Commands
@@ -77,15 +80,9 @@ public class RobotContainer {
     JoystickButton toggleFlywheel = new JoystickButton(OPERATOR, Xbox.START);
       toggleFlywheel.toggleWhenPressed(new ToggleCommandDriveFlywheel(SUB_TURRET));
 
-
     /**
      * Dashboard Buttons
      */
-    
-    //manual commands
-    SUB_DRIVE.setDefaultCommand(
-      new RunCommand(() -> SUB_DRIVE.DriveTankByController(DRIVER), SUB_DRIVE)
-    );
   }
 
 

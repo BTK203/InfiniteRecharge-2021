@@ -24,8 +24,7 @@ public class SubsystemDrive extends SubsystemBase {
 
   /**
    * Creates a new SubsystemDrive.
-   */    
-
+   */
   public SubsystemDrive() {
     leftMaster = new CANSparkMax(Constants.DRIVE_LEFT_MASTER_ID, MotorType.kBrushless);
     leftSlave = new CANSparkMax(Constants.DRIVE_LEFT_SLAVE_ID, MotorType.kBrushless);
@@ -33,6 +32,10 @@ public class SubsystemDrive extends SubsystemBase {
     rightSlave = new CANSparkMax(Constants.DRIVE_RIGHT_SLAVE_ID, MotorType.kBrushless);
   }
 
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
 
   /**
    * Drives the drivetrain motors using the passed controller
@@ -47,7 +50,6 @@ public class SubsystemDrive extends SubsystemBase {
     double driveRight = throttle - steering;
     double driveLeft = throttle + steering; 
 
-
     driveRight = (driveRight < -1 ? -1 : (driveRight > 1 ? 1 : driveRight));
     driveLeft = (driveLeft < -1 ? -1 : (driveLeft > 1 ? 1 : driveRight));
 
@@ -57,29 +59,10 @@ public class SubsystemDrive extends SubsystemBase {
     rightSlave.set(driveRight);
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
-
-
-
-    driveRight = (driveRight < -1 ? -1 : (driveRight > 1 ? 1 : driveRight));
-    driveLeft = (driveLeft < -1 ? -1 : (driveLeft > 1 ? 1 : driveRight));
-
-    leftMaster.set(driveLeft);
-    leftSlave.set(driveLeft);
-    rightMaster.set(driveRight);
-    rightSlave.set(driveRight);
-  }
   private void setInverts() {
     leftMaster.setInverted(Constants.DRIVE_LEFT_MASTER_INVERT);
     leftSlave.setInverted(Constants.DRIVE_LEFT_SLAVE_INVERT);
     rightMaster.setInverted(Constants.DRIVE_RIGHT_MASTER_INVERT);
     rightSlave.setInverted(Constants.DRIVE_RIGHT_SLAVE_INVERT);
-  }
-
-  private void test() {
-    
   }
 }
