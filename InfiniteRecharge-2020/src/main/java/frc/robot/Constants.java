@@ -41,11 +41,18 @@ public final class Constants {
         CLIMBER_ID = 0;
 
     /**
-     * Spinner IDs
+     * Spinner Motor IDs
      */
     public static final int
         SPINNER_ID = 5;
 
+    /**
+     * Feeder Motor IDs
+     */
+    public static final int 
+        INTAKE_ID = 6,
+        FLAP_ID   = 7,
+        FEEDER_ID = 8; 
     
     /**
      * Drivetrain motor inverts
@@ -75,6 +82,14 @@ public final class Constants {
      */
     public static final boolean
         SPINNER_INVERT = false;
+
+    /**
+     * Feeder Inverts
+     */
+    public static final boolean
+        INTAKE_INVERT = false,
+        FLAP_INVERT   = false,
+        FEEDER_INVERT = false;
     
     /*
     * FORMAT: Red_Min, Green_Min, Blue_Min, Red_Max, Green_Max, Blue_Max.
@@ -84,7 +99,13 @@ public final class Constants {
         TARGET_GREEN = {0,200,0,25,255,25},
         TARGET_BLUE = {0,200,200,25,255,255},
         TARGET_YELLOW = {200,200,0,255,255,25};
-  
+    
+    /**
+     * Extraneous values
+     */
     public static final int
         SPINNER_SPEED = 1;
+
+    public static final boolean
+        FEEDER_BRAKING = true;
 }
