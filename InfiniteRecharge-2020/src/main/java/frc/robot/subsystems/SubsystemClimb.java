@@ -22,7 +22,7 @@ public class SubsystemClimb extends SubsystemBase {
   private static CANSparkMax climber;
 
   public SubsystemClimb() {
-    climber = new CANSparkMax(Constants.CLIMBER_ID, MotorType.kBrushless);
+    climber = new CANSparkMax(Constants.CLIMBER_SCISSOR_ID, MotorType.kBrushless);
   }
 
   public double ascendByController(Joystick controller) {
