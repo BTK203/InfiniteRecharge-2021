@@ -21,38 +21,39 @@ public final class Constants {
      * Drivetrain Motor IDs
      */
     public static final int
-        DRIVE_RIGHT_MASTER_ID = 0,
-        DRIVE_RIGHT_SLAVE_ID  = 0,
-        DRIVE_LEFT_MASTER_ID  = 0,
-        DRIVE_LEFT_SLAVE_ID   = 0;
+        DRIVE_RIGHT_MASTER_ID = 3, //spark
+        DRIVE_RIGHT_SLAVE_ID  = 4, //spark
+        DRIVE_LEFT_MASTER_ID  = 1, //spark
+        DRIVE_LEFT_SLAVE_ID   = 2; //spark
 
     /**
      * Turret Motor IDs
      */
     public static final int
-        TURRET_YAW_ID      = 0,
-        TURRET_PITCH_ID    = 0,
-        TURRET_FLYWHEEL_ID = 0;
+        TURRET_YAW_ID      = 8,
+        TURRET_PITCH_ID    = 9,
+        TURRET_FLYWHEEL_ID = 7; //spark
 
     /**
      * Climber Motor IDs
      */
     public static final int
-        CLIMBER_ID = 0;
+        CLIMBER_SCISSOR_ID = 5, //spark
+        CLIMBER_WINCH_ID = 6;   //spark
 
     /**
      * Spinner Motor IDs
      */
     public static final int
-        SPINNER_ID = 5;
+        SPINNER_ID = 10;
 
     /**
      * Feeder Motor IDs
      */
     public static final int 
-        INTAKE_ID = 6,
-        FLAP_ID   = 7,
-        FEEDER_ID = 8; 
+        INTAKE_ID = 11,
+        FLAP_ID   = 12,
+        FEEDER_ID = 13; 
     
     /**
      * Drivetrain motor inverts
