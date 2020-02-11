@@ -64,7 +64,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("RED", detectedColor.red*255);
     SmartDashboard.putNumber("BLUE", detectedColor.blue*255);
     SmartDashboard.putNumber("GREEN", detectedColor.green*255);
-    SmartDashboard.putString("RAW", sensor.getColor().toString());
+    //SmartDashboard.putString("RAW", sensor.getColor().toString());
     SmartDashboard.putData("Spinner", new RunCommand(()->subsystemSpinner.spinColor('R'), subsystemSpinner));
     CommandScheduler.getInstance().run();
   }

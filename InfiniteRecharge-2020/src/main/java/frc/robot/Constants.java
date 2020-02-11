@@ -46,6 +46,19 @@ public final class Constants {
     public static final int
         SPINNER_ID = 5;
 
+    /**
+     * Intake IDs
+     */
+    public static final int
+        MAININTAKE_ID = 0,
+        FEEDINTAKE_ID = 0;
+    
+    /**
+     * Feeder IDs
+     */
+    public static final int
+        MAINFEEDER_ID = 0,
+        TURRETFEEDER_ID = 0;
     
     /**
      * Drivetrain motor inverts
