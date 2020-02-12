@@ -47,13 +47,19 @@ public final class Constants {
     public static final int
         SPINNER_ID = 10;
 
+  /**
+   * Intake IDs
+   */
+    public static final int
+        MAININTAKE_ID = 0,
+        FEEDINTAKE_ID = 0;
+    
     /**
-     * Feeder Motor IDs
+     * Feeder IDs
      */
-    public static final int 
-        INTAKE_ID = 11,
-        FLAP_ID   = 12,
-        FEEDER_ID = 13; 
+    public static final int
+        MAINFEEDER_ID = 0,
+        TURRETFEEDER_ID = 0;
     
     /**
      * Drivetrain motor inverts
