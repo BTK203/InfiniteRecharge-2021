@@ -47,6 +47,13 @@ public final class Constants {
     public static final int
         SPINNER_ID = 10;
 
+  /**
+   * Intake IDs
+   */
+    public static final int
+        MAININTAKE_ID = 0,
+        FEEDINTAKE_ID = 0;
+    
     /**
      * Intake Motor IDs
      */
