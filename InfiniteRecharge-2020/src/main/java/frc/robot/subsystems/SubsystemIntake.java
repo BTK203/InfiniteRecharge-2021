@@ -7,10 +7,12 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.Util;
 
 public class SubsystemIntake extends SubsystemBase {
   
@@ -29,5 +31,15 @@ public class SubsystemIntake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public void startIntake(){
+    mainIntake.set(ControlMode.PercentOutput, Util.getAndSetDouble("Main Feeder Speed", 1));
+    feedIntake.set(ControlMode.PercentOutput, Util.getAndSetDouble("Main Turret Feeder Speed", 1));
+  }
+
+  public void stopIntake(){
+    mainIntake.set(ControlMode.PercentOutput, 0);
+    feedIntake.set(ControlMode.PercentOutput, 0);
   }
 }
