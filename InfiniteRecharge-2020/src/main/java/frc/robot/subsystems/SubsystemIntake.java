@@ -14,18 +14,18 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class SubsystemFeeder extends SubsystemBase {
+public class SubsystemIntake extends SubsystemBase {
   
   private TalonSRX 
-    beater, //orange spiral motor that pushes ball into turret
-    feeder; //accepts ball from beater and gives it to flywheel
+    eater,
+    slapper;
 
   /**
-   * Creates a new SubsystemFeeder.
+   * Creates a new SubsystemIntake.
    */
-  public SubsystemFeeder() {
-    beater = new TalonSRX(Constants.BEATER_ID);
-    feeder = new TalonSRX(Constants.FEEDER_ID);
+  public SubsystemIntake() {
+    eater = new TalonSRX(Constants.EATER_ID);
+    slapper = new TalonSRX(Constants.SLAPPER_ID);
 
     configureMotors();
   }
@@ -35,25 +35,25 @@ public class SubsystemFeeder extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void driveBeater(double percent) {
-    beater.set(ControlMode.PercentOutput, percent);
+  public void driveEater(double percent) {
+    eater.set(ControlMode.PercentOutput, percent);
   }
 
-  public void driveFeeder(double percent) {
-    feeder.set(ControlMode.PercentOutput, percent);
+  public void driveSlapper(double percent) {
+    slapper.set(ControlMode.PercentOutput, percent);
   }
 
   public void stopMotors() {
-    beater.set(ControlMode.PercentOutput, 0);
-    feeder.set(ControlMode.PercentOutput, 0);
+    eater.set(ControlMode.PercentOutput, 0);
+    slapper.set(ControlMode.PercentOutput, 0);
   }
-
+  
   private void configureMotors() {
-    NeutralMode mode = (Constants.FEEDER_BRAKING ? NeutralMode.Brake : NeutralMode.Coast);
-    beater.setNeutralMode(mode);
-    feeder.setNeutralMode(mode);
+    NeutralMode mode = (Constants.INTAKE_BRAKING ? NeutralMode.Brake : NeutralMode.Coast);
+    eater.setNeutralMode(mode);
+    slapper.setNeutralMode(mode);
 
-    beater.setInverted(Constants.BEATER_INVERT);
-    feeder.setInverted(Constants.FEEDER_INVERT);
+    eater.setInverted(Constants.EATER_INVERT);
+    slapper.setInverted(Constants.SLAPPER_INVERT);
   }
 }

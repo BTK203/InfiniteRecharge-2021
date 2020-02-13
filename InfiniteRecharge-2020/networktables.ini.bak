@@ -1,0 +1,4 @@
+[NetworkTables Storage 3.0]
+double "/Preferences/Eat Speed"=0.333
+double "/Preferences/Flywheel Drive"=-0.3
+double "/Preferences/Turret Spin Inhibitor Yaw"=0.3

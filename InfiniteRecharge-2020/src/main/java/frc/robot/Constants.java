@@ -48,12 +48,18 @@ public final class Constants {
         SPINNER_ID = 10;
 
     /**
+     * Intake Motor IDs
+     */
+    public static final int
+        EATER_ID = 11,
+        SLAPPER_ID = 12;
+
+    /**
      * Feeder Motor IDs
      */
-    public static final int 
-        INTAKE_ID = 11,
-        FLAP_ID   = 12,
-        FEEDER_ID = 13; 
+    public static final int
+        BEATER_ID = 13,
+        FEEDER_ID = 14;
     
     /**
      * Drivetrain motor inverts
@@ -61,8 +67,8 @@ public final class Constants {
     public static final boolean
         DRIVE_RIGHT_MASTER_INVERT = false,
         DRIVE_RIGHT_SLAVE_INVERT  = false,
-        DRIVE_LEFT_MASTER_INVERT  = false,
-        DRIVE_LEFT_SLAVE_INVERT   = false;
+        DRIVE_LEFT_MASTER_INVERT  = true,
+        DRIVE_LEFT_SLAVE_INVERT   = true;
 
     /**
      * Turret Motor Inverts
@@ -76,7 +82,8 @@ public final class Constants {
      * Climber Inverts
      */
     public static final boolean
-        CLIMBER_INVERT = false;
+        CLIMBER_SCISSOR_INVERT = false,
+        CLIMBER_WINCH_INVERT   = false;
 
     /**
      * Spinner Inverts
@@ -85,28 +92,38 @@ public final class Constants {
         SPINNER_INVERT = false;
 
     /**
-     * Feeder Inverts
+     * Intake Motor Inverts
      */
     public static final boolean
-        INTAKE_INVERT = false,
-        FLAP_INVERT   = false,
+        EATER_INVERT   = false,
+        SLAPPER_INVERT = false;
+
+    /**
+     * Feeder Motor Inverts
+     */
+    public static final boolean
+        BEATER_INVERT = false,
         FEEDER_INVERT = false;
+
+    /**
+     * Braking Values
+     */
+    public static final boolean
+        INTAKE_BRAKING = true,
+        FEEDER_BRAKING = true;
     
     /*
     * FORMAT: Red_Min, Green_Min, Blue_Min, Red_Max, Green_Max, Blue_Max.
     */
     public static final int[]
-        TARGET_RED = {200,0,0,255,25,25},
-        TARGET_GREEN = {0,200,0,25,255,25},
-        TARGET_BLUE = {0,200,200,25,255,255},
-        TARGET_YELLOW = {200,200,0,255,255,25};
+        TARGET_RED    = { 200, 0  , 0  , 255, 25 , 25  },
+        TARGET_GREEN  = { 0  , 200, 0  , 25 , 255, 25  },
+        TARGET_BLUE   = { 0  , 200, 200, 25 , 255, 255 },
+        TARGET_YELLOW = { 200, 200, 0  , 255, 255, 25  };
     
     /**
      * Extraneous values
      */
     public static final int
         SPINNER_SPEED = 1;
-
-    public static final boolean
-        FEEDER_BRAKING = true;
 }

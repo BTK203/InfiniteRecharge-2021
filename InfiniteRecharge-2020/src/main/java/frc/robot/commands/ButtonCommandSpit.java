@@ -9,15 +9,20 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SubsystemFeeder;
+import frc.robot.subsystems.SubsystemIntake;
+import frc.robot.util.Util;
 
 public class ButtonCommandSpit extends CommandBase {
+  private SubsystemIntake intake;
   private SubsystemFeeder feeder;
 
   /**
    * Creates a new ButtonCommandSpit.
    */
-  public ButtonCommandSpit(SubsystemFeeder feeder) {
+  public ButtonCommandSpit(SubsystemIntake intake, SubsystemFeeder feeder) {
+    this.intake = intake;
     this.feeder = feeder;
+    addRequirements(this.intake);
     addRequirements(this.feeder);
   }
 
@@ -29,12 +34,21 @@ public class ButtonCommandSpit extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    feeder.spit();
+    double eatSpeed  = Util.getAndSetDouble("Eat Speed", 0.5) * -1;
+    double slapSpeed = Util.getAndSetDouble("Slap Speed", 0.33) * -1;
+    double beatSpeed = Util.getAndSetDouble("Beat Speed", 0.5) * -1;
+    double feedSpeed = Util.getAndSetDouble("Feed Speed", 0.5) * -1;
+
+    intake.driveEater(eatSpeed);
+    intake.driveSlapper(slapSpeed);
+    feeder.driveBeater(beatSpeed);
+    feeder.driveFeeder(feedSpeed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    intake.stopMotors();
     feeder.stopMotors();
   }
 

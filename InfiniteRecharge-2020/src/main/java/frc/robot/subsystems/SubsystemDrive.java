@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.util.Xbox;
 
@@ -35,6 +36,8 @@ public class SubsystemDrive extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Right Position", rightMaster.getEncoder().getPosition());
+    SmartDashboard.putNumber("Left Position", leftMaster.getEncoder().getPosition());
   }
 
   /**
@@ -47,11 +50,11 @@ public class SubsystemDrive extends SubsystemBase {
     double throttle = Xbox.RT(controller) - Xbox.LT(controller); 
     double steering = Xbox.LEFT_X(controller);
 
-    double driveRight = throttle - steering;
-    double driveLeft = throttle + steering; 
+    double driveRight = throttle + steering;
+    double driveLeft = throttle - steering; 
 
     driveRight = (driveRight < -1 ? -1 : (driveRight > 1 ? 1 : driveRight));
-    driveLeft = (driveLeft < -1 ? -1 : (driveLeft > 1 ? 1 : driveRight));
+    driveLeft = (driveLeft < -1 ? -1 : (driveLeft > 1 ? 1 : driveLeft));
 
     leftMaster.set(driveLeft);
     leftSlave.set(driveLeft);

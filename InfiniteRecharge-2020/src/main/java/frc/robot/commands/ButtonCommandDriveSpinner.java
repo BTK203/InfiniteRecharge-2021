@@ -20,6 +20,7 @@ public class ButtonCommandDriveSpinner extends CommandBase {
    */
   public ButtonCommandDriveSpinner(SubsystemSpinner spinner, boolean inverted) {
     this.spinner = spinner;
+    this.inverted = inverted;
     addRequirements(this.spinner);
   }
 

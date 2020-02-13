@@ -10,16 +10,20 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.commands.ButtonCommandDriveSpinner;
 import frc.robot.commands.ButtonCommandEat;
+import frc.robot.commands.ButtonCommandFeed;
 import frc.robot.commands.ButtonCommandSpit;
 import frc.robot.commands.ToggleCommandDriveFlywheel;
+import frc.robot.commands.ToggleCommandRunWinch;
 import frc.robot.subsystems.SubsystemClimb;
 import frc.robot.subsystems.SubsystemDrive;
 import frc.robot.subsystems.SubsystemFeeder;
+import frc.robot.subsystems.SubsystemIntake;
 import frc.robot.subsystems.SubsystemSpinner;
 import frc.robot.subsystems.SubsystemTurret;
 import frc.robot.util.Xbox;
@@ -35,9 +39,10 @@ public class RobotContainer {
    * Subsystems
    */
   private final SubsystemDrive   SUB_DRIVE   = new SubsystemDrive();
+  private final SubsystemIntake  SUB_INTAKE  = new SubsystemIntake();
+  private final SubsystemFeeder  SUB_FEEDER  = new SubsystemFeeder();
   private final SubsystemTurret  SUB_TURRET  = new SubsystemTurret();
   private final SubsystemSpinner SUB_SPINNER = new SubsystemSpinner();
-  private final SubsystemFeeder  SUB_FEEDER  = new SubsystemFeeder();
   private final SubsystemClimb   SUB_CLIMB   = new SubsystemClimb();
 
   /**
@@ -80,22 +85,26 @@ public class RobotContainer {
     /**
      * Button Commands
      */
-    JoystickButton toggleManualTurretControl = new JoystickButton(OPERATOR, Xbox.RSTICK);
-      toggleManualTurretControl.toggleWhenPressed(
-        new RunCommand(() -> SUB_TURRET.moveTurret(OPERATOR), SUB_TURRET)
-      );
+    // JoystickButton toggleManualTurretControl = new JoystickButton(OPERATOR, Xbox.RSTICK);
+    //   toggleManualTurretControl.toggleWhenPressed(
+    //     new RunCommand(() -> SUB_TURRET.moveTurret(OPERATOR), SUB_TURRET)
+    //   );
+
+    ToggleCommandRunWinch winchCommand = new ToggleCommandRunWinch(SUB_CLIMB, OPERATOR);
+    JoystickButton toggleWinching = new JoystickButton(OPERATOR, Xbox.BACK);
+      toggleWinching.toggleWhenPressed(winchCommand);
 
     JoystickButton toggleFlywheel = new JoystickButton(OPERATOR, Xbox.START);
       toggleFlywheel.toggleWhenPressed(new ToggleCommandDriveFlywheel(SUB_TURRET));
 
     JoystickButton feederEat = new JoystickButton(OPERATOR, Xbox.A);
-      feederEat.whileHeld(new ButtonCommandEat(SUB_FEEDER));
+      feederEat.whileHeld(new ButtonCommandEat(SUB_INTAKE, SUB_FEEDER));
 
     JoystickButton feederFeed = new JoystickButton(OPERATOR, Xbox.X);
-      feederFeed.whileHeld(new ButtonCommandSpit(SUB_FEEDER));
+      feederFeed.whileHeld(new ButtonCommandFeed(SUB_INTAKE, SUB_FEEDER));
 
     JoystickButton feederSpit = new JoystickButton(OPERATOR, Xbox.B);
-      feederSpit.whileHeld(new ButtonCommandSpit(SUB_FEEDER));
+      feederSpit.whileHeld(new ButtonCommandSpit(SUB_INTAKE, SUB_FEEDER));
 
     JoystickButton spinnerSpinLeft = new JoystickButton(OPERATOR, Xbox.LB);
       spinnerSpinLeft.whileHeld(new ButtonCommandDriveSpinner(SUB_SPINNER, false));
@@ -106,6 +115,7 @@ public class RobotContainer {
     /**
      * Dashboard Buttons
      */
+    SmartDashboard.putData("Toggle Winch", winchCommand);
   }
 
 

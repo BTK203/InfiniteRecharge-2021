@@ -8,11 +8,14 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.Util;
@@ -33,11 +36,17 @@ public class SubsystemTurret extends SubsystemBase {
     turretYaw = new TalonSRX(Constants.TURRET_YAW_ID);
     turretPitch = new TalonSRX(Constants.TURRET_PITCH_ID);
     turretFlywheel = new CANSparkMax(Constants.TURRET_FLYWHEEL_ID, MotorType.kBrushless);
+
+    configureMotors();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    SmartDashboard.putNumber("Flywheel Velocity", turretFlywheel.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Yaw Position", turretYaw.getSensorCollection().getQuadraturePosition());
+    SmartDashboard.putNumber("Pitch Position", turretPitch.getSensorCollection().getQuadraturePosition());
   }
 
   /**
@@ -64,5 +73,11 @@ public class SubsystemTurret extends SubsystemBase {
    */
   public void setFlywheelSpeed(double speedz){
     turretFlywheel.set(speedz);
+  }
+
+  private void configureMotors() {
+    turretFlywheel.setIdleMode(IdleMode.kCoast);
+    turretPitch.setNeutralMode(NeutralMode.Brake);
+    turretYaw.setNeutralMode(NeutralMode.Brake);
   }
 }

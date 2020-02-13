@@ -7,47 +7,42 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.SubsystemFeeder;
-import frc.robot.subsystems.SubsystemIntake;
-import frc.robot.util.Util;
+import com.revrobotics.CANSparkMax.IdleMode;
 
-public class ButtonCommandFeed extends CommandBase {
-  private SubsystemIntake intake;
-  private SubsystemFeeder feeder;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.SubsystemClimb;
+
+public class ToggleCommandRunWinch extends CommandBase {
+  private SubsystemClimb climber;
+  private Joystick controller;
 
   /**
-   * Creates a new ButtonCommandFeed.
+   * Creates a new ToggleCommandRunWinch.
    */
-  public ButtonCommandFeed(SubsystemIntake intake, SubsystemFeeder feeder) {
-    this.intake = intake;
-    this.feeder = feeder;
-    addRequirements(this.intake);
-    addRequirements(this.feeder);
+  public ToggleCommandRunWinch(SubsystemClimb climber, Joystick controller) {
+    this.climber = climber;
+    this.controller = controller;
+    addRequirements(this.climber);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    SmartDashboard.putBoolean("Winch", true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double slapSpeed = Util.getAndSetDouble("Slap Speed", 0.33);
-    double beatSpeed = Util.getAndSetDouble("Beat Speed", 0.5);
-    double feedSpeed = Util.getAndSetDouble("Feed Speed", 0.5);
-
-    intake.driveSlapper(slapSpeed);
-    feeder.driveBeater(beatSpeed);
-    feeder.driveFeeder(feedSpeed);
+    climber.decendByController(controller);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stopMotors();
-    feeder.stopMotors();
+    SmartDashboard.putBoolean("Winch", false);
   }
 
   // Returns true when the command should end.
