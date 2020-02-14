@@ -1,0 +1,26 @@
+InfiniteRecharge-2020 Robot Controls
+
+Driver Controls:
+ - Drivetrain: 
+    Right trigger - forward
+    Left trigger  - backward
+    Left joystick (horizontal axis) - steering
+
+Operator Controls:
+ - Turret
+    Left Joystick (horizontal axis) - turret left/right
+    Right Joystick (vertical axis) - turret up/down
+    Start - Toggle Flywheel
+
+ - Climber
+    Right Trigger - scissor up
+    Left Trigger  - scissor down
+
+ - Intake/Feeder
+    A - eat
+    B - spit
+    X - feed to turret
+
+ - Spinner
+    RB - spin right
+    LB - spin left

@@ -7,19 +7,8 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.ColorSensorV3;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.subsystems.SubsystemSpinner;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -34,9 +23,6 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-
-  private SubsystemSpinner subsystemSpinner = new SubsystemSpinner();
-
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -51,21 +37,8 @@ public class Robot extends TimedRobot {
    * <p>This runs after the mode specific periodic functions, but before
    * LiveWindow and SmartDashboard integrated updating.
    */
-
-   private ColorSensorV3 sensor;
-   private final I2C.Port i2cPort = I2C.Port.kOnboard;
-
   @Override
   public void robotPeriodic() {
-    sensor = new ColorSensorV3(i2cPort);
-
-    Color detectedColor = sensor.getColor();
-
-    SmartDashboard.putNumber("RED", detectedColor.red*255);
-    SmartDashboard.putNumber("BLUE", detectedColor.blue*255);
-    SmartDashboard.putNumber("GREEN", detectedColor.green*255);
-    SmartDashboard.putString("RAW", sensor.getColor().toString());
-    SmartDashboard.putData("Spinner", new RunCommand(()->subsystemSpinner.spinColor('R'), subsystemSpinner));
     CommandScheduler.getInstance().run();
   }
 
