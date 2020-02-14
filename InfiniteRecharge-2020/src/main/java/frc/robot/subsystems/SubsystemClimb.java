@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Joystick;
@@ -19,17 +20,31 @@ public class SubsystemClimb extends SubsystemBase {
   /**
    * Creates a new SubsystemClimb.
    */
-  private static CANSparkMax climber;
+  private static CANSparkMax scissor;
+  private static CANSparkMax winch;
 
   public SubsystemClimb() {
-    climber = new CANSparkMax(Constants.CLIMBER_ID, MotorType.kBrushless);
+    scissor = new CANSparkMax(Constants.CLIMBER_SCISSOR_ID, MotorType.kBrushless);
+    winch = new CANSparkMax(Constants.CLIMBER_WINCH_ID, MotorType.kBrushless);
   }
 
-  public double ascendByController(Joystick controller) {
-    double speed = Xbox.RT(controller) - Xbox.LT(controller);
-    climber.set(speed);
-    return climber.getOutputCurrent();
+  
+public void moveLiftByController(Joystick controller, Joystick joy) {
+    scissor.set(Xbox.RIGHT_Y(controller) * Math.abs(Constants.scissorInhibitor));
+    winch.set(Xbox.RIGHT_Y(joy) * Math.abs(Constants.winchInhibitor));
   }
+
+  private double getAmperage(CANSparkMax motorController) {
+    return motorController.getOutputCurrent();
+  }
+
+public double getScissorAmperage() {
+  return getAmperage(scissor);
+}
+
+public double getWinchAmperage() {
+  return getAmperage(winch);
+}
 
   @Override
   public void periodic() {

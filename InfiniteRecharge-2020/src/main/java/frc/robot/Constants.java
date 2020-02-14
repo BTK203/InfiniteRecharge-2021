@@ -21,38 +21,46 @@ public final class Constants {
      * Drivetrain Motor IDs
      */
     public static final int
-        DRIVE_RIGHT_MASTER_ID = 0,
-        DRIVE_RIGHT_SLAVE_ID  = 0,
-        DRIVE_LEFT_MASTER_ID  = 0,
-        DRIVE_LEFT_SLAVE_ID   = 0;
+        DRIVE_RIGHT_MASTER_ID = 3, //spark
+        DRIVE_RIGHT_SLAVE_ID  = 4, //spark
+        DRIVE_LEFT_MASTER_ID  = 1, //spark
+        DRIVE_LEFT_SLAVE_ID   = 2; //spark
 
     /**
      * Turret Motor IDs
      */
     public static final int
-        TURRET_YAW_ID      = 0,
-        TURRET_PITCH_ID    = 0,
-        TURRET_FLYWHEEL_ID = 0;
+        TURRET_YAW_ID      = 8,
+        TURRET_PITCH_ID    = 9,
+        TURRET_FLYWHEEL_ID = 7; //spark
 
     /**
      * Climber Motor IDs
      */
     public static final int
-        CLIMBER_ID = 0;
+        CLIMBER_SCISSOR_ID = 5, //spark
+        CLIMBER_WINCH_ID = 6;   //spark
 
     /**
-     * Spinner IDs
+     * Spinner Motor IDs
      */
     public static final int
-        SPINNER_ID = 5;
+        SPINNER_ID = 10;
 
+    /**
+     * Feeder Motor IDs
+     */
+    public static final int 
+        INTAKE_ID = 11,
+        FLAP_ID   = 12,
+        FEEDER_ID = 13; 
     
     /**
      * Drivetrain motor inverts
      */
     public static final boolean
-        DRIVE_RIGHT_MASTER_INVERT = false,
-        DRIVE_RIGHT_SLAVE_INVERT  = false,
+        DRIVE_RIGHT_MASTER_INVERT = true,
+        DRIVE_RIGHT_SLAVE_INVERT  = true,
         DRIVE_LEFT_MASTER_INVERT  = false,
         DRIVE_LEFT_SLAVE_INVERT   = false;
 
@@ -75,6 +83,14 @@ public final class Constants {
      */
     public static final boolean
         SPINNER_INVERT = false;
+
+    /**
+     * Feeder Inverts
+     */
+    public static final boolean
+        INTAKE_INVERT = false,
+        FLAP_INVERT   = false,
+        FEEDER_INVERT = false;
     
     /*
     * FORMAT: Red_Min, Green_Min, Blue_Min, Red_Max, Green_Max, Blue_Max.
@@ -84,7 +100,17 @@ public final class Constants {
         TARGET_GREEN = {0,200,0,25,255,25},
         TARGET_BLUE = {0,200,200,25,255,255},
         TARGET_YELLOW = {200,200,0,255,255,25};
-  
+    
+    /**
+     * Extraneous values
+     */
     public static final int
         SPINNER_SPEED = 1;
+
+    public static final boolean
+        FEEDER_BRAKING = true;
+
+    public static final double 
+        winchInhibitor = 1,
+        scissorInhibitor = 1;
 }

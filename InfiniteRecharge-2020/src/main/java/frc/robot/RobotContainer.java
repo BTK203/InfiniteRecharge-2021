@@ -13,10 +13,13 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-
+import frc.robot.commands.ButtonCommandDriveSpinner;
+import frc.robot.commands.ButtonCommandEat;
+import frc.robot.commands.ButtonCommandSpit;
 import frc.robot.commands.ToggleCommandDriveFlywheel;
 import frc.robot.subsystems.SubsystemClimb;
 import frc.robot.subsystems.SubsystemDrive;
+import frc.robot.subsystems.SubsystemFeeder;
 import frc.robot.subsystems.SubsystemSpinner;
 import frc.robot.subsystems.SubsystemTurret;
 import frc.robot.util.Xbox;
@@ -34,6 +37,7 @@ public class RobotContainer {
   private final SubsystemDrive   SUB_DRIVE   = new SubsystemDrive();
   private final SubsystemTurret  SUB_TURRET  = new SubsystemTurret();
   private final SubsystemSpinner SUB_SPINNER = new SubsystemSpinner();
+  private final SubsystemFeeder  SUB_FEEDER  = new SubsystemFeeder();
   private final SubsystemClimb   SUB_CLIMB   = new SubsystemClimb();
 
   /**
@@ -65,6 +69,13 @@ public class RobotContainer {
       new RunCommand(() -> SUB_DRIVE.DriveTankByController(DRIVER), SUB_DRIVE)
     );
 
+    SUB_CLIMB.setDefaultCommand(
+      new RunCommand(() -> SUB_CLIMB.moveLiftByController(OPERATOR, DRIVER), SUB_CLIMB)
+    );
+
+    SUB_TURRET.setDefaultCommand(
+      new RunCommand(() -> SUB_TURRET.moveTurret(OPERATOR), SUB_TURRET)
+    );
 
     /**
      * Button Commands
@@ -77,15 +88,24 @@ public class RobotContainer {
     JoystickButton toggleFlywheel = new JoystickButton(OPERATOR, Xbox.START);
       toggleFlywheel.toggleWhenPressed(new ToggleCommandDriveFlywheel(SUB_TURRET));
 
+    JoystickButton feederEat = new JoystickButton(OPERATOR, Xbox.A);
+      feederEat.whileHeld(new ButtonCommandEat(SUB_FEEDER));
+
+    JoystickButton feederFeed = new JoystickButton(OPERATOR, Xbox.X);
+      feederFeed.whileHeld(new ButtonCommandSpit(SUB_FEEDER));
+
+    JoystickButton feederSpit = new JoystickButton(OPERATOR, Xbox.B);
+      feederSpit.whileHeld(new ButtonCommandSpit(SUB_FEEDER));
+
+    JoystickButton spinnerSpinLeft = new JoystickButton(OPERATOR, Xbox.LB);
+      spinnerSpinLeft.whileHeld(new ButtonCommandDriveSpinner(SUB_SPINNER, false));
+
+    JoystickButton spinnerSpinRight = new JoystickButton(OPERATOR, Xbox.RB);
+      spinnerSpinRight.whileHeld(new ButtonCommandDriveSpinner(SUB_SPINNER, true));
 
     /**
      * Dashboard Buttons
      */
-    
-    //manual commands
-    SUB_DRIVE.setDefaultCommand(
-      new RunCommand(() -> SUB_DRIVE.DriveTankByController(DRIVER), SUB_DRIVE)
-    );
   }
 
 
