@@ -11,6 +11,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,6 +32,8 @@ public class SubsystemDrive extends SubsystemBase {
     leftSlave = new CANSparkMax(Constants.DRIVE_LEFT_SLAVE_ID, MotorType.kBrushless);
     rightMaster = new CANSparkMax(Constants.DRIVE_RIGHT_MASTER_ID, MotorType.kBrushless);
     rightSlave = new CANSparkMax(Constants.DRIVE_RIGHT_SLAVE_ID, MotorType.kBrushless);
+
+    setBraking();
   }
 
   @Override
@@ -67,5 +70,12 @@ public class SubsystemDrive extends SubsystemBase {
     leftSlave.setInverted(Constants.DRIVE_LEFT_SLAVE_INVERT);
     rightMaster.setInverted(Constants.DRIVE_RIGHT_MASTER_INVERT);
     rightSlave.setInverted(Constants.DRIVE_RIGHT_SLAVE_INVERT);
+  }
+
+  private void setBraking() {
+    leftMaster.setIdleMode(IdleMode.kBrake);
+    leftSlave.setIdleMode(IdleMode.kBrake);
+    rightMaster.setIdleMode(IdleMode.kBrake);
+    rightSlave.setIdleMode(IdleMode.kBrake);
   }
 }

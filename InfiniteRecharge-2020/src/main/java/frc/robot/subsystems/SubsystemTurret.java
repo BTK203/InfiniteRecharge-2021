@@ -47,6 +47,9 @@ public class SubsystemTurret extends SubsystemBase {
     SmartDashboard.putNumber("Flywheel Velocity", turretFlywheel.getEncoder().getVelocity());
     SmartDashboard.putNumber("Yaw Position", turretYaw.getSensorCollection().getQuadraturePosition());
     SmartDashboard.putNumber("Pitch Position", turretPitch.getSensorCollection().getQuadraturePosition());
+
+    SmartDashboard.putNumber("Yaw Forward Limit", turretYaw.isFwdLimitSwitchClosed());
+    SmartDashboard.putNumber("Yaw Backward Limit", turretYaw.isRevLimitSwitchClosed());
   }
 
   /**
@@ -60,8 +63,8 @@ public class SubsystemTurret extends SubsystemBase {
     speedx = Xbox.LEFT_X(controller);
     speedy = Xbox.RIGHT_Y(controller);
 
-    speedx = speedx * Util.getAndSetDouble("Turret Spin Inhibitor Ptch", 1);
-    speedy = speedy * Util.getAndSetDouble("Turret Spin Inhibitor Yaw", 1);
+    speedx = speedx * Util.getAndSetDouble("Turret Spin Inhibitor Yaw", 1);
+    speedy = speedy * Util.getAndSetDouble("Turret Spin Inhibitor Pitch", 1);
 
     turretYaw.set(ControlMode.PercentOutput, speedx);
     turretPitch.set(ControlMode.PercentOutput, speedy);
