@@ -29,13 +29,9 @@ public class SubsystemTurret extends SubsystemBase {
     turretYaw,
     turretPitch;
 
-  private CANSparkMax
-    turretFlywheel;
-
   public SubsystemTurret() {
     turretYaw = new TalonSRX(Constants.TURRET_YAW_ID);
     turretPitch = new TalonSRX(Constants.TURRET_PITCH_ID);
-    turretFlywheel = new CANSparkMax(Constants.TURRET_FLYWHEEL_ID, MotorType.kBrushless);
 
     configureMotors();
   }
@@ -44,7 +40,6 @@ public class SubsystemTurret extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("Flywheel Velocity", turretFlywheel.getEncoder().getVelocity());
     SmartDashboard.putNumber("Yaw Position", turretYaw.getSensorCollection().getQuadraturePosition());
     SmartDashboard.putNumber("Pitch Position", turretPitch.getSensorCollection().getQuadraturePosition());
 
@@ -70,16 +65,7 @@ public class SubsystemTurret extends SubsystemBase {
     turretPitch.set(ControlMode.PercentOutput, speedy);
   }
 
-  /**
-   * Set the flywheel speed
-   * @param speedz The percent to drive (-1 to 1)
-   */
-  public void setFlywheelSpeed(double speedz){
-    turretFlywheel.set(speedz);
-  }
-
   private void configureMotors() {
-    turretFlywheel.setIdleMode(IdleMode.kCoast);
     turretPitch.setNeutralMode(NeutralMode.Brake);
     turretYaw.setNeutralMode(NeutralMode.Brake);
   }

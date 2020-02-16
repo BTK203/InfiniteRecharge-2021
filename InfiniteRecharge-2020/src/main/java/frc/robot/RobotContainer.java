@@ -18,15 +18,19 @@ import frc.robot.commands.ButtonCommandDriveSpinner;
 import frc.robot.commands.ButtonCommandEat;
 import frc.robot.commands.ButtonCommandFeed;
 import frc.robot.commands.ButtonCommandSpit;
+import frc.robot.commands.CyborgCommandFlywheelVelocity;
 import frc.robot.commands.ToggleCommandDriveFlywheel;
 import frc.robot.commands.ToggleCommandRunWinch;
 import frc.robot.subsystems.SubsystemClimb;
 import frc.robot.subsystems.SubsystemDrive;
 import frc.robot.subsystems.SubsystemFeeder;
+import frc.robot.subsystems.SubsystemFlywheel;
 import frc.robot.subsystems.SubsystemIntake;
+import frc.robot.subsystems.SubsystemReceiver;
 import frc.robot.subsystems.SubsystemSpinner;
 import frc.robot.subsystems.SubsystemTurret;
 import frc.robot.util.Xbox;
+import frc.robot.CameraHub;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -38,12 +42,15 @@ public class RobotContainer {
   /**
    * Subsystems
    */
-  private final SubsystemDrive   SUB_DRIVE   = new SubsystemDrive();
-  private final SubsystemIntake  SUB_INTAKE  = new SubsystemIntake();
-  private final SubsystemFeeder  SUB_FEEDER  = new SubsystemFeeder();
-  private final SubsystemTurret  SUB_TURRET  = new SubsystemTurret();
-  private final SubsystemSpinner SUB_SPINNER = new SubsystemSpinner();
-  private final SubsystemClimb   SUB_CLIMB   = new SubsystemClimb();
+  private final SubsystemDrive     SUB_DRIVE    = new SubsystemDrive();
+  private final SubsystemIntake    SUB_INTAKE   = new SubsystemIntake();
+  private final SubsystemFeeder    SUB_FEEDER   = new SubsystemFeeder();
+  private final SubsystemTurret    SUB_TURRET   = new SubsystemTurret();
+  private final SubsystemFlywheel  SUB_FLYWHEEL = new SubsystemFlywheel();
+  private final SubsystemSpinner   SUB_SPINNER  = new SubsystemSpinner();
+  private final SubsystemClimb     SUB_CLIMB    = new SubsystemClimb();
+  private final SubsystemReceiver  SUB_RECEIVER = new SubsystemReceiver();
+  private final CameraHub          CAMERA_HUB   = new CameraHub();
 
   /**
    * Controllers
@@ -94,8 +101,9 @@ public class RobotContainer {
     JoystickButton toggleWinching = new JoystickButton(OPERATOR, Xbox.BACK);
       toggleWinching.toggleWhenPressed(winchCommand);
 
+    CyborgCommandFlywheelVelocity driveFlywheelRPM = new CyborgCommandFlywheelVelocity(SUB_FLYWHEEL);
     JoystickButton toggleFlywheel = new JoystickButton(OPERATOR, Xbox.START);
-      toggleFlywheel.toggleWhenPressed(new ToggleCommandDriveFlywheel(SUB_TURRET));
+      toggleFlywheel.toggleWhenPressed(driveFlywheelRPM);
 
     JoystickButton feederEat = new JoystickButton(OPERATOR, Xbox.A);
       feederEat.whileHeld(new ButtonCommandEat(SUB_INTAKE, SUB_FEEDER));
@@ -116,6 +124,8 @@ public class RobotContainer {
      * Dashboard Buttons
      */
     SmartDashboard.putData("Toggle Winch", winchCommand);
+    SmartDashboard.putData("Drive Flywheel RPM", driveFlywheelRPM);
+    SmartDashboard.putData("Drive Flywheel PO", new ToggleCommandDriveFlywheel(SUB_FLYWHEEL));
   }
 
 

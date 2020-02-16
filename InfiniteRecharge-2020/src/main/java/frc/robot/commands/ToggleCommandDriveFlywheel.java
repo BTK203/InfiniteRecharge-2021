@@ -8,17 +8,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.SubsystemTurret;
+import frc.robot.subsystems.SubsystemFlywheel;
 import frc.robot.util.Util;
 
 public class ToggleCommandDriveFlywheel extends CommandBase {
-  private SubsystemTurret turret;
+  private SubsystemFlywheel flywheel;
 
   /**
    * Creates a new ToggleCommandDriveFlywheel.
    */
-  public ToggleCommandDriveFlywheel(SubsystemTurret turret) {
-    this.turret = turret;
+  public ToggleCommandDriveFlywheel(SubsystemFlywheel flywheel) {
+    this.flywheel = flywheel;
   }
 
   // Called when the command is initially scheduled.
@@ -30,13 +30,13 @@ public class ToggleCommandDriveFlywheel extends CommandBase {
   @Override
   public void execute() {
     double drive = Util.getAndSetDouble("Flywheel Drive", 0.5);
-    this.turret.setFlywheelSpeed(drive);
+    flywheel.setFlywheelPercentOutput(drive);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    this.turret.setFlywheelSpeed(0);
+    flywheel.setFlywheelPercentOutput(0);
   }
 
   // Returns true when the command should end.

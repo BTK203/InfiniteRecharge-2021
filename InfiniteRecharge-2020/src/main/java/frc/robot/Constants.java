@@ -118,6 +118,12 @@ public final class Constants {
     public static final boolean
         INTAKE_BRAKING = true,
         FEEDER_BRAKING = true;
+
+    /**
+     * Amp Limits
+     */
+    public static int
+        FLYWHEEL_AMP_LIMIT = 50;
     
     /*
     * FORMAT: Red_Min, Green_Min, Blue_Min, Red_Max, Green_Max, Blue_Max.
@@ -133,4 +139,10 @@ public final class Constants {
      */
     public static final int
         SPINNER_SPEED = 1;
+
+    public static final double 
+        FLYWHEEL_GEAR_RATIO = 1.6071;
+
+    public static final boolean
+        DRIVE_CAMERA_AUTOMATIC_EXPOSURE = true;
 }
