@@ -83,7 +83,7 @@ public class RobotContainer {
     );
 
     SUB_CLIMB.setDefaultCommand(
-      new RunCommand(() -> SUB_CLIMB.ascendByController(OPERATOR), SUB_CLIMB)
+      new RunCommand(() -> SUB_CLIMB.ascendByController(DRIVER), SUB_CLIMB)
     );
 
     SUB_TURRET.setDefaultCommand(
@@ -98,8 +98,8 @@ public class RobotContainer {
     //     new RunCommand(() -> SUB_TURRET.moveTurret(OPERATOR), SUB_TURRET)
     //   );
 
-    ToggleCommandRunWinch winchCommand = new ToggleCommandRunWinch(SUB_CLIMB, OPERATOR);
-    JoystickButton toggleWinching = new JoystickButton(OPERATOR, Xbox.BACK);
+     ToggleCommandRunWinch winchCommand = new ToggleCommandRunWinch(SUB_CLIMB, DRIVER);
+     JoystickButton toggleWinching = new JoystickButton(DRIVER, Xbox.BACK);
       toggleWinching.toggleWhenPressed(winchCommand);
 
     CyborgCommandFlywheelVelocity driveFlywheelRPM = new CyborgCommandFlywheelVelocity(SUB_FLYWHEEL);
@@ -124,7 +124,7 @@ public class RobotContainer {
     /**
      * Dashboard Buttons
      */
-    SmartDashboard.putData("Toggle Winch", winchCommand);
+   // SmartDashboard.putData("Toggle Winch", winchCommand);
     SmartDashboard.putData("Drive Flywheel RPM", driveFlywheelRPM);
     SmartDashboard.putData("Drive Flywheel PO", new ToggleCommandDriveFlywheel(SUB_FLYWHEEL));
   }

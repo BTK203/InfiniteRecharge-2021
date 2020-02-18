@@ -38,7 +38,7 @@ public class SubsystemClimb extends SubsystemBase {
   }
 
   public double ascendByController(Joystick controller) {
-    double speed = Xbox.RT(controller) - Xbox.LT(controller);
+    double speed = Xbox.RIGHT_Y(controller);
     scissors.setIdleMode(IdleMode.kBrake);
     scissors.set(speed);
     return scissors.getOutputCurrent();
