@@ -83,7 +83,7 @@ public final class Constants {
     public static final boolean
         TURRET_YAW_INVERT      = false,
         TURRET_PITCH_INVERT    = false,
-        TURRET_FLYWHEEL_INVERT = false;
+        TURRET_FLYWHEEL_INVERT = true;
 
     /**
      * Climber Inverts
@@ -129,16 +129,18 @@ public final class Constants {
     * FORMAT: Red_Min, Green_Min, Blue_Min, Red_Max, Green_Max, Blue_Max.
     */
     public static final int[]
-        TARGET_RED    = { 200, 0  , 0  , 255, 25 , 25  },
-        TARGET_GREEN  = { 0  , 200, 0  , 25 , 255, 25  },
-        TARGET_BLUE   = { 0  , 200, 200, 25 , 255, 255 },
-        TARGET_YELLOW = { 200, 200, 0  , 255, 255, 25  };
+        TARGET_RED    = { 99 , 90 , 35 , 119, 110, 55  },
+        TARGET_GREEN  = { 42 , 126, 56 , 62 , 146, 76  },
+        TARGET_BLUE   = { 36 , 103, 85 , 56 , 123, 105 },
+        TARGET_YELLOW = { 75 , 127, 22 , 95 , 147, 42  };
     
     /**
      * Extraneous values
      */
     public static final int
-        SPINNER_SPEED = 1;
+        SPINNER_SPEED = 1,
+        TURRET_YAW_DEGREES = 345,
+        TURRET_PITCH_DEGREES = 100;
 
     public static final double 
         FLYWHEEL_GEAR_RATIO = 1.6071;

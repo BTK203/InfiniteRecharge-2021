@@ -31,7 +31,11 @@ public class SubsystemFlywheel extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("turretFlywheel Velocity", turretFlywheel.getEncoder().getVelocity());
+    double motorVelocity = turretFlywheel.getEncoder().getVelocity();
+    SmartDashboard.putNumber("FW Motor Velocity", motorVelocity);
+    SmartDashboard.putNumber("FW Wheel Velocity", motorVelocity * Constants.FLYWHEEL_GEAR_RATIO);
+
+    SmartDashboard.putNumber("FW Output", turretFlywheel.getAppliedOutput());
   }
 
   /**

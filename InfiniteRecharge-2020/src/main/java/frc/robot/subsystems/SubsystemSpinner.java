@@ -36,10 +36,11 @@ public class SubsystemSpinner extends SubsystemBase {
 
   @Override
   public void periodic() {
+    detectedColor = sensor.getColor();
     // This method will be called once per scheduler run
-    //SmartDashboard.putNumber("RED", detectedColor.red*255);
-    //SmartDashboard.putNumber("BLUE", detectedColor.blue*255);
-    //SmartDashboard.putNumber("GREEN", detectedColor.green*255);
+    SmartDashboard.putNumber("RED", detectedColor.red*255.0);
+    SmartDashboard.putNumber("BLUE", detectedColor.blue*255.0);
+    SmartDashboard.putNumber("GREEN", detectedColor.green*255.0);
   }
   public void startSpinner(double speed) {
     spinner.set(ControlMode.PercentOutput, speed);
@@ -59,14 +60,14 @@ public class SubsystemSpinner extends SubsystemBase {
       rotations = 0;
       trueRotations = 0;
     }
-    if((Constants.TARGET_RED[0] < detectedColor.red*255 && detectedColor.red*255 < Constants.TARGET_RED[3]) && (Constants.TARGET_RED[1] < detectedColor.green*255 && detectedColor.green*255 < Constants.TARGET_RED[4]) && (Constants.TARGET_RED[2] < detectedColor.blue*255 && detectedColor.blue*255 < Constants.TARGET_RED[5])){
+    if((Constants.TARGET_RED[0] < detectedColor.red*255.0 && detectedColor.red*255.0 < Constants.TARGET_RED[3]) && (Constants.TARGET_RED[1] < detectedColor.green*255.0 && detectedColor.green*255.0 < Constants.TARGET_RED[4]) && (Constants.TARGET_RED[2] < detectedColor.blue*255.0 && detectedColor.blue*255.0 < Constants.TARGET_RED[5])){
       if(prevRed == false){
         prevRed = true;
         rotations++;
       }
     }
 
-    if(!((Constants.TARGET_RED[0] < detectedColor.red*255 && detectedColor.red*255 < Constants.TARGET_RED[3]) && (Constants.TARGET_RED[1] < detectedColor.green*255 && detectedColor.green*255 < Constants.TARGET_RED[4]) && (Constants.TARGET_RED[2] < detectedColor.blue*255 && detectedColor.blue*255 < Constants.TARGET_RED[5]))){
+    if(!((Constants.TARGET_RED[0] < detectedColor.red*255.0 && detectedColor.red*255.0 < Constants.TARGET_RED[3]) && (Constants.TARGET_RED[1] < detectedColor.green*255.0 && detectedColor.green*255.0 < Constants.TARGET_RED[4]) && (Constants.TARGET_RED[2] < detectedColor.blue*255.0 && detectedColor.blue*255.0 < Constants.TARGET_RED[5]))){
       prevRed = false;
       }
     trueRotations = rotations/2;
@@ -80,13 +81,19 @@ public class SubsystemSpinner extends SubsystemBase {
   public boolean spinColor(char colorToFind) {
     detectedColor = sensor.getColor();
     startSpinner(Util.getAndSetDouble("Spin Inhibitor", Constants.SPINNER_SPEED));
-    SmartDashboard.putNumber("RED", detectedColor.red*255);
-    SmartDashboard.putNumber("BLUE", detectedColor.blue*255);
-    SmartDashboard.putNumber("GREEN", detectedColor.green*255);
+    //SmartDashboard.putNumber("RED", detectedColor.red*255.0);
+    //SmartDashboard.putNumber("BLUE", detectedColor.blue*255.0);
+    //SmartDashboard.putNumber("GREEN", detectedColor.green*255.0);
+    
+    SmartDashboard.putBoolean("Found Red", false);
+    SmartDashboard.putBoolean("Found Green", false);
+    SmartDashboard.putBoolean("Found Blue", false);
+    SmartDashboard.putBoolean("Found Yellow", false);
+    
     switch(colorToFind){
       case 'R':
         //code for red
-        if((Constants.TARGET_RED[0] < detectedColor.red*255 && detectedColor.red*255 < Constants.TARGET_RED[3]) && (Constants.TARGET_RED[1] < detectedColor.green*255 && detectedColor.green*255 < Constants.TARGET_RED[4]) && (Constants.TARGET_RED[2] < detectedColor.blue*255 && detectedColor.blue*255 < Constants.TARGET_RED[5])){
+        if((Constants.TARGET_RED[0] < detectedColor.red*255.0 && detectedColor.red*255.0 < Constants.TARGET_RED[3]) && (Constants.TARGET_RED[1] < detectedColor.green*255.0 && detectedColor.green*255.0 < Constants.TARGET_RED[4]) && (Constants.TARGET_RED[2] < detectedColor.blue*255.0 && detectedColor.blue*255.0 < Constants.TARGET_RED[5])){
         stopSpinner();
         SmartDashboard.putBoolean("Found Red", true);
         SmartDashboard.putBoolean("Found Green", false);
@@ -97,7 +104,7 @@ public class SubsystemSpinner extends SubsystemBase {
         return false;
       case 'G':
         //code for green
-        if((Constants.TARGET_GREEN[0] < detectedColor.red*255 && detectedColor.red*255 < Constants.TARGET_GREEN[3]) && (Constants.TARGET_GREEN[1] < detectedColor.green*255 && detectedColor.green*255 < Constants.TARGET_GREEN[4]) && (Constants.TARGET_GREEN[2] < detectedColor.blue*255 && detectedColor.blue*255 < Constants.TARGET_GREEN[5])){
+        if((Constants.TARGET_GREEN[0] < detectedColor.red*255.0 && detectedColor.red*255.0 < Constants.TARGET_GREEN[3]) && (Constants.TARGET_GREEN[1] < detectedColor.green*255.0 && detectedColor.green*255.0 < Constants.TARGET_GREEN[4]) && (Constants.TARGET_GREEN[2] < detectedColor.blue*255.0 && detectedColor.blue*255.0 < Constants.TARGET_GREEN[5])){
         stopSpinner();
         SmartDashboard.putBoolean("Found Red", false);
         SmartDashboard.putBoolean("Found Green", true);
@@ -108,7 +115,7 @@ public class SubsystemSpinner extends SubsystemBase {
         return false;
       case 'B':
         //code for blue
-        if((Constants.TARGET_BLUE[0] < detectedColor.red*255 && detectedColor.red*255 < Constants.TARGET_BLUE[3]) && (Constants.TARGET_BLUE[1] < detectedColor.green*255 && detectedColor.green*255 < Constants.TARGET_BLUE[4]) && (Constants.TARGET_BLUE[2] < detectedColor.blue*255 && detectedColor.blue*255 < Constants.TARGET_BLUE[5])){
+        if((Constants.TARGET_BLUE[0] < detectedColor.red*255.0 && detectedColor.red*255.0 < Constants.TARGET_BLUE[3]) && (Constants.TARGET_BLUE[1] < detectedColor.green*255.0 && detectedColor.green*255.0 < Constants.TARGET_BLUE[4]) && (Constants.TARGET_BLUE[2] < detectedColor.blue*255.0 && detectedColor.blue*255.0 < Constants.TARGET_BLUE[5])){
         stopSpinner();
         SmartDashboard.putBoolean("Found Red", false);
         SmartDashboard.putBoolean("Found Green", true);
@@ -119,7 +126,7 @@ public class SubsystemSpinner extends SubsystemBase {
         return false;
       case 'Y':
         //code for yellow
-        if((Constants.TARGET_YELLOW[0] < detectedColor.red*255 && detectedColor.red*255 < Constants.TARGET_YELLOW[3]) && (Constants.TARGET_YELLOW[1] < detectedColor.green*255 && detectedColor.green*255 < Constants.TARGET_YELLOW[4]) && (Constants.TARGET_YELLOW[2] < detectedColor.blue*255 && detectedColor.blue*255 < Constants.TARGET_YELLOW[5])){
+        if((Constants.TARGET_YELLOW[0] < detectedColor.red*255.0 && detectedColor.red*255.0 < Constants.TARGET_YELLOW[3]) && (Constants.TARGET_YELLOW[1] < detectedColor.green*255.0 && detectedColor.green*255.0 < Constants.TARGET_YELLOW[4]) && (Constants.TARGET_YELLOW[2] < detectedColor.blue*255.0 && detectedColor.blue*255.0 < Constants.TARGET_YELLOW[5])){
         stopSpinner();
         SmartDashboard.putBoolean("Found Red", false);
         SmartDashboard.putBoolean("Found Green", false);

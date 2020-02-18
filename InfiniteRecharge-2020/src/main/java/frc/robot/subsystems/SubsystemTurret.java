@@ -45,6 +45,10 @@ public class SubsystemTurret extends SubsystemBase {
 
     SmartDashboard.putNumber("Yaw Forward Limit", turretYaw.isFwdLimitSwitchClosed());
     SmartDashboard.putNumber("Yaw Backward Limit", turretYaw.isRevLimitSwitchClosed());
+
+    if(turretPitch.isFwdLimitSwitchClosed() > 0) {
+      turretPitch.getSensorCollection().setQuadraturePosition(0, 0);
+    }
   }
 
   /**
@@ -63,6 +67,38 @@ public class SubsystemTurret extends SubsystemBase {
 
     turretYaw.set(ControlMode.PercentOutput, speedx);
     turretPitch.set(ControlMode.PercentOutput, speedy);
+  }
+
+  public void setYawPIDF(double p, double i, double d, double f, double highOut) {
+    turretYaw.config_kP(0, p);
+    turretYaw.config_kI(0, i);
+    turretYaw.config_kD(0, d);
+    turretYaw.config_kF(0, f);
+    turretYaw.configClosedLoopPeakOutput(0, highOut);
+  }
+
+  public void setPitchPIDF(double p, double i, double d, double f, double highOut) {
+    turretPitch.config_kP(0, p);
+    turretPitch.config_kI(0, i);
+    turretPitch.config_kD(0, d);
+    turretPitch.config_kF(0, f);
+    turretPitch.configClosedLoopPeakOutput(0, highOut);
+  }
+
+  public void setYawPosition(double position) {
+    turretYaw.set(ControlMode.Position, position);
+  }
+
+  public void setPitchPosition(double position) {
+    turretPitch.set(ControlMode.Position, position);
+  }
+  
+  public double getYawPosition() {
+    return turretYaw.getSensorCollection().getQuadraturePosition();
+  }
+
+  public double getPitchPosition() {
+    return turretPitch.getSensorCollection().getQuadraturePosition();
   }
 
   private void configureMotors() {

@@ -23,6 +23,7 @@ public class CyborgCommandFlywheelVelocity extends CommandBase {
   public CyborgCommandFlywheelVelocity(SubsystemFlywheel flywheel) {
     this.flywheel = flywheel;
     addRequirements(this.flywheel);
+    SmartDashboard.putBoolean("Drive FW Velocity", false);
   }
 
   // Called when the command is initially scheduled.
@@ -55,7 +56,7 @@ public class CyborgCommandFlywheelVelocity extends CommandBase {
   public void end(boolean interrupted) {
     flywheel.setVelocity(0);
     flywheel.setFlywheelPercentOutput(0);
-    SmartDashboard.putBoolean("Drive FW Velocity", true);
+    SmartDashboard.putBoolean("Drive FW Velocity", false);
 
     if(interrupted) {
       DriverStation.reportError("FW VELOCITY PID WAS INTERRUPTED", false);

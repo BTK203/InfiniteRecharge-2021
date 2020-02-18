@@ -16,6 +16,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.util.Util;
 import frc.robot.util.Xbox;
 
 public class SubsystemDrive extends SubsystemBase {
@@ -34,6 +35,7 @@ public class SubsystemDrive extends SubsystemBase {
     rightSlave = new CANSparkMax(Constants.DRIVE_RIGHT_SLAVE_ID, MotorType.kBrushless);
 
     setBraking();
+    setRamps();
   }
 
   @Override
@@ -77,5 +79,13 @@ public class SubsystemDrive extends SubsystemBase {
     leftSlave.setIdleMode(IdleMode.kBrake);
     rightMaster.setIdleMode(IdleMode.kBrake);
     rightSlave.setIdleMode(IdleMode.kBrake);
+  }
+
+  private void setRamps() {
+    double ramp = Util.getAndSetDouble("Drive Ramp", 0.25);
+    leftMaster.setOpenLoopRampRate(ramp);
+    leftSlave.setOpenLoopRampRate(ramp);
+    rightMaster.setOpenLoopRampRate(ramp);
+    rightSlave.setOpenLoopRampRate(ramp);
   }
 }

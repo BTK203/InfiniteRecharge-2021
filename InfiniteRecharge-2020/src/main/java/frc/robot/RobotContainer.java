@@ -19,6 +19,7 @@ import frc.robot.commands.ButtonCommandEat;
 import frc.robot.commands.ButtonCommandFeed;
 import frc.robot.commands.ButtonCommandSpit;
 import frc.robot.commands.CyborgCommandFlywheelVelocity;
+import frc.robot.commands.CyborgCommandPositionControl;
 import frc.robot.commands.ToggleCommandDriveFlywheel;
 import frc.robot.commands.ToggleCommandRunWinch;
 import frc.robot.subsystems.SubsystemClimb;
@@ -50,7 +51,7 @@ public class RobotContainer {
   private final SubsystemSpinner   SUB_SPINNER  = new SubsystemSpinner();
   private final SubsystemClimb     SUB_CLIMB    = new SubsystemClimb();
   private final SubsystemReceiver  SUB_RECEIVER = new SubsystemReceiver();
-  private final CameraHub          CAMERA_HUB   = new CameraHub();
+  // private final CameraHub          CAMERA_HUB   = new CameraHub();
 
   /**
    * Controllers
@@ -106,19 +107,19 @@ public class RobotContainer {
       toggleFlywheel.toggleWhenPressed(driveFlywheelRPM);
 
     JoystickButton feederEat = new JoystickButton(OPERATOR, Xbox.A);
-      feederEat.whileHeld(new ButtonCommandEat(SUB_INTAKE, SUB_FEEDER));
+      feederEat.whileHeld(new ButtonCommandEat(SUB_INTAKE, SUB_FEEDER, OPERATOR));
 
     JoystickButton feederFeed = new JoystickButton(OPERATOR, Xbox.X);
-      feederFeed.whileHeld(new ButtonCommandFeed(SUB_INTAKE, SUB_FEEDER));
+      feederFeed.whileHeld(new ButtonCommandFeed(SUB_INTAKE, SUB_FEEDER, OPERATOR));
 
     JoystickButton feederSpit = new JoystickButton(OPERATOR, Xbox.B);
       feederSpit.whileHeld(new ButtonCommandSpit(SUB_INTAKE, SUB_FEEDER));
 
     JoystickButton spinnerSpinLeft = new JoystickButton(OPERATOR, Xbox.LB);
-      spinnerSpinLeft.whileHeld(new ButtonCommandDriveSpinner(SUB_SPINNER, false));
+      spinnerSpinLeft.toggleWhenPressed(new CyborgCommandPositionControl(SUB_SPINNER));
 
-    JoystickButton spinnerSpinRight = new JoystickButton(OPERATOR, Xbox.RB);
-      spinnerSpinRight.whileHeld(new ButtonCommandDriveSpinner(SUB_SPINNER, true));
+    // JoystickButton spinnerSpinRight = new JoystickButton(OPERATOR, Xbox.RB);
+    //   spinnerSpinRight.whileHeld(new ButtonCommandDriveSpinner(SUB_SPINNER, true));
 
     /**
      * Dashboard Buttons
