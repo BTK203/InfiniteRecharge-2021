@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -29,9 +30,16 @@ public class SubsystemTurret extends SubsystemBase {
     turretYaw,
     turretPitch;
 
+  private int
+    totalYawTicks,
+    totalPitchTicks;
+
   public SubsystemTurret() {
     turretYaw = new TalonSRX(Constants.TURRET_YAW_ID);
     turretPitch = new TalonSRX(Constants.TURRET_PITCH_ID);
+
+    totalYawTicks = Constants.DEFAULT_TURRET_YAW_TICKS;
+    totalPitchTicks = Constants.DEFAULT_TURRET_PITCH_TICKS;
 
     configureMotors();
   }
@@ -43,8 +51,14 @@ public class SubsystemTurret extends SubsystemBase {
     SmartDashboard.putNumber("Yaw Position", turretYaw.getSensorCollection().getQuadraturePosition());
     SmartDashboard.putNumber("Pitch Position", turretPitch.getSensorCollection().getQuadraturePosition());
 
-    SmartDashboard.putNumber("Yaw Forward Limit", turretYaw.isFwdLimitSwitchClosed());
-    SmartDashboard.putNumber("Yaw Backward Limit", turretYaw.isRevLimitSwitchClosed());
+    SmartDashboard.putBoolean("Yaw Forward Limit", turretYaw.isFwdLimitSwitchClosed() == 1);
+    SmartDashboard.putBoolean("Yaw Backward Limit", turretYaw.isRevLimitSwitchClosed() == 1);
+
+    SmartDashboard.putBoolean("Pitch Forward Limit", turretPitch.isFwdLimitSwitchClosed() == 1);
+    SmartDashboard.putBoolean("Pitch Backward Limit", turretPitch.isRevLimitSwitchClosed() == 1);
+
+    SmartDashboard.putNumber("Yaw Ticks", totalYawTicks);
+    SmartDashboard.putNumber("Pitch Ticks", totalPitchTicks);
 
     if(turretPitch.isFwdLimitSwitchClosed() > 0) {
       turretPitch.getSensorCollection().setQuadraturePosition(0, 0);
@@ -69,20 +83,28 @@ public class SubsystemTurret extends SubsystemBase {
     turretPitch.set(ControlMode.PercentOutput, speedy);
   }
 
-  public void setYawPIDF(double p, double i, double d, double f, double highOut) {
+  public void setYawPIDF(double p, double i, double d, double f, double highOut, int izone) {
     turretYaw.config_kP(0, p);
     turretYaw.config_kI(0, i);
+    turretYaw.config_IntegralZone(0, izone);
     turretYaw.config_kD(0, d);
     turretYaw.config_kF(0, f);
-    turretYaw.configClosedLoopPeakOutput(0, highOut);
+
+    turretYaw.configPeakOutputForward(highOut);
+    turretYaw.configPeakOutputReverse(highOut * -1);
+    turretYaw.configAllowableClosedloopError(0, 0, 0);
   }
 
-  public void setPitchPIDF(double p, double i, double d, double f, double highOut) {
+  public void setPitchPIDF(double p, double i, double d, double f, double highOut, int izone) {
     turretPitch.config_kP(0, p);
     turretPitch.config_kI(0, i);
+    turretYaw.config_IntegralZone(0, izone);
     turretPitch.config_kD(0, d);
     turretPitch.config_kF(0, f);
-    turretPitch.configClosedLoopPeakOutput(0, highOut);
+
+    turretPitch.configPeakOutputForward(highOut, 0);
+    turretPitch.configPeakOutputReverse(highOut * -1, 0);
+    turretPitch.configAllowableClosedloopError(0, 0, 0);
   }
 
   public void setYawPosition(double position) {
@@ -92,6 +114,14 @@ public class SubsystemTurret extends SubsystemBase {
   public void setPitchPosition(double position) {
     turretPitch.set(ControlMode.Position, position);
   }
+
+  public void setYawPercentOutput(double percent) {
+    turretYaw.set(ControlMode.PercentOutput, percent);
+  }
+
+  public void setPitchPercentOutput(double percent) {
+    turretPitch.set(ControlMode.PercentOutput, percent);
+  }
   
   public double getYawPosition() {
     return turretYaw.getSensorCollection().getQuadraturePosition();
@@ -99,6 +129,56 @@ public class SubsystemTurret extends SubsystemBase {
 
   public double getPitchPosition() {
     return turretPitch.getSensorCollection().getQuadraturePosition();
+  }
+
+  /**
+   * Returns the Yaw motors right limit switches state (true for closed). 
+   * NOTE: Right Limit is also the "zero" limit.
+   */
+  public boolean getYawRightlimit() {
+    return turretYaw.isFwdLimitSwitchClosed() == 1;
+  }
+
+  /**
+   * Returns the Yaw motors left limit switches state(true for closed).
+   * NOTE Left limit is the "high" limit.
+   */
+  public boolean getYawLeftLimit() {
+    return turretYaw.isRevLimitSwitchClosed() == 1;
+  }
+
+  public boolean getPitchLowerLimit() {
+    return turretPitch.isFwdLimitSwitchClosed() == 1;
+  }
+
+  public boolean getPitchUpperLimit() {
+    return turretPitch.isRevLimitSwitchClosed() == 1;
+  }
+
+  public void setCurrentYawEncoderPosition(int newPosition) {
+    turretYaw.getSensorCollection().setQuadraturePosition(newPosition, 0);
+  }
+
+  public void setCurrentPitchEncoderPosition(int newPosition) {
+    turretPitch.getSensorCollection().setQuadraturePosition(newPosition, 0);
+  }
+
+  public boolean attemptToSetTotalYawTicks() {
+    if(getYawLeftLimit()) {
+      this.totalYawTicks = turretYaw.getSensorCollection().getQuadraturePosition();
+      return true;
+    }
+
+    return false;
+  }
+
+  public boolean attemptToSetTotalPitchTicks() {
+    if(getPitchUpperLimit()) {
+      this.totalPitchTicks = turretPitch.getSensorCollection().getQuadraturePosition();
+      return true;
+    }
+
+    return false;
   }
 
   private void configureMotors() {

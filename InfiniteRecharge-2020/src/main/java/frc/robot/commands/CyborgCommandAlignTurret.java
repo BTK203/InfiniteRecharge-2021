@@ -7,6 +7,8 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemReceiver;
@@ -30,28 +32,30 @@ public class CyborgCommandAlignTurret extends CommandBase {
   @Override
   public void initialize() {
     //set yaw pid
-    double yawkP = Util.getAndSetDouble("Yaw Position kP", 0);
+    double yawkP = Util.getAndSetDouble("Yaw Position kP", 0.05);
     double yawkI = Util.getAndSetDouble("Yaw Position kI", 0);
+    double yawIZone = Util.getAndSetDouble("Yaw Position IZone", 75);
     double yawkD = Util.getAndSetDouble("Yaw Position KD", 0);
     double yawkF = Util.getAndSetDouble("Yaw Position KF", 0);
     double yawhighOutLimit = Util.getAndSetDouble("Yaw High Output", 1);
 
-    turret.setYawPIDF(yawkP, yawkI, yawkD, yawkF, yawhighOutLimit);
+    turret.setYawPIDF(yawkP, yawkI, yawkD, yawkF, yawhighOutLimit, (int) yawIZone);
 
     //pitch pid
     double pitchkP = Util.getAndSetDouble("Pitch Position kP", 0);
     double pitchkI = Util.getAndSetDouble("Pitch Position kI", 0);
+    double pitchIZone = Util.getAndSetDouble("Pitch Position IZone", 75);
     double pitchkD = Util.getAndSetDouble("Pitch Position kD", 0);
     double pitchkF = Util.getAndSetDouble("Pitch Position kF", 0);
     double pitchhighOutLimit = Util.getAndSetDouble("Pitch High Output", 1);
 
-    turret.setPitchPIDF(pitchkP, pitchkI, pitchkD, pitchkF, pitchhighOutLimit);
+    turret.setPitchPIDF(pitchkP, pitchkI, pitchkD, pitchkF, pitchhighOutLimit, (int) pitchIZone);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double horizontalAngle = kiwilight.getHorizontalAngleToTarget();
+    double horizontalAngle = kiwilight.getHorizontalAngleToTarget() * -1;
     double verticalAngle = kiwilight.getVerticalAngleToTarget();
 
     double horizontalTicks = Util.getAndSetDouble("Horizontal Ticks", 5000);
@@ -63,13 +67,23 @@ public class CyborgCommandAlignTurret extends CommandBase {
       double horizontalTicksToTurn = horizontalAngle * horizontalTicksPerInch;
 
       double newTargetPosition = turret.getYawPosition() + horizontalTicksToTurn;
+      turret.setYawPosition(newTargetPosition);
+    } else {
+      //disable PID
+      turret.setYawPercentOutput(0);
     }
 
     //vertical angle
     if(Math.abs(verticalAngle) != 180) {
-      
-    } else {
+      double verticalTicksPerInch = verticalTicks / (double) Constants.TURRET_PITCH_DEGREES;
+      double verticalTicksToTurn = verticalAngle * verticalTicksPerInch;
 
+      double newTargetPosition = turret.getPitchPosition() + verticalTicksToTurn;
+
+      SmartDashboard.putNumber("pitch diff", newTargetPosition - turret.getPitchPosition());
+      turret.setPitchPosition(newTargetPosition);
+    } else {
+      turret.setPitchPercentOutput(0);
     }
   }
 

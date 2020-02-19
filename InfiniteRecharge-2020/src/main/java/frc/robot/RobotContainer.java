@@ -17,7 +17,11 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.commands.ButtonCommandDriveSpinner;
 import frc.robot.commands.ButtonCommandEat;
 import frc.robot.commands.ButtonCommandFeed;
+import frc.robot.commands.ButtonCommandGroupRunIntakeFeeder;
 import frc.robot.commands.ButtonCommandSpit;
+import frc.robot.commands.CyborgCommandAlignTurret;
+import frc.robot.commands.CyborgCommandCalibrateTurretPitch;
+import frc.robot.commands.CyborgCommandCalibrateTurretYaw;
 import frc.robot.commands.CyborgCommandFlywheelVelocity;
 import frc.robot.commands.CyborgCommandPositionControl;
 import frc.robot.commands.ToggleCommandDriveFlywheel;
@@ -90,6 +94,10 @@ public class RobotContainer {
       new RunCommand(() -> SUB_TURRET.moveTurret(OPERATOR), SUB_TURRET)
     );
 
+    SUB_INTAKE.setDefaultCommand(
+      new ButtonCommandGroupRunIntakeFeeder(SUB_INTAKE, SUB_FEEDER, OPERATOR)
+    );
+
     /**
      * Button Commands
      */
@@ -106,14 +114,14 @@ public class RobotContainer {
     JoystickButton toggleFlywheel = new JoystickButton(OPERATOR, Xbox.START);
       toggleFlywheel.toggleWhenPressed(driveFlywheelRPM);
 
-    JoystickButton feederEat = new JoystickButton(OPERATOR, Xbox.A);
-      feederEat.whileHeld(new ButtonCommandEat(SUB_INTAKE, SUB_FEEDER, OPERATOR));
+    // JoystickButton feederEat = new JoystickButton(OPERATOR, Xbox.A);
+    //   feederEat.whileHeld(new ButtonCommandEat(SUB_INTAKE, SUB_FEEDER, OPERATOR));
 
-    JoystickButton feederFeed = new JoystickButton(OPERATOR, Xbox.X);
-      feederFeed.whileHeld(new ButtonCommandFeed(SUB_INTAKE, SUB_FEEDER, OPERATOR));
+    // JoystickButton feederFeed = new JoystickButton(OPERATOR, Xbox.X);
+    //   feederFeed.whileHeld(new ButtonCommandFeed(SUB_INTAKE, SUB_FEEDER, OPERATOR));
 
-    JoystickButton feederSpit = new JoystickButton(OPERATOR, Xbox.B);
-      feederSpit.whileHeld(new ButtonCommandSpit(SUB_INTAKE, SUB_FEEDER));
+    // JoystickButton feederSpit = new JoystickButton(OPERATOR, Xbox.B);
+    //   feederSpit.whileHeld(new ButtonCommandSpit(SUB_INTAKE, SUB_FEEDER));
 
     JoystickButton spinnerSpinLeft = new JoystickButton(OPERATOR, Xbox.LB);
       spinnerSpinLeft.toggleWhenPressed(new CyborgCommandPositionControl(SUB_SPINNER));
@@ -127,6 +135,9 @@ public class RobotContainer {
     SmartDashboard.putData("Toggle Winch", winchCommand);
     SmartDashboard.putData("Drive Flywheel RPM", driveFlywheelRPM);
     SmartDashboard.putData("Drive Flywheel PO", new ToggleCommandDriveFlywheel(SUB_FLYWHEEL));
+    SmartDashboard.putData("Align Turret", new CyborgCommandAlignTurret(SUB_TURRET, SUB_RECEIVER));
+    SmartDashboard.putData("Calibrate Turret Yaw", new CyborgCommandCalibrateTurretYaw(SUB_TURRET));
+    SmartDashboard.putData("Calibrate Turret Pitch", new CyborgCommandCalibrateTurretPitch(SUB_TURRET));
   }
 
 
