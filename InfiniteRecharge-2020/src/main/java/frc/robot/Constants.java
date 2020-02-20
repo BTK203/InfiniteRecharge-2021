@@ -140,7 +140,9 @@ public final class Constants {
     public static final int
         SPINNER_SPEED = 1,
         TURRET_YAW_DEGREES = 345,
-        TURRET_PITCH_DEGREES = 100;
+        TURRET_PITCH_DEGREES = 100,
+        DEFAULT_TURRET_YAW_TICKS = 5000,
+        DEFAULT_TURRET_PITCH_TICKS = 1000;
 
     public static final double 
         FLYWHEEL_GEAR_RATIO = 1.6071;
