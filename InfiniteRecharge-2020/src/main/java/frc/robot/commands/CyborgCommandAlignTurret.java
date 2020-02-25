@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemReceiver;
@@ -79,19 +80,26 @@ public class CyborgCommandAlignTurret extends CommandBase {
       double newTargetPosition = turret.getYawPosition() + horizontalTicksToTurn;
       turret.setYawPosition(newTargetPosition);
     } else {
-      //disable PID
+      //disable motors
       turret.setYawPercentOutput(0);
     }
 
     //vertical angle
     if(Math.abs(verticalAngle) != 180) {
-      double verticalTicksPerInch = verticalTicks / (double) Constants.TURRET_PITCH_DEGREES;
-      double verticalTicksToTurn = verticalAngle * verticalTicksPerInch;
+      double verticalTicksPerDegree = verticalTicks / (double) Constants.TURRET_PITCH_DEGREES;
+      double originalVerticalTicksToTurn = verticalAngle * verticalTicksPerDegree;
+      double originalNewTargetPosition = turret.getPitchPosition() + originalVerticalTicksToTurn;
+      SmartDashboard.putNumber("Orig Pitch Target", originalNewTargetPosition);
 
-      double newTargetPosition = turret.getPitchPosition() + verticalTicksToTurn;
+      double verticalOffset = Util.getAndSetDouble("Pitch Offset Degrees", 0); //switch from getAndSetDouble to some calculate method when we have our calculations
+      double offsetVerticalAngle = verticalAngle + verticalOffset;
+      double offsetVerticalTicksToTurn = offsetVerticalAngle * verticalTicksPerDegree;
+      double offsetNewTargetPosition = turret.getPitchPosition() + offsetVerticalTicksToTurn;
+      SmartDashboard.putNumber("Offset Pitch Target", offsetNewTargetPosition);
 
-      turret.setPitchPosition(newTargetPosition);
+      turret.setPitchPosition(offsetNewTargetPosition);
     } else {
+      //disable motors
       turret.setPitchPercentOutput(0);
     }
 
@@ -110,6 +118,8 @@ public class CyborgCommandAlignTurret extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    turret.setYawPercentOutput(0);
+    turret.setPitchPercentOutput(0);
   }
 
   // Returns true when the command should end.
