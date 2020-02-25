@@ -141,7 +141,7 @@ public final class Constants {
         SPINNER_SPEED = 1,
         TURRET_YAW_DEGREES = 345,
         TURRET_PITCH_DEGREES = 100,
-        DEFAULT_TURRET_YAW_TICKS = 5000,
+        DEFAULT_TURRET_YAW_TICKS = 1615628,
         DEFAULT_TURRET_PITCH_TICKS = 1000;
 
     public static final double 

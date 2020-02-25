@@ -135,7 +135,7 @@ public class RobotContainer {
     SmartDashboard.putData("Toggle Winch", winchCommand);
     SmartDashboard.putData("Drive Flywheel RPM", driveFlywheelRPM);
     SmartDashboard.putData("Drive Flywheel PO", new ToggleCommandDriveFlywheel(SUB_FLYWHEEL));
-    SmartDashboard.putData("Align Turret", new CyborgCommandAlignTurret(SUB_TURRET, SUB_RECEIVER));
+    SmartDashboard.putData("Align Turret", new CyborgCommandAlignTurret(SUB_TURRET, SUB_RECEIVER, DRIVER, OPERATOR));
     SmartDashboard.putData("Calibrate Turret Yaw", new CyborgCommandCalibrateTurretYaw(SUB_TURRET));
     SmartDashboard.putData("Calibrate Turret Pitch", new CyborgCommandCalibrateTurretPitch(SUB_TURRET));
   }

@@ -7,8 +7,8 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemReceiver;
@@ -19,13 +19,23 @@ public class CyborgCommandAlignTurret extends CommandBase {
   private SubsystemTurret turret;
   private SubsystemReceiver kiwilight;
 
+  private Joystick
+    driver,
+    operator;
+
+  private boolean targetPreviouslySeen;
+
   /**
    * Creates a new CyborgCommandAlignTurret.
    */
-  public CyborgCommandAlignTurret(SubsystemTurret turret, SubsystemReceiver kiwilight) {
+  public CyborgCommandAlignTurret(SubsystemTurret turret, SubsystemReceiver kiwilight, Joystick driver, Joystick operator) {
     this.turret = turret;
     this.kiwilight = kiwilight;
+    this.driver = driver;
+    this.operator = operator;
     addRequirements(this.turret);
+
+    targetPreviouslySeen = false;
   }
 
   // Called when the command is initially scheduled.
@@ -58,13 +68,13 @@ public class CyborgCommandAlignTurret extends CommandBase {
     double horizontalAngle = kiwilight.getHorizontalAngleToTarget() * -1;
     double verticalAngle = kiwilight.getVerticalAngleToTarget();
 
-    double horizontalTicks = Util.getAndSetDouble("Horizontal Ticks", 5000);
+    double horizontalTicks = turret.getTotalYawTicks();
     double verticalTicks = Util.getAndSetDouble("Vertical Ticks", 1000);
 
     //horizontal angle
     if(Math.abs(horizontalAngle) != 180) {
-      double horizontalTicksPerInch = horizontalTicks / (double) Constants.TURRET_YAW_DEGREES;
-      double horizontalTicksToTurn = horizontalAngle * horizontalTicksPerInch;
+      double horizontalTicksPerDegree = horizontalTicks / (double) Constants.TURRET_YAW_DEGREES;
+      double horizontalTicksToTurn = horizontalAngle * horizontalTicksPerDegree;
 
       double newTargetPosition = turret.getYawPosition() + horizontalTicksToTurn;
       turret.setYawPosition(newTargetPosition);
@@ -80,11 +90,21 @@ public class CyborgCommandAlignTurret extends CommandBase {
 
       double newTargetPosition = turret.getPitchPosition() + verticalTicksToTurn;
 
-      SmartDashboard.putNumber("pitch diff", newTargetPosition - turret.getPitchPosition());
       turret.setPitchPosition(newTargetPosition);
     } else {
       turret.setPitchPercentOutput(0);
     }
+
+    //set controller rumbles
+    if(targetPreviouslySeen && !kiwilight.targetSpotted()) {
+      new CyborgCommandRumble(driver, 500, RumbleType.kRightRumble).schedule();
+    }
+
+    if(!targetPreviouslySeen && kiwilight.targetSpotted()) {
+      new CyborgCommandRumble(operator, 500, RumbleType.kLeftRumble).schedule();
+    }
+
+    targetPreviouslySeen = kiwilight.targetSpotted();
   }
 
   // Called once the command ends or is interrupted.

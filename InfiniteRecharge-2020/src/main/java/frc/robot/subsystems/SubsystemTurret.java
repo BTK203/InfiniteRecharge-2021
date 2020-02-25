@@ -63,6 +63,8 @@ public class SubsystemTurret extends SubsystemBase {
     if(turretPitch.isFwdLimitSwitchClosed() > 0) {
       turretPitch.getSensorCollection().setQuadraturePosition(0, 0);
     }
+
+    SmartDashboard.putNumber("Yaw Out", turretYaw.getMotorOutputPercent());
   }
 
   /**
@@ -179,6 +181,14 @@ public class SubsystemTurret extends SubsystemBase {
     }
 
     return false;
+  }
+
+  public double getTotalYawTicks() {
+    return totalYawTicks;
+  }
+
+  public double getTotalPitchTicks() {
+    return totalPitchTicks;
   }
 
   private void configureMotors() {
