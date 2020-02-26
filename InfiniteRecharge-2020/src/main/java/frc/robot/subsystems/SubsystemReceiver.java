@@ -34,8 +34,8 @@ public class SubsystemReceiver extends SubsystemBase {
    * Creates a new SubsystemReceiver.
    */
   public SubsystemReceiver() {
-    latestSegment = "-1,-1,-1,180,180";
-    latestData = new double[] {-1, -1, -1, 180, 180};
+    latestSegment = "-1,-1,-1,-1,-1,180,180";
+    latestData = new double[] {-1, -1, -1, -1, -1, 180, 180};
     latestTime    = System.currentTimeMillis();
 
     SmartDashboard.putString("RPi Data", latestSegment);
@@ -99,16 +99,24 @@ public class SubsystemReceiver extends SubsystemBase {
     return latestData;
   }
 
-  public double getDistanceToTarget() {
+  public double getTargetWidthPixels() {
     return latestData[2];
   }
 
-  public double getHorizontalAngleToTarget() {
+  public double getTargetHeightPixels() {
     return latestData[3];
   }
 
-  public double getVerticalAngleToTarget() {
+  public double getDistanceToTarget() {
     return latestData[4];
+  }
+
+  public double getHorizontalAngleToTarget() {
+    return latestData[5];
+  }
+
+  public double getVerticalAngleToTarget() {
+    return latestData[6];
   }
 
   public boolean targetSpotted() {
@@ -150,10 +158,10 @@ public class SubsystemReceiver extends SubsystemBase {
    *         {-1,-1,-1,-1} for no known location
    */
   private double[] analyzeData(String input) {
-    double[] newData = {-1, -1, -1, 180, 180};
+    double[] newData = {-1, -1, -1, -1, -1, 180, 180};
     String[] stringData = input.split(",");
 
-    if(stringData.length != 5) {
+    if(stringData.length != newData.length) {
       DriverStation.reportWarning("INPUT STRING IMPROPERLY FORMATTED!", true);
       return newData;
     }

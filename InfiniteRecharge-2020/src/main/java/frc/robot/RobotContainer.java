@@ -114,14 +114,8 @@ public class RobotContainer {
     JoystickButton toggleFlywheel = new JoystickButton(OPERATOR, Xbox.START);
       toggleFlywheel.toggleWhenPressed(driveFlywheelRPM);
 
-    // JoystickButton feederEat = new JoystickButton(OPERATOR, Xbox.A);
-    //   feederEat.whileHeld(new ButtonCommandEat(SUB_INTAKE, SUB_FEEDER, OPERATOR));
-
-    // JoystickButton feederFeed = new JoystickButton(OPERATOR, Xbox.X);
-    //   feederFeed.whileHeld(new ButtonCommandFeed(SUB_INTAKE, SUB_FEEDER, OPERATOR));
-
-    // JoystickButton feederSpit = new JoystickButton(OPERATOR, Xbox.B);
-    //   feederSpit.whileHeld(new ButtonCommandSpit(SUB_INTAKE, SUB_FEEDER));
+    JoystickButton toggleAlign = new JoystickButton(OPERATOR, Xbox.RB);
+      toggleAlign.toggleWhenPressed(new CyborgCommandAlignTurret(SUB_TURRET, SUB_RECEIVER, DRIVER, OPERATOR));
 
     JoystickButton spinnerSpinLeft = new JoystickButton(OPERATOR, Xbox.LB);
       spinnerSpinLeft.toggleWhenPressed(new CyborgCommandPositionControl(SUB_SPINNER));

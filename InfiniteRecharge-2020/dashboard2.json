@@ -527,8 +527,8 @@
             ],
             "content": {
               "_type": "Graph",
-              "_source0": "network_table:///SmartDashboard/FW Wheel Velocity",
-              "_source1": "network_table:///SmartDashboard/FW Motor Velocity",
+              "_source0": "network_table:///SmartDashboard/FW Motor Velocity",
+              "_source1": "network_table:///SmartDashboard/FW Wheel Velocity",
               "_title": "SmartDashboard/FW Motor Velocity",
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
@@ -609,7 +609,7 @@
           "2,0": {
             "size": [
               9,
-              8
+              4
             ],
             "content": {
               "_type": "Graph",
@@ -668,6 +668,40 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Pitch Position",
               "_title": "SmartDashboard/Pitch Position"
+            }
+          },
+          "9,4": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "KiwiLight",
+              "Layout/Number of columns": 3,
+              "Layout/Number of rows": 3,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "1,1": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Spotted",
+                  "_title": "Spotted",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                "2,1": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Updated",
+                  "_title": "Updated",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                "0,1": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/RPi Data",
+                  "_title": "Data"
+                }
+              }
             }
           }
         }
