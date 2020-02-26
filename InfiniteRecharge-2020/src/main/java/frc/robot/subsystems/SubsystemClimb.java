@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -57,5 +58,21 @@ public class SubsystemClimb extends SubsystemBase {
 
     winch.setIdleMode(IdleMode.kBrake);
     winch.setInverted(Constants.CLIMBER_WINCH_INVERT);
+  }
+
+  public double getPosition() {
+    return scissors.getEncoder().getPosition();
+  }
+  
+  public void setScissorPIDF(double p, double i, double d, double f, double lowLimit, double highLimit) {
+    scissors.getPIDController().setP(p, 0);
+    scissors.getPIDController().setI(i, 0);
+    scissors.getPIDController().setD(d, 0);
+    scissors.getPIDController().setFF(f, 0);
+    scissors.getPIDController().setOutputRange(lowLimit, highLimit);
+  }
+
+  public void setScissorPosition(double position) {
+    scissors.getPIDController().setReference(position, ControlType.kPosition);
   }
 }
