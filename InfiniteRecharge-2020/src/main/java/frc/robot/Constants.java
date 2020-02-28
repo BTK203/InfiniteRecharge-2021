@@ -90,7 +90,7 @@ public final class Constants {
      */
     public static final boolean
         CLIMBER_SCISSOR_INVERT = false,
-        CLIMBER_WINCH_INVERT   = false;
+        CLIMBER_WINCH_INVERT   = true;
 
     /**
      * Spinner Inverts

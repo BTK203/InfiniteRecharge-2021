@@ -10,6 +10,7 @@ package frc.robot.commands;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SubsystemClimb;
@@ -31,11 +32,15 @@ public class ToggleCommandRunWinch extends CommandBase {
   @Override
   public void initialize() {
     SmartDashboard.putBoolean("Winch", true);
+
+    new CyborgCommandRumble(controller, 1000, RumbleType.kLeftRumble).schedule();
+    new CyborgCommandRumble(controller, 1000, RumbleType.kRightRumble).schedule();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    climber.setScissorBraking(IdleMode.kCoast);
     climber.decendByController(controller);
   }
 
