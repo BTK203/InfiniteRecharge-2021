@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.commands.ButtonCommandDriveSpinner;
 import frc.robot.commands.ButtonCommandEat;
@@ -25,6 +26,8 @@ import frc.robot.commands.CyborgCommandCalibrateTurretYaw;
 import frc.robot.commands.CyborgCommandFlywheelVelocity;
 import frc.robot.commands.CyborgCommandPositionControl;
 import frc.robot.commands.CyborgCommandTestYawPID;
+import frc.robot.commands.CyborgCommandTestScissorPositition;
+import frc.robot.commands.SemiManualCommandRunWinch;
 import frc.robot.commands.ToggleCommandDriveFlywheel;
 import frc.robot.commands.ToggleCommandRunWinch;
 import frc.robot.subsystems.SubsystemClimb;
@@ -87,9 +90,8 @@ public class RobotContainer {
       new RunCommand(() -> SUB_DRIVE.DriveTankByController(DRIVER), SUB_DRIVE)
     );
 
-    SUB_CLIMB.setDefaultCommand(
-      new RunCommand(() -> SUB_CLIMB.ascendByController(OPERATOR), SUB_CLIMB)
-    );
+    ToggleCommandRunWinch winchCommand = new ToggleCommandRunWinch(SUB_CLIMB, OPERATOR);
+    SUB_CLIMB.setDefaultCommand(winchCommand);
 
     SUB_TURRET.setDefaultCommand(
       new RunCommand(() -> SUB_TURRET.moveTurret(OPERATOR), SUB_TURRET)
@@ -107,9 +109,9 @@ public class RobotContainer {
     //     new RunCommand(() -> SUB_TURRET.moveTurret(OPERATOR), SUB_TURRET)
     //   );
 
-    ToggleCommandRunWinch winchCommand = new ToggleCommandRunWinch(SUB_CLIMB, OPERATOR);
-    JoystickButton toggleWinching = new JoystickButton(OPERATOR, Xbox.BACK);
-      toggleWinching.toggleWhenPressed(winchCommand);
+    SemiManualCommandRunWinch semiManualWinchCommand = new SemiManualCommandRunWinch(SUB_CLIMB, OPERATOR);
+     JoystickButton toggleClimberSemiManual = new JoystickButton(OPERATOR, Xbox.BACK);
+      toggleClimberSemiManual.toggleWhenPressed(semiManualWinchCommand);
 
     CyborgCommandFlywheelVelocity driveFlywheelRPM = new CyborgCommandFlywheelVelocity(SUB_FLYWHEEL);
     JoystickButton toggleFlywheel = new JoystickButton(OPERATOR, Xbox.START);
@@ -134,6 +136,8 @@ public class RobotContainer {
     SmartDashboard.putData("Calibrate Turret Yaw", new CyborgCommandCalibrateTurretYaw(SUB_TURRET));
     SmartDashboard.putData("Calibrate Turret Pitch", new CyborgCommandCalibrateTurretPitch(SUB_TURRET));
     SmartDashboard.putData("Test Yaw PID", new CyborgCommandTestYawPID(SUB_TURRET));
+    SmartDashboard.putData("Zero Scissor and Winch Encoders", new InstantCommand(() -> SUB_CLIMB.zeroScissorEncoders(), SUB_CLIMB));
+    SmartDashboard.putData("Run  Winch", semiManualWinchCommand);
   }
 
 
