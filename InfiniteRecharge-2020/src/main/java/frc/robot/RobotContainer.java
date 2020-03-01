@@ -24,6 +24,7 @@ import frc.robot.commands.CyborgCommandCalibrateTurretPitch;
 import frc.robot.commands.CyborgCommandCalibrateTurretYaw;
 import frc.robot.commands.CyborgCommandFlywheelVelocity;
 import frc.robot.commands.CyborgCommandPositionControl;
+import frc.robot.commands.CyborgCommandTestYawPID;
 import frc.robot.commands.ToggleCommandDriveFlywheel;
 import frc.robot.commands.ToggleCommandRunWinch;
 import frc.robot.subsystems.SubsystemClimb;
@@ -132,6 +133,7 @@ public class RobotContainer {
     SmartDashboard.putData("Align Turret", new CyborgCommandAlignTurret(SUB_TURRET, SUB_RECEIVER, DRIVER, OPERATOR));
     SmartDashboard.putData("Calibrate Turret Yaw", new CyborgCommandCalibrateTurretYaw(SUB_TURRET));
     SmartDashboard.putData("Calibrate Turret Pitch", new CyborgCommandCalibrateTurretPitch(SUB_TURRET));
+    SmartDashboard.putData("Test Yaw PID", new CyborgCommandTestYawPID(SUB_TURRET));
   }
 
 

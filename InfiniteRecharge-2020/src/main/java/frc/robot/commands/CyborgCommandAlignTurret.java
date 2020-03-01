@@ -43,12 +43,15 @@ public class CyborgCommandAlignTurret extends CommandBase {
   @Override
   public void initialize() {
     //set yaw pid
-    double yawkP = Util.getAndSetDouble("Yaw Position kP", 0.05);
-    double yawkI = Util.getAndSetDouble("Yaw Position kI", 0);
-    double yawIZone = Util.getAndSetDouble("Yaw Position IZone", 75);
+    double yawkP = Util.getAndSetDouble("Yaw Position kP", 0.004);
+    double yawkI = Util.getAndSetDouble("Yaw Position kI", 0.001);
+    double yawIZone = Util.getAndSetDouble("Yaw Position IZone", 100000);
     double yawkD = Util.getAndSetDouble("Yaw Position KD", 0);
     double yawkF = Util.getAndSetDouble("Yaw Position KF", 0);
     double yawhighOutLimit = Util.getAndSetDouble("Yaw High Output", 1);
+
+    SmartDashboard.putNumber("Registered Yaw IZone", yawIZone);
+    SmartDashboard.putNumber("Yaw kI", yawkI);
 
     turret.setYawPIDF(yawkP, yawkI, yawkD, yawkF, yawhighOutLimit, (int) yawIZone);
 
@@ -66,18 +69,19 @@ public class CyborgCommandAlignTurret extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double horizontalAngle = kiwilight.getHorizontalAngleToTarget() * -1;
-    double verticalAngle = kiwilight.getVerticalAngleToTarget();
-
+    double horizontalAngle = kiwilight.getHorizontalAngleToTarget();
     double horizontalTicks = turret.getTotalYawTicks();
-    double verticalTicks = Util.getAndSetDouble("Vertical Ticks", 1000);
+
+    double targetDistance = kiwilight.getDistanceToTarget();
 
     //horizontal angle
-    if(Math.abs(horizontalAngle) != 180) {
+    if(kiwilight.targetSpotted()) {
       double horizontalTicksPerDegree = horizontalTicks / (double) Constants.TURRET_YAW_DEGREES;
       double horizontalTicksToTurn = horizontalAngle * horizontalTicksPerDegree;
 
-      double newTargetPosition = turret.getYawPosition() + horizontalTicksToTurn;
+      SmartDashboard.putNumber("Yaw Ticks To Turn", horizontalTicksToTurn);
+
+      double newTargetPosition = turret.getYawPosition() - horizontalTicksToTurn;
       turret.setYawPosition(newTargetPosition);
     } else {
       //disable motors
@@ -85,19 +89,26 @@ public class CyborgCommandAlignTurret extends CommandBase {
     }
 
     //vertical angle
-    if(Math.abs(verticalAngle) != 180) {
-      double verticalTicksPerDegree = verticalTicks / (double) Constants.TURRET_PITCH_DEGREES;
-      double originalVerticalTicksToTurn = verticalAngle * verticalTicksPerDegree;
-      double originalNewTargetPosition = turret.getPitchPosition() + originalVerticalTicksToTurn;
-      SmartDashboard.putNumber("Orig Pitch Target", originalNewTargetPosition);
+    if(kiwilight.targetSpotted()) {
+      double newPitchPosition = turret.getPitchPosition();
+      if(targetDistance > 5) {
+        //use the cool parabola equation to calculate the pitch position
+        //equation: f(x) = 0.006851x^2 - 2.654x - 447.8 | where: x is the distance kiwilight reports and f returns the pitch position.
+        double ax2 = 0.006851 * Math.pow(targetDistance, 2);
+        double bx  = -2.654 * targetDistance;
+        double c   = -446.8;
 
-      double verticalOffset = Util.getAndSetDouble("Pitch Offset Degrees", 0); //switch from getAndSetDouble to some calculate method when we have our calculations
-      double offsetVerticalAngle = verticalAngle + verticalOffset;
-      double offsetVerticalTicksToTurn = offsetVerticalAngle * verticalTicksPerDegree;
-      double offsetNewTargetPosition = turret.getPitchPosition() + offsetVerticalTicksToTurn;
-      SmartDashboard.putNumber("Offset Pitch Target", offsetNewTargetPosition);
+        newPitchPosition = ax2 + bx + c;
 
-      turret.setPitchPosition(offsetNewTargetPosition);
+        SmartDashboard.putNumber("Pitch Error", turret.getPitchPosition() - newPitchPosition);
+      } else {
+        //use the slightly less cool linear equation to calculate the pitch position
+        //equation: f(x) = -9.512x - 65.85 | where: x is the distance kiwilight reports and f returns the pitch position.
+
+        newPitchPosition = (-9.512 * targetDistance) -65.85;
+      }
+
+      turret.setPitchPosition(newPitchPosition);
     } else {
       //disable motors
       turret.setPitchPercentOutput(0);

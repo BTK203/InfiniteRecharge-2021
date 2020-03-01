@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.ErrorCode;
+import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -60,11 +62,18 @@ public class SubsystemTurret extends SubsystemBase {
     SmartDashboard.putNumber("Yaw Ticks", totalYawTicks);
     SmartDashboard.putNumber("Pitch Ticks", totalPitchTicks);
 
-    if(turretPitch.isFwdLimitSwitchClosed() > 0) {
+    if(getYawLeftLimit()) {
+      turretYaw.getSensorCollection().setQuadraturePosition(0, 0);
+    }
+
+    if(getPitchLowerLimit()) {
       turretPitch.getSensorCollection().setQuadraturePosition(0, 0);
     }
 
     SmartDashboard.putNumber("Yaw Out", turretYaw.getMotorOutputPercent());
+
+    SmartDashboard.putNumber("Yaw Accumulated I", turretYaw.configGetParameter(ParamEnum.eClosedLoopIAccum, 0));
+    SmartDashboard.putNumber("Pitch Accumulated I", turretPitch.configGetParameter(ParamEnum.eClosedLoopIAccum, 0));
   }
 
   /**
@@ -86,6 +95,7 @@ public class SubsystemTurret extends SubsystemBase {
   }
 
   public void setYawPIDF(double p, double i, double d, double f, double highOut, int izone) {
+
     turretYaw.config_kP(0, p);
     turretYaw.config_kI(0, i);
     turretYaw.config_IntegralZone(0, izone);
@@ -111,6 +121,11 @@ public class SubsystemTurret extends SubsystemBase {
 
   public void setYawPosition(double position) {
     turretYaw.set(ControlMode.Position, position);
+
+    turretYaw.setSensorPhase(false);
+
+    SmartDashboard.putNumber("Yaw PID Target", position);
+    SmartDashboard.putNumber("Yaw PID Error", Math.abs(turretYaw.getSensorCollection().getQuadraturePosition()) - position);
   }
 
   public void setPitchPosition(double position) {
@@ -166,7 +181,7 @@ public class SubsystemTurret extends SubsystemBase {
   }
 
   public boolean attemptToSetTotalYawTicks() {
-    if(getYawLeftLimit()) {
+    if(getYawRightlimit()) {
       this.totalYawTicks = turretYaw.getSensorCollection().getQuadraturePosition();
       return true;
     }
