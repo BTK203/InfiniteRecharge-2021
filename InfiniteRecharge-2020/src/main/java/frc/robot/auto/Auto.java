@@ -7,6 +7,7 @@
 
 package frc.robot.auto;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
@@ -41,7 +42,7 @@ public class Auto {
                .alongWith(driveOffLine);
     }
 
-    public static ParallelCommandGroup theBareMinimum (
+    public static Command theBareMinimum (
         SubsystemDrive drivetrain,
         SubsystemTurret turret,
         SubsystemFlywheel flywheel,
@@ -72,11 +73,7 @@ public class Auto {
 
         //bring above two sequences together sequentially
         SequentialCommandGroup initAndShootPayload = initAndSetPosition.andThen(alignAndShoot);
-
-        //run everything along with driving the flywheel
-        CyborgCommandFlywheelVelocity driveFlywheel = new CyborgCommandFlywheelVelocity(flywheel);
-        ParallelCommandGroup defaultAuto = driveFlywheel.alongWith(initAndShootPayload);
-        return defaultAuto;
+        return initAndShootPayload;
     }
 
     /**

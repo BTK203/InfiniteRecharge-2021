@@ -28,8 +28,8 @@ import frc.robot.commands.CyborgCommandPositionControl;
 import frc.robot.commands.CyborgCommandTestScissorPositition;
 import frc.robot.commands.CyborgCommandZeroTurret;
 import frc.robot.commands.SemiManualCommandRunWinch;
+import frc.robot.commands.ToggleCommandDriveClimber;
 import frc.robot.commands.ToggleCommandDriveFlywheel;
-import frc.robot.commands.ToggleCommandRunWinch;
 import frc.robot.subsystems.SubsystemClimb;
 import frc.robot.subsystems.SubsystemDrive;
 import frc.robot.subsystems.SubsystemFeeder;
@@ -94,16 +94,23 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     /**
-     * Manual Commands
+     * Things that run automatically
      */
+    CyborgCommandFlywheelVelocity driveFlywheelRPM = new CyborgCommandFlywheelVelocity(SUB_FLYWHEEL);
+    SUB_FLYWHEEL.setDefaultCommand(driveFlywheelRPM);
+
+    /**
+     * DRIVER controls
+     */
+    //manual commands
     SUB_DRIVE.setDefaultCommand(
       new RunCommand(() -> SUB_DRIVE.DriveTankByController(DRIVER), SUB_DRIVE)
     );
 
-    ToggleCommandRunWinch winchCommand = new ToggleCommandRunWinch(SUB_CLIMB, OPERATOR);
-    RunCommand dualManualWinchScissorCommand = new RunCommand(() -> SUB_CLIMB.driveByJoystick(OPERATOR), SUB_CLIMB);
-    SUB_CLIMB.setDefaultCommand(dualManualWinchScissorCommand);
-
+    /**
+     * OPERATOR controls
+     */
+    //manual commands
     SUB_TURRET.setDefaultCommand(
       new RunCommand(() -> SUB_TURRET.moveTurret(OPERATOR), SUB_TURRET)
     );
@@ -112,52 +119,43 @@ public class RobotContainer {
       new ButtonCommandGroupRunIntakeFeeder(SUB_INTAKE, SUB_FEEDER, OPERATOR)
     );
 
-    /**
-     * Button Commands
-     */
-    // JoystickButton toggleManualTurretControl = new JoystickButton(OPERATOR, Xbox.RSTICK);
-    //   toggleManualTurretControl.toggleWhenPressed(
-    //     new RunCommand(() -> SUB_TURRET.moveTurret(OPERATOR), SUB_TURRET)
-    //   );
+    SemiManualCommandRunWinch semiManualWinchCommand = new SemiManualCommandRunWinch(SUB_CLIMB, DRIVER);
+    SUB_CLIMB.setDefaultCommand(semiManualWinchCommand);
 
-    SemiManualCommandRunWinch semiManualWinchCommand = new SemiManualCommandRunWinch(SUB_CLIMB, OPERATOR);
-     JoystickButton toggleClimberSemiManual = new JoystickButton(OPERATOR, Xbox.BACK);
-      toggleClimberSemiManual.toggleWhenPressed(semiManualWinchCommand);
-
-    CyborgCommandFlywheelVelocity driveFlywheelRPM = new CyborgCommandFlywheelVelocity(SUB_FLYWHEEL);
+    //toggle commands
     JoystickButton toggleFlywheel = new JoystickButton(OPERATOR, Xbox.START);
-      toggleFlywheel.toggleWhenPressed(driveFlywheelRPM);
+      toggleFlywheel.toggleWhenPressed(new ToggleCommandDriveFlywheel(SUB_FLYWHEEL, 0));
 
+    ToggleCommandDriveClimber climberManualDrive = new ToggleCommandDriveClimber(SUB_CLIMB, SUB_TURRET, OPERATOR);
+    JoystickButton toggleClimberManual = new JoystickButton(OPERATOR, Xbox.BACK);
+      toggleClimberManual.toggleWhenPressed(climberManualDrive);
+
+    //button commands
     CyborgCommandAlignTurret alignTurret = new CyborgCommandAlignTurret(SUB_TURRET, SUB_RECEIVER);
     JoystickButton toggleAlign = new JoystickButton(OPERATOR, Xbox.RB);
       toggleAlign.toggleWhenPressed(alignTurret);
 
-    JoystickButton spinnerSpinLeft = new JoystickButton(OPERATOR, Xbox.LB);
-      spinnerSpinLeft.toggleWhenPressed(new CyborgCommandPositionControl(SUB_SPINNER));
-
     /**
      * Dashboard Buttons
      */
-    SmartDashboard.putData("Toggle Winch", winchCommand);
-    SmartDashboard.putData("Drive Flywheel RPM", driveFlywheelRPM);
-    SmartDashboard.putData("Drive Flywheel PO", new ToggleCommandDriveFlywheel(SUB_FLYWHEEL));
-    SmartDashboard.putData("Align Turret", alignTurret);
     SmartDashboard.putData("Calibrate Turret Yaw", new CyborgCommandCalibrateTurretYaw(SUB_TURRET));
     SmartDashboard.putData("Calibrate Turret Pitch", new CyborgCommandCalibrateTurretPitch(SUB_TURRET));
-    SmartDashboard.putData("Zero Scissor and Winch Encoders", new InstantCommand(() -> SUB_CLIMB.zeroScissorEncoders(), SUB_CLIMB));
-    SmartDashboard.putData("Run  Winch", semiManualWinchCommand);
+    SmartDashboard.putData("Zero Scissor and Winch Encoders", new InstantCommand(() -> SUB_CLIMB.zeroEncoders(), SUB_CLIMB));
     SmartDashboard.putData("Test Scissor PID", new CyborgCommandTestScissorPositition(SUB_CLIMB, OPERATOR));
     SmartDashboard.putData("Zero Turret", new CyborgCommandZeroTurret(SUB_TURRET));
+
+    SmartDashboard.putData("Toggle Winch", climberManualDrive);
+    SmartDashboard.putData("Drive Flywheel RPM", driveFlywheelRPM);
+    SmartDashboard.putData("Align Turret", alignTurret);
+    SmartDashboard.putData("Run  Winch", semiManualWinchCommand);
   }
 
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
     return autoChooser.getSelected();
   }
 }

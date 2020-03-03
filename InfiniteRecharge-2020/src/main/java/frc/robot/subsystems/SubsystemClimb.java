@@ -70,7 +70,7 @@ public class SubsystemClimb extends SubsystemBase {
     winch.setInverted(Constants.CLIMBER_WINCH_INVERT);
   }
   
-  public void zeroScissorEncoders() {
+  public void zeroEncoders() {
     scissors.getEncoder().setPosition(0);
     winch.getEncoder().setPosition(0);
   }
