@@ -142,11 +142,31 @@ public final class Constants {
         TURRET_YAW_DEGREES = 345,
         TURRET_PITCH_DEGREES = 100,
         DEFAULT_TURRET_YAW_TICKS = 1615628,
-        DEFAULT_TURRET_PITCH_TICKS = 1000;
+        DEFAULT_TURRET_PITCH_TICKS = 1000,
+        FLYWHEEL_STABLE_RPM = 5750,
+        TURRET_YAW_ALLOWABLE_ERROR = 500,
+        TURRET_PITCH_ALLOWABLE_ERROR = 5,
+        TURRET_CENTER_ANGLE_OFFSET_YAW = 90,
+        TURRET_PITCH_CAMERA_OFFSET = 25;
 
     public static final double 
-        FLYWHEEL_GEAR_RATIO = 1.6071;
+        FLYWHEEL_GEAR_RATIO = 1.6071,
+        DRIVETRAIN_WHEEL_DIAMETER = 6, //inches
+        DRIVETRAIN_ALLOWABLE_ERROR = 0.0625,
+        POWER_PORT_HEIGHT = 122.25;
 
     public static final boolean
         DRIVE_CAMERA_AUTOMATIC_EXPOSURE = true;
+
+    /**
+     * Auto values
+     */
+    public static double
+        DISTANCE_POWERPORT_TO_SIDE = 94.66;
+
+    public static int
+        AUTO_INIT_BALL_COUNT = 3,
+        AUTO_PAYLOAD_TIMEOUT = 3000, //ms
+        DISTANCE_INIT_LINE_TO_ALLIANCE_WALL = 120,
+        KIWILIGHT_STABLE_DEGREES = 1; //in
 }

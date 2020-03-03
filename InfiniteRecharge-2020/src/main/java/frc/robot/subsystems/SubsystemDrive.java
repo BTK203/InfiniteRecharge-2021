@@ -11,6 +11,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Joystick;
@@ -36,6 +37,7 @@ public class SubsystemDrive extends SubsystemBase {
 
     setBraking();
     setRamps();
+    setFollowers();
   }
 
   @Override
@@ -67,6 +69,45 @@ public class SubsystemDrive extends SubsystemBase {
     rightSlave.set(driveRight);
   }
 
+  public void setPercentOutput(double percentOutput) {
+    rightMaster.set(percentOutput);
+    rightSlave.set(percentOutput);
+    leftMaster.set(percentOutput);
+    leftSlave.set(percentOutput);
+  }
+
+  public void setLeftPosition(double leftPosition) {
+    leftMaster.getPIDController().setReference(leftPosition, ControlType.kPosition);
+  }
+
+  public void setRightPosition(double rightPosition) {
+    rightMaster.getPIDController().setReference(rightPosition, ControlType.kPosition);
+  }
+
+  public double getLeftPosition() {
+    return leftMaster.getEncoder().getPosition();
+  }
+
+  public double getRightPosition() {
+    return rightMaster.getEncoder().getPosition();
+  }
+
+  public void setPIDConstants(double kP, double kI, double kD, double kF, double iZone, double outLimit) {
+    leftMaster.getPIDController().setP(kP);
+    leftMaster.getPIDController().setI(kI);
+    leftMaster.getPIDController().setD(kD);
+    leftMaster.getPIDController().setFF(kF);
+    leftMaster.getPIDController().setIZone(iZone);
+    leftMaster.getPIDController().setOutputRange(outLimit * -1, outLimit);
+
+    rightMaster.getPIDController().setP(kP);
+    rightMaster.getPIDController().setI(kI);
+    rightMaster.getPIDController().setD(kD);
+    rightMaster.getPIDController().setFF(kF);
+    rightMaster.getPIDController().setIZone(iZone);
+    rightMaster.getPIDController().setOutputRange(outLimit * -1, outLimit);
+  }
+
   private void setInverts() {
     leftMaster.setInverted(Constants.DRIVE_LEFT_MASTER_INVERT);
     leftSlave.setInverted(Constants.DRIVE_LEFT_SLAVE_INVERT);
@@ -87,5 +128,10 @@ public class SubsystemDrive extends SubsystemBase {
     leftSlave.setOpenLoopRampRate(ramp);
     rightMaster.setOpenLoopRampRate(ramp);
     rightSlave.setOpenLoopRampRate(ramp);
+  }
+
+  private void setFollowers() {
+    leftSlave.follow(leftMaster);
+    rightSlave.follow(rightMaster);
   }
 }

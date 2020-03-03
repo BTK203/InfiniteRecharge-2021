@@ -7,30 +7,27 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.SubsystemReceiver;
 import frc.robot.subsystems.SubsystemTurret;
 import frc.robot.util.Util;
 
-public class CyborgCommandAlignTurret extends CommandBase {
+public class CyborgCommandSetTurretPosition extends CommandBase {
   private SubsystemTurret turret;
-  private SubsystemReceiver kiwilight;
 
-  private boolean targetPreviouslySeen;
+  private int
+    yawPosition,
+    pitchPosition;
 
   /**
-   * Creates a new CyborgCommandAlignTurret.
+   * Creates a new CyborgCommandSetTurretPosition.
    */
-  public CyborgCommandAlignTurret(SubsystemTurret turret, SubsystemReceiver kiwilight) {
+  public CyborgCommandSetTurretPosition(SubsystemTurret turret, int yawTarget, int pitchTarget) {
     this.turret = turret;
-    this.kiwilight = kiwilight;
+    this.yawPosition = yawTarget;
+    this.pitchPosition = pitchTarget;
     addRequirements(this.turret);
-
-    targetPreviouslySeen = false;
   }
 
   // Called when the command is initially scheduled.
@@ -60,50 +57,8 @@ public class CyborgCommandAlignTurret extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double horizontalAngle = kiwilight.getHorizontalAngleToTarget();
-    double horizontalTicks = turret.getTotalYawTicks();
-
-    double targetDistance = kiwilight.getDistanceToTarget();
-
-    //horizontal angle
-    if(kiwilight.targetSpotted()) {
-      double horizontalTicksPerDegree = horizontalTicks / (double) Constants.TURRET_YAW_DEGREES;
-      double horizontalTicksToTurn = horizontalAngle * horizontalTicksPerDegree;
-
-      SmartDashboard.putNumber("Yaw Ticks To Turn", horizontalTicksToTurn);
-
-      double newTargetPosition = turret.getYawPosition() - horizontalTicksToTurn;
-      turret.setYawPosition(newTargetPosition);
-    } else {
-      //disable motors
-      turret.setYawPercentOutput(0);
-    }
-
-    //vertical angle
-    if(kiwilight.targetSpotted()) {
-      double newPitchPosition = turret.getPitchPosition();
-      if(targetDistance > 5) {
-        //use the cool parabola equation to calculate the pitch position
-        //equation: f(x) = 0.006851x^2 - 2.654x - 447.8 | where: x is the distance kiwilight reports and f returns the pitch position.
-        double ax2 = 0.006851 * Math.pow(targetDistance, 2);
-        double bx  = -2.654 * targetDistance;
-        double c   = -446.8;
-
-        newPitchPosition = ax2 + bx + c;
-
-        SmartDashboard.putNumber("Pitch Error", turret.getPitchPosition() - newPitchPosition);
-      } else {
-        //use the slightly less cool linear equation to calculate the pitch position
-        //equation: f(x) = -9.512x - 65.85 | where: x is the distance kiwilight reports and f returns the pitch position.
-
-        newPitchPosition = (-9.512 * targetDistance) -65.85;
-      }
-
-      turret.setPitchPosition(newPitchPosition);
-    } else {
-      //disable motors
-      turret.setPitchPercentOutput(0);
-    }
+    turret.setYawPosition(yawPosition);
+    turret.setPitchPosition(pitchPosition);
   }
 
   // Called once the command ends or is interrupted.
@@ -116,6 +71,12 @@ public class CyborgCommandAlignTurret extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    double yawError = Math.abs(yawPosition - turret.getYawPosition());
+    double pitchError = Math.abs(pitchPosition - turret.getPitchPosition());
+
+    boolean yawStable = yawError <= Constants.TURRET_YAW_ALLOWABLE_ERROR;
+    boolean pitchStable = pitchError <= Constants.TURRET_PITCH_ALLOWABLE_ERROR;
+
+    return yawStable && pitchStable;
   }
 }
