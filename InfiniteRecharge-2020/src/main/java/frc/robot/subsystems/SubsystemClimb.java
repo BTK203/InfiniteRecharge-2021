@@ -37,10 +37,16 @@ public class SubsystemClimb extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Scissor Position", scissors.getEncoder().getPosition());
     SmartDashboard.putNumber("Winch Position", winch.getEncoder().getPosition());
+
+    SmartDashboard.putNumber("Scissor Amps", scissors.getOutputCurrent());
+    SmartDashboard.putNumber("Winch Amps", winch.getOutputCurrent());
+
+    SmartDashboard.putNumber("Scissor Out", scissors.getAppliedOutput());
+    SmartDashboard.putNumber("Winch Out", winch.getAppliedOutput());
   }
 
   public double ascendByController(Joystick controller) {
-    double speed = Xbox.RIGHT_Y(controller);
+    double speed = Xbox.LEFT_Y(controller);
     scissors.set(speed);
     return scissors.getOutputCurrent();
   }
@@ -49,6 +55,11 @@ public class SubsystemClimb extends SubsystemBase {
     double speed = Xbox.RT(controller) - Xbox.LT(controller);
     winch.set(speed);
     return winch.getOutputCurrent();
+  }
+
+  public void driveByJoystick(Joystick controller) {
+    ascendByController(controller);
+    decendByController(controller);
   }
 
   private void configureMotors() {

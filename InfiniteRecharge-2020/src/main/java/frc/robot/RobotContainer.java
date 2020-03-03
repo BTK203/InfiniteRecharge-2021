@@ -7,20 +7,25 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.auto.Auto;
 import frc.robot.commands.ButtonCommandGroupRunIntakeFeeder;
 import frc.robot.commands.CyborgCommandAlignTurret;
 import frc.robot.commands.CyborgCommandCalibrateTurretPitch;
 import frc.robot.commands.CyborgCommandCalibrateTurretYaw;
 import frc.robot.commands.CyborgCommandFlywheelVelocity;
 import frc.robot.commands.CyborgCommandPositionControl;
+import frc.robot.commands.CyborgCommandTestScissorPositition;
 import frc.robot.commands.CyborgCommandZeroTurret;
 import frc.robot.commands.SemiManualCommandRunWinch;
 import frc.robot.commands.ToggleCommandDriveFlywheel;
@@ -63,11 +68,22 @@ public class RobotContainer {
     OPERATOR = new Joystick(1);
 
   /**
+   * Dashboard Items
+   */
+  private SendableChooser<Command> autoChooser;
+
+  /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+
+    //auto chooser bro
+    autoChooser = new SendableChooser<Command>();
+    autoChooser.setDefaultOption("The Bare Minimum", Auto.theBareMinimum(SUB_DRIVE, SUB_TURRET, SUB_FLYWHEEL, SUB_INTAKE, SUB_FEEDER, SUB_RECEIVER));
+    autoChooser.addOption("Drive and Zero", Auto.autoInitCommand(SUB_DRIVE, SUB_TURRET));
+    SmartDashboard.putData("Auto Mode", autoChooser);
   }
 
   /**
@@ -85,7 +101,8 @@ public class RobotContainer {
     );
 
     ToggleCommandRunWinch winchCommand = new ToggleCommandRunWinch(SUB_CLIMB, OPERATOR);
-    SUB_CLIMB.setDefaultCommand(winchCommand);
+    RunCommand dualManualWinchScissorCommand = new RunCommand(() -> SUB_CLIMB.driveByJoystick(OPERATOR), SUB_CLIMB);
+    SUB_CLIMB.setDefaultCommand(dualManualWinchScissorCommand);
 
     SUB_TURRET.setDefaultCommand(
       new RunCommand(() -> SUB_TURRET.moveTurret(OPERATOR), SUB_TURRET)
@@ -118,9 +135,6 @@ public class RobotContainer {
     JoystickButton spinnerSpinLeft = new JoystickButton(OPERATOR, Xbox.LB);
       spinnerSpinLeft.toggleWhenPressed(new CyborgCommandPositionControl(SUB_SPINNER));
 
-    // JoystickButton spinnerSpinRight = new JoystickButton(OPERATOR, Xbox.RB);
-    //   spinnerSpinRight.whileHeld(new ButtonCommandDriveSpinner(SUB_SPINNER, true));
-
     /**
      * Dashboard Buttons
      */
@@ -132,6 +146,7 @@ public class RobotContainer {
     SmartDashboard.putData("Calibrate Turret Pitch", new CyborgCommandCalibrateTurretPitch(SUB_TURRET));
     SmartDashboard.putData("Zero Scissor and Winch Encoders", new InstantCommand(() -> SUB_CLIMB.zeroScissorEncoders(), SUB_CLIMB));
     SmartDashboard.putData("Run  Winch", semiManualWinchCommand);
+    SmartDashboard.putData("Test Scissor PID", new CyborgCommandTestScissorPositition(SUB_CLIMB, OPERATOR));
     SmartDashboard.putData("Zero Turret", new CyborgCommandZeroTurret(SUB_TURRET));
   }
 
@@ -143,6 +158,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return null;
+    return autoChooser.getSelected();
   }
 }

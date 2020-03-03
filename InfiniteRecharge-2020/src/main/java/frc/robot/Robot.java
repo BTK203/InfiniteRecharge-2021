@@ -84,7 +84,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     DriverStation.reportWarning("TELEOP STARTING", false);
-    autoCommand.cancel();
+    if(autoCommand != null) {
+      autoCommand.cancel();
+    }
   }
 
   /**

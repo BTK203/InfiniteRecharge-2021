@@ -22,27 +22,26 @@ import frc.robot.subsystems.SubsystemFlywheel;
 import frc.robot.subsystems.SubsystemIntake;
 import frc.robot.subsystems.SubsystemReceiver;
 import frc.robot.subsystems.SubsystemTurret;
+import frc.robot.util.Point3D;
 import frc.robot.util.Util;
 
 /**
  * Class that links together everything auto.
  */
 public class Auto {
-    public static ParallelCommandGroup autoInitCommand(SubsystemDrive drivetrain, SubsystemTurret turret, SubsystemFlywheel flywheel) {
+    public static ParallelCommandGroup autoInitCommand(SubsystemDrive drivetrain, SubsystemTurret turret) {
         //numbers we will use
         double startDriveDistance = Util.getAndSetDouble("Initiation Drive", -20);
 
         //instantiate commands we will use
-        CyborgCommandFlywheelVelocity driveFlywheel = new CyborgCommandFlywheelVelocity(flywheel);
         CyborgCommandZeroTurret       zeroTurret    = new CyborgCommandZeroTurret(turret);
         CyborgCommandDriveDistance    driveOffLine  = new CyborgCommandDriveDistance(drivetrain, startDriveDistance);
 
-        return driveFlywheel
-                .alongWith(zeroTurret)
-                .alongWith(driveOffLine);
+        return zeroTurret
+               .alongWith(driveOffLine);
     }
 
-    public static SequentialCommandGroup theBareMinimum (
+    public static ParallelCommandGroup theBareMinimum (
         SubsystemDrive drivetrain,
         SubsystemTurret turret,
         SubsystemFlywheel flywheel,
@@ -50,53 +49,84 @@ public class Auto {
         SubsystemFeeder feeder,
         SubsystemReceiver kiwilight
     ) {
-        //grab some numbers and make some calculations
-        double startOffset = Util.getAndSetDouble("Start Offset", 48);
-        double startDriveDistance = Util.getAndSetDouble("Initiation Drive", -20);
+        Point3D initPos = getStartingPositionAfterInit();
+        int yawTarget = getYawTicksToPowerPort(initPos.x(), initPos.y());
+        int pitchTarget = getPitchTicksToPowerPort(initPos.y(), initPos.z());
 
-        //horizontal angle to power port
-        double xDistanceToPowerPort = startOffset - Constants.DISTANCE_POWERPORT_TO_SIDE;
-        double yDistanceToPowerPort = Constants.DISTANCE_INIT_LINE_TO_ALLIANCE_WALL + startDriveDistance;
-        double horizontalAngleToPowerPort = Math.atan(yDistanceToPowerPort / xDistanceToPowerPort);
-        
-        //vertical angle to power port
-        double verticalAngleToPowerPort = Math.atan(Constants.POWER_PORT_HEIGHT / yDistanceToPowerPort);
+        //zero turret, drive off init line, and set the turret position
+        ParallelCommandGroup init = autoInitCommand(drivetrain, turret);
+        CyborgCommandSetTurretPosition setPosition = new CyborgCommandSetTurretPosition(turret, yawTarget, pitchTarget);
+        SequentialCommandGroup initAndSetPosition = init.andThen(setPosition);
 
-        //calculate yaw encoder targets
-        double yawTicksPerDegree = Constants.DEFAULT_TURRET_YAW_TICKS / Constants.TURRET_YAW_DEGREES;
-        double yawTarget = (horizontalAngleToPowerPort * yawTicksPerDegree) + (Constants.TURRET_CENTER_ANGLE_OFFSET_YAW * yawTicksPerDegree);
-
-        //calculate pitch encoder targets
-        double pitchTicksPerDegree = Constants.DEFAULT_TURRET_PITCH_TICKS / Constants.TURRET_PITCH_DEGREES;
-        double pitchTarget = (verticalAngleToPowerPort * pitchTicksPerDegree) - (Constants.TURRET_PITCH_CAMERA_OFFSET * yawTicksPerDegree);
-
-        //instantiate commands
-        ParallelCommandGroup initCommand = autoInitCommand(drivetrain, turret, flywheel);
-        CyborgCommandSetTurretPosition setTurretPosition = new CyborgCommandSetTurretPosition(turret, (int) yawTarget, (int) pitchTarget);
-
-        CyborgCommandAlignTurret alignTurret = new CyborgCommandAlignTurret(turret, kiwilight);
+        //align turret and shoot payload
+        CyborgCommandAlignTurret align = new CyborgCommandAlignTurret(turret, kiwilight);
         CyborgCommandShootPayload shootPayload = new CyborgCommandShootPayload(
-            intake,
-            feeder,
-            flywheel,
-            kiwilight,
-            Constants.AUTO_INIT_BALL_COUNT,
-            Constants.AUTO_PAYLOAD_TIMEOUT
+            intake, 
+            feeder, 
+            flywheel, 
+            kiwilight, 
+            (int) Util.getAndSetDouble("Init Auto Payload", 3), 
+            (int) Util.getAndSetDouble("Auto Payload Timeout", 3000)
         );
+        ParallelCommandGroup alignAndShoot = align.alongWith(shootPayload);
 
-        ParallelCommandGroup alignAndShoot = alignTurret.alongWith(shootPayload);
+        //bring above two sequences together sequentially
+        SequentialCommandGroup initAndShootPayload = initAndSetPosition.andThen(alignAndShoot);
 
-        return initCommand.andThen(setTurretPosition).andThen(alignAndShoot);
+        //run everything along with driving the flywheel
+        CyborgCommandFlywheelVelocity driveFlywheel = new CyborgCommandFlywheelVelocity(flywheel);
+        ParallelCommandGroup defaultAuto = driveFlywheel.alongWith(initAndShootPayload);
+        return defaultAuto;
     }
 
     /**
-     * 
+     * Gets the position of the turret after the init auto drive is finished.
+     * @return position of the turret after first drive is done.    
+     */
+    private static Point3D getStartingPositionAfterInit() {
+        double hDistanceFromWall = Util.getAndSetDouble("Starting Horizontal Position", 48);
+        double vDistanceFromWall = Constants.DISTANCE_INIT_LINE_TO_ALLIANCE_WALL + Util.getAndSetDouble("Start Drive", -20);
+        return new Point3D(hDistanceFromWall, vDistanceFromWall, Constants.TURRET_HEIGHT);
+    }
+
+    /**
+     * Approximately calculates the yaw ticks to align with the power port.
      * @param x x coordinate of robot
      * @param y y coordinate of robot
-     * @param z z coordinate of turret
-     * @return the number of encoder ticks for turret
+     * @return the number of encoder yaw ticks for turret to align with powerport.
      */
-    private static int getTicksToPowerPort(double x, double y, double z) {
-        return 0;
+    private static int getYawTicksToPowerPort(double x, double y) {
+        double hDistanceToPort = x - Constants.POWERPORT_LOCATION.x();
+        double vDistanceToPort = y - Constants.POWERPORT_LOCATION.y();
+
+        double tangent = hDistanceToPort / vDistanceToPort;
+        double angleToPort = Math.atan(tangent);
+        double angleFromZero = Constants.TURRET_YAW_DEGREES_AT_ZERO + angleToPort;
+
+        //calculate number of ticks needed to achieve angle
+        double ticksPerDegree = Constants.DEFAULT_TURRET_YAW_TICKS / (double) Constants.TURRET_YAW_DEGREES;
+        double targetTicks = angleFromZero * ticksPerDegree;
+        return (int) targetTicks;
+    }
+
+    /**
+     * Approximately calculates the pitch ticks to align with the power port.
+     * @param y y coordinate of robot
+     * @param z z coordinate of robot
+     * @return the number of encoder ticks for pitch to align with the powerport.
+     */
+    private static int getPitchTicksToPowerPort(double y, double z) {
+        double distanceToPort = y - Constants.POWERPORT_LOCATION.y();
+        double heightFromTurret = Constants.POWERPORT_LOCATION.z() - z;
+
+        //calculate angle
+        double tangent = heightFromTurret / distanceToPort;
+        double angleToPort = Math.atan(tangent);
+        double angleFromZero = Constants.TURRET_PITCH_DEGREES_AT_ZERO + angleToPort;
+
+        //calcualte number of ticks to acheive angle
+        double ticksPerDegree = Constants.DEFAULT_TURRET_PITCH_TICKS / (double) Constants.TURRET_PITCH_DEGREES;
+        double targetTicks = angleFromZero * ticksPerDegree;
+        return (int) targetTicks;
     }
 }

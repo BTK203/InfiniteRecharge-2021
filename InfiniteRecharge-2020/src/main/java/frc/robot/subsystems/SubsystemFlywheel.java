@@ -36,6 +36,7 @@ public class SubsystemFlywheel extends SubsystemBase {
     SmartDashboard.putNumber("FW Wheel Velocity", motorVelocity * Constants.FLYWHEEL_GEAR_RATIO);
 
     SmartDashboard.putNumber("FW Output", turretFlywheel.getAppliedOutput());
+    SmartDashboard.putNumber("FW Amps", turretFlywheel.getOutputCurrent());
   }
 
   /**

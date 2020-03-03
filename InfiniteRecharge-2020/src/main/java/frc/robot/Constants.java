@@ -7,13 +7,17 @@
 
 package frc.robot;
 
+import frc.robot.util.Point3D;
+
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants.  This class should not be used for any other purpose.  All constants should be
- * declared globally (i.e. public static).  Do not put anything functional in this class.
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean constants. This class should not be used for any other
+ * purpose. All constants should be declared globally (i.e. public static). Do
+ * not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
 
@@ -151,9 +155,11 @@ public final class Constants {
 
     public static final double 
         FLYWHEEL_GEAR_RATIO = 1.6071,
-        DRIVETRAIN_WHEEL_DIAMETER = 6, //inches
+        DRIVETRAIN_WHEEL_DIAMETER = 7, //in
         DRIVETRAIN_ALLOWABLE_ERROR = 0.0625,
-        POWER_PORT_HEIGHT = 122.25;
+        TURRET_HEIGHT = 24,
+        TURRET_YAW_DEGREES_AT_ZERO = -90, //degrees from zero to turret looking forward
+        TURRET_PITCH_DEGREES_AT_ZERO = 5;
 
     public static final boolean
         DRIVE_CAMERA_AUTOMATIC_EXPOSURE = true;
@@ -161,10 +167,10 @@ public final class Constants {
     /**
      * Auto values
      */
-    public static double
-        DISTANCE_POWERPORT_TO_SIDE = 94.66;
+    public static final Point3D
+        POWERPORT_LOCATION = new Point3D(94.66, 0, 122.25);
 
-    public static int
+    public static final int
         AUTO_INIT_BALL_COUNT = 3,
         AUTO_PAYLOAD_TIMEOUT = 3000, //ms
         DISTANCE_INIT_LINE_TO_ALLIANCE_WALL = 120,

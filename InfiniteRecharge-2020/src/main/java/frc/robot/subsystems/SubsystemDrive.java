@@ -45,6 +45,12 @@ public class SubsystemDrive extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Right Position", rightMaster.getEncoder().getPosition());
     SmartDashboard.putNumber("Left Position", leftMaster.getEncoder().getPosition());
+
+    SmartDashboard.putNumber("Right Output", rightMaster.getAppliedOutput());
+    SmartDashboard.putNumber("Left Output", leftMaster.getAppliedOutput());
+
+    SmartDashboard.putNumber("Right Amps", rightMaster.getOutputCurrent());
+    SmartDashboard.putNumber("Left Amps", leftMaster.getOutputCurrent());
   }
 
   /**

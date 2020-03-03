@@ -57,18 +57,16 @@ public class SubsystemTurret extends SubsystemBase {
     SmartDashboard.putNumber("Yaw Ticks", totalYawTicks);
     SmartDashboard.putNumber("Pitch Ticks", totalPitchTicks);
 
+    SmartDashboard.putNumber("Yaw Amps", turretYaw.getStatorCurrent());
+    SmartDashboard.putNumber("Pitch Amps", turretPitch.getStatorCurrent());
+
     if(getYawLeftLimit()) {
       turretYaw.getSensorCollection().setQuadraturePosition(0, 0);
     }
 
     if(getPitchLowerLimit()) {
       turretPitch.getSensorCollection().setQuadraturePosition(0, 0);
-    }
-
-    SmartDashboard.putNumber("Yaw Out", turretYaw.getMotorOutputPercent());
-
-    SmartDashboard.putNumber("Yaw Accumulated I", turretYaw.configGetParameter(ParamEnum.eClosedLoopIAccum, 0));
-    SmartDashboard.putNumber("Pitch Accumulated I", turretPitch.configGetParameter(ParamEnum.eClosedLoopIAccum, 0));
+    }    
   }
 
   /**
@@ -121,6 +119,9 @@ public class SubsystemTurret extends SubsystemBase {
 
     SmartDashboard.putNumber("Yaw PID Target", position);
     SmartDashboard.putNumber("Yaw PID Error", Math.abs(turretYaw.getSensorCollection().getQuadraturePosition()) - position);
+
+    SmartDashboard.putNumber("Yaw Amps", turretYaw.getStatorCurrent());
+    SmartDashboard.putNumber("Pitch Amps", turretPitch.getStatorCurrent());
   }
 
   public void setPitchPosition(double position) {

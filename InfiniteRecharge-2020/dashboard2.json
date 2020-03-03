@@ -174,8 +174,8 @@
             ],
             "content": {
               "_type": "Graph",
-              "_source0": "network_table:///SmartDashboard/FW Motor Velocity",
-              "_source1": "network_table:///SmartDashboard/FW Wheel Velocity",
+              "_source0": "network_table:///SmartDashboard/FW Wheel Velocity",
+              "_source1": "network_table:///SmartDashboard/FW Motor Velocity",
               "_title": "SmartDashboard/FW Motor Velocity",
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
@@ -198,9 +198,9 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
-          "0,0": {
+          "10,0": {
             "size": [
-              2,
+              3,
               8
             ],
             "content": {
@@ -242,86 +242,18 @@
                   "_type": "Command",
                   "_source0": "network_table:///SmartDashboard/Test Yaw PID",
                   "_title": "SmartDashboard/Test Yaw PID"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Test Scissor PID",
+                  "_title": "/SmartDashboard/Test Scissor PID"
                 }
               ]
             }
           },
-          "8,1": {
+          "13,0": {
             "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/FW Motor Velocity",
-              "_title": "SmartDashboard/FW Motor Velocity"
-            }
-          },
-          "10,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/FW Output",
-              "_title": "SmartDashboard/FW Output"
-            }
-          },
-          "9,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/FW Wheel Velocity",
-              "_title": "SmartDashboard/FW Wheel Velocity"
-            }
-          },
-          "8,0": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Grid Layout",
-              "_title": "KiwiLight",
-              "Layout/Number of columns": 3,
-              "Layout/Number of rows": 3,
-              "Layout/Label position": "BOTTOM",
-              "_children": {
-                "1,1": {
-                  "_type": "Boolean Box",
-                  "_source0": "network_table:///SmartDashboard/Spotted",
-                  "_title": "Spotted",
-                  "Colors/Color when true": "#7CFC00FF",
-                  "Colors/Color when false": "#8B0000FF"
-                },
-                "2,1": {
-                  "_type": "Boolean Box",
-                  "_source0": "network_table:///SmartDashboard/Updated",
-                  "_title": "Updated",
-                  "Colors/Color when true": "#7CFC00FF",
-                  "Colors/Color when false": "#8B0000FF"
-                }
-              }
-            }
-          },
-          "8,2": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/RPi Data",
-              "_title": "Data"
-            }
-          },
-          "14,0": {
-            "size": [
-              3,
+              4,
               8
             ],
             "content": {
@@ -401,16 +333,31 @@
               "_title": "SmartDashboard/Yaw Ticks To Turn"
             }
           },
-          "4,2": {
+          "3,4": {
             "size": [
-              4,
-              4
+              7,
+              3
             ],
             "content": {
-              "_type": "Robot Preferences",
-              "_source0": "network_table:///Preferences",
-              "_title": "Preferences",
-              "Miscellaneous/Show search box": true
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/Scissor Position",
+              "_title": "SmartDashboard/Scissor Position",
+              "Graph/Visible time": 30.0,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Visible data/SmartDashboard/Scissor Position": true
+            }
+          },
+          "4,3": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Zero Scissor and Winch Encoders",
+              "_title": "/SmartDashboard/Zero Scissor and Winch Encoders"
             }
           }
         }
@@ -506,15 +453,212 @@
               "_source0": "network_table:///FMSInfo",
               "_title": "/FMSInfo"
             }
+          },
+          "0,2": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Drivetrain",
+              "Layout/Number of columns": 3,
+              "Layout/Number of rows": 3,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "0,0": {
+                  "_type": "Number Slider",
+                  "_source0": "network_table:///SmartDashboard/Left Output",
+                  "_title": "Left Out",
+                  "Slider Settings/Min": -1.0,
+                  "Slider Settings/Max": 1.0,
+                  "Slider Settings/Block increment": 0.0625
+                },
+                "2,0": {
+                  "_type": "Number Slider",
+                  "_source0": "network_table:///SmartDashboard/Right Output",
+                  "_title": "Right Out",
+                  "Slider Settings/Min": -1.0,
+                  "Slider Settings/Max": 1.0,
+                  "Slider Settings/Block increment": 0.0625
+                },
+                "0,1": {
+                  "_type": "Simple Dial",
+                  "_source0": "network_table:///SmartDashboard/Left Amps",
+                  "_title": "Left Amps",
+                  "Range/Min": 0.0,
+                  "Range/Max": 100.0,
+                  "Visuals/Show value": true
+                },
+                "0,2": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Left Position",
+                  "_title": "/SmartDashboard/Left Position"
+                },
+                "2,1": {
+                  "_type": "Simple Dial",
+                  "_source0": "network_table:///SmartDashboard/Right Amps",
+                  "_title": "Right Amps",
+                  "Range/Min": 0.0,
+                  "Range/Max": 100.0,
+                  "Visuals/Show value": true
+                },
+                "2,2": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Right Position",
+                  "_title": "/SmartDashboard/Right Position"
+                }
+              }
+            }
+          },
+          "3,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Intake",
+              "Layout/Number of columns": 3,
+              "Layout/Number of rows": 3,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "0,1": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Eater Amps",
+                  "_title": "Eater Amps"
+                },
+                "1,1": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Slapper Amps",
+                  "_title": "Slapper Amps"
+                }
+              }
+            }
+          },
+          "3,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Feeder",
+              "Layout/Number of columns": 3,
+              "Layout/Number of rows": 3,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "0,1": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Beater Amps",
+                  "_title": "/SmartDashboard/Beater Amps"
+                },
+                "1,1": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Feeder Amps",
+                  "_title": "/SmartDashboard/Feeder Amps"
+                }
+              }
+            }
+          },
+          "3,3": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Color Sensor",
+              "Layout/Number of columns": 3,
+              "Layout/Number of rows": 3,
+              "Layout/Label position": "BOTTOM",
+              "_children": {}
+            }
+          },
+          "3,7": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Run Winch",
+              "_title": "/SmartDashboard/Run Winch",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "0,5": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Climber",
+              "Layout/Number of columns": 3,
+              "Layout/Number of rows": 3,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "0,0": {
+                  "_type": "Simple Dial",
+                  "_source0": "network_table:///SmartDashboard/Scissor Amps",
+                  "_title": "Scissor Amps",
+                  "Range/Min": 0.0,
+                  "Range/Max": 100.0,
+                  "Visuals/Show value": true
+                },
+                "0,1": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Scissor Position",
+                  "_title": "/SmartDashboard/Scissor Position"
+                },
+                "2,0": {
+                  "_type": "Simple Dial",
+                  "_source0": "network_table:///SmartDashboard/Winch Amps",
+                  "_title": "Winch Amps",
+                  "Range/Min": 0.0,
+                  "Range/Max": 100.0,
+                  "Visuals/Show value": true
+                },
+                "2,1": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Winch Position",
+                  "_title": "/SmartDashboard/Winch Position"
+                }
+              }
+            }
+          },
+          "4,6": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Scissor Out",
+              "_title": "/SmartDashboard/Scissor Out"
+            }
+          },
+          "5,6": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Winch Out",
+              "_title": "/SmartDashboard/Winch Out"
+            }
           }
         }
       }
     }
   ],
   "windowGeometry": {
-    "x": -7.199999809265137,
-    "y": -7.199999809265137,
-    "width": 1550.4000244140625,
-    "height": 838.4000244140625
+    "x": -1928.0,
+    "y": -8.0,
+    "width": 1936.0,
+    "height": 1056.0
   }
 }

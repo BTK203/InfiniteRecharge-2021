@@ -41,6 +41,8 @@ public class SubsystemSpinner extends SubsystemBase {
     SmartDashboard.putNumber("RED", detectedColor.red*255.0);
     SmartDashboard.putNumber("BLUE", detectedColor.blue*255.0);
     SmartDashboard.putNumber("GREEN", detectedColor.green*255.0);
+
+    SmartDashboard.putNumber("Spinner Amps", spinner.getStatorCurrent());
   }
   public void startSpinner(double speed) {
     spinner.set(ControlMode.PercentOutput, speed);
