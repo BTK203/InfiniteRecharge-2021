@@ -55,12 +55,16 @@ public class CyborgCommandAlignTurret extends CommandBase {
     double pitchhighOutLimit = Util.getAndSetDouble("Pitch High Output", 1);
 
     turret.setPitchPIDF(pitchkP, pitchkI, pitchkD, pitchkF, pitchhighOutLimit, (int) pitchIZone);
+
+    SmartDashboard.putBoolean("Aligning", true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double horizontalAngle = kiwilight.getHorizontalAngleToTarget();
+    horizontalAngle *= Util.getAndSetDouble("Vision multiplier", 1);
+
     double horizontalTicks = turret.getTotalYawTicks();
 
     double targetDistance = kiwilight.getDistanceToTarget();
@@ -70,9 +74,11 @@ public class CyborgCommandAlignTurret extends CommandBase {
       double horizontalTicksPerDegree = horizontalTicks / (double) Constants.TURRET_YAW_DEGREES;
       double horizontalTicksToTurn = horizontalAngle * horizontalTicksPerDegree;
 
+      SmartDashboard.putNumber("H Ticks To Turn", horizontalTicksToTurn);
+
       SmartDashboard.putNumber("Yaw Ticks To Turn", horizontalTicksToTurn);
 
-      double newTargetPosition = turret.getYawPosition() - horizontalTicksToTurn;
+      double newTargetPosition = (turret.getYawPosition() * -1) + horizontalTicksToTurn;
       turret.setYawPosition(newTargetPosition);
     } else {
       //disable motors
@@ -111,6 +117,8 @@ public class CyborgCommandAlignTurret extends CommandBase {
   public void end(boolean interrupted) {
     turret.setYawPercentOutput(0);
     turret.setPitchPercentOutput(0);
+
+    SmartDashboard.putBoolean("Aligning", false);
   }
 
   // Returns true when the command should end.

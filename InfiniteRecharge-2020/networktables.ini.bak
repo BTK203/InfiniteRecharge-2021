@@ -23,4 +23,5 @@ double "/Preferences/Init Auto Payload"=3
 double "/Preferences/Initiation Drive"=-20
 double "/Preferences/Start Drive"=-20
 double "/Preferences/Starting Horizontal Position"=48
+double "/Preferences/Turret Spin Inhibitor Pitch"=1
 double "/Preferences/Turret Spin Inhibitor Yaw"=0.3

@@ -23,8 +23,10 @@ import frc.robot.commands.ButtonCommandGroupRunIntakeFeeder;
 import frc.robot.commands.CyborgCommandAlignTurret;
 import frc.robot.commands.CyborgCommandCalibrateTurretPitch;
 import frc.robot.commands.CyborgCommandCalibrateTurretYaw;
+import frc.robot.commands.CyborgCommandDriveDistance;
 import frc.robot.commands.CyborgCommandFlywheelVelocity;
 import frc.robot.commands.CyborgCommandPositionControl;
+import frc.robot.commands.CyborgCommandSetTurretPosition;
 import frc.robot.commands.CyborgCommandTestScissorPositition;
 import frc.robot.commands.CyborgCommandZeroTurret;
 import frc.robot.commands.SemiManualCommandRunWinch;
@@ -38,6 +40,7 @@ import frc.robot.subsystems.SubsystemIntake;
 import frc.robot.subsystems.SubsystemReceiver;
 import frc.robot.subsystems.SubsystemSpinner;
 import frc.robot.subsystems.SubsystemTurret;
+import frc.robot.util.Util;
 import frc.robot.util.Xbox;
 
 /**
@@ -119,7 +122,7 @@ public class RobotContainer {
       new ButtonCommandGroupRunIntakeFeeder(SUB_INTAKE, SUB_FEEDER, OPERATOR)
     );
 
-    SemiManualCommandRunWinch semiManualWinchCommand = new SemiManualCommandRunWinch(SUB_CLIMB, DRIVER);
+    SemiManualCommandRunWinch semiManualWinchCommand = new SemiManualCommandRunWinch(SUB_CLIMB, OPERATOR);
     SUB_CLIMB.setDefaultCommand(semiManualWinchCommand);
 
     //toggle commands
@@ -143,6 +146,10 @@ public class RobotContainer {
     SmartDashboard.putData("Zero Scissor and Winch Encoders", new InstantCommand(() -> SUB_CLIMB.zeroEncoders(), SUB_CLIMB));
     SmartDashboard.putData("Test Scissor PID", new CyborgCommandTestScissorPositition(SUB_CLIMB, OPERATOR));
     SmartDashboard.putData("Zero Turret", new CyborgCommandZeroTurret(SUB_TURRET));
+    SmartDashboard.putData("Set Turret Position", new CyborgCommandSetTurretPosition(SUB_TURRET, 0, 0));
+    SmartDashboard.putData("Drive Distance", new CyborgCommandDriveDistance(SUB_DRIVE, 20));
+    SmartDashboard.putData("Zero Yaw", new InstantCommand(() -> SUB_TURRET.setCurrentYawEncoderPosition(0), SUB_TURRET));
+    SmartDashboard.putData("Zero Drivetrain Encoders", new InstantCommand(() -> SUB_DRIVE.zeroEncoders()));
 
     SmartDashboard.putData("Toggle Winch", climberManualDrive);
     SmartDashboard.putData("Drive Flywheel RPM", driveFlywheelRPM);

@@ -69,6 +69,10 @@ public class SubsystemDrive extends SubsystemBase {
     driveRight = (driveRight < -1 ? -1 : (driveRight > 1 ? 1 : driveRight));
     driveLeft = (driveLeft < -1 ? -1 : (driveLeft > 1 ? 1 : driveLeft));
 
+    double inhibitor = Util.getAndSetDouble("Drive Inhibitor", 1);
+    driveRight *= inhibitor;
+    driveLeft *= inhibitor;
+
     leftMaster.set(driveLeft);
     leftSlave.set(driveLeft);
     rightMaster.set(driveRight);
@@ -88,6 +92,11 @@ public class SubsystemDrive extends SubsystemBase {
 
   public void setRightPosition(double rightPosition) {
     rightMaster.getPIDController().setReference(rightPosition, ControlType.kPosition);
+  }
+
+  public void zeroEncoders() {
+    leftMaster.getEncoder().setPosition(0);
+    rightMaster.getEncoder().setPosition(0);
   }
 
   public double getLeftPosition() {

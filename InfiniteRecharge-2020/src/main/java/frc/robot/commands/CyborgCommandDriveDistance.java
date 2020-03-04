@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemDrive;
@@ -15,6 +16,7 @@ import frc.robot.util.Util;
 public class CyborgCommandDriveDistance extends CommandBase {
   private SubsystemDrive drivetrain;
   private double 
+    distance,
     leftDestination,
     rightDestination;
 
@@ -25,19 +27,25 @@ public class CyborgCommandDriveDistance extends CommandBase {
    */
   public CyborgCommandDriveDistance(SubsystemDrive drivetrain, double distance) {
     this.drivetrain = drivetrain;
+    this.distance = distance;
     addRequirements(this.drivetrain);
 
+    
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
     //figure out how many rotations to turn
     double wheelCircumference = Math.PI * Constants.DRIVETRAIN_WHEEL_DIAMETER;
     double rotations = distance / wheelCircumference;
 
     this.leftDestination = drivetrain.getLeftPosition() + rotations;
     this.rightDestination = drivetrain.getRightPosition() + rotations;
-  }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
+    SmartDashboard.putNumber("Drive Target Left", leftDestination);
+    SmartDashboard.putNumber("Drive Target Right", rightDestination);
+
     double p = Util.getAndSetDouble("Drivetrain kP", 0);
     double i = Util.getAndSetDouble("Drivetrain kI", 0);
     double d = Util.getAndSetDouble("Drivetrain kD", 0);

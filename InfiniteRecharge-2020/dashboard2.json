@@ -9,7 +9,20 @@
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
-        "tiles": {}
+        "tiles": {
+          "10,0": {
+            "size": [
+              5,
+              6
+            ],
+            "content": {
+              "_type": "Robot Preferences",
+              "_source0": "network_table:///Preferences",
+              "_title": "Preferences",
+              "Miscellaneous/Show search box": true
+            }
+          }
+        }
       }
     },
     {
@@ -91,279 +104,6 @@
       }
     },
     {
-      "title": "Flywheel",
-      "autoPopulate": false,
-      "autoPopulatePrefix": "",
-      "widgetPane": {
-        "gridSize": 96.0,
-        "showGrid": true,
-        "hgap": 16.0,
-        "vgap": 16.0,
-        "tiles": {
-          "0,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/FW Motor Velocity",
-              "_title": "SmartDashboard/FW Motor Velocity"
-            }
-          },
-          "0,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/FW Wheel Velocity",
-              "_title": "SmartDashboard/FW Wheel Velocity"
-            }
-          },
-          "2,0": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Drive Flywheel RPM",
-              "_title": "SmartDashboard/Drive Flywheel RPM"
-            }
-          },
-          "13,0": {
-            "size": [
-              4,
-              8
-            ],
-            "content": {
-              "_type": "Robot Preferences",
-              "_source0": "network_table:///Preferences",
-              "_title": "Preferences",
-              "Miscellaneous/Show search box": true
-            }
-          },
-          "4,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Pitch Position",
-              "_title": "SmartDashboard/Pitch Position"
-            }
-          },
-          "5,0": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/FW Output",
-              "_title": "SmartDashboard/FW Output"
-            }
-          },
-          "0,2": {
-            "size": [
-              13,
-              6
-            ],
-            "content": {
-              "_type": "Graph",
-              "_source0": "network_table:///SmartDashboard/FW Wheel Velocity",
-              "_source1": "network_table:///SmartDashboard/FW Motor Velocity",
-              "_title": "SmartDashboard/FW Motor Velocity",
-              "Graph/Visible time": 30.0,
-              "Y-axis/Automatic bounds": true,
-              "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/FW Motor Velocity": true,
-              "Visible data/SmartDashboard/FW Wheel Velocity": true
-            }
-          }
-        }
-      }
-    },
-    {
-      "title": "Conf",
-      "autoPopulate": false,
-      "autoPopulatePrefix": "",
-      "widgetPane": {
-        "gridSize": 96.0,
-        "showGrid": true,
-        "hgap": 16.0,
-        "vgap": 16.0,
-        "tiles": {
-          "10,0": {
-            "size": [
-              3,
-              8
-            ],
-            "content": {
-              "_type": "List Layout",
-              "_title": "List Layout",
-              "Layout/Label position": "BOTTOM",
-              "_children": [
-                {
-                  "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Align Turret",
-                  "_title": "SmartDashboard/Align Turret"
-                },
-                {
-                  "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Calibrate Turret Pitch",
-                  "_title": "SmartDashboard/Calibrate Turret Pitch"
-                },
-                {
-                  "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Calibrate Turret Yaw",
-                  "_title": "SmartDashboard/Calibrate Turret Yaw"
-                },
-                {
-                  "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Drive Flywheel PO",
-                  "_title": "SmartDashboard/Drive Flywheel PO"
-                },
-                {
-                  "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Drive Flywheel RPM",
-                  "_title": "SmartDashboard/Drive Flywheel RPM"
-                },
-                {
-                  "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Toggle Winch",
-                  "_title": "SmartDashboard/Toggle Winch"
-                },
-                {
-                  "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Test Yaw PID",
-                  "_title": "SmartDashboard/Test Yaw PID"
-                },
-                {
-                  "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Test Scissor PID",
-                  "_title": "/SmartDashboard/Test Scissor PID"
-                }
-              ]
-            }
-          },
-          "13,0": {
-            "size": [
-              4,
-              8
-            ],
-            "content": {
-              "_type": "Robot Preferences",
-              "_source0": "network_table:///Preferences",
-              "_title": "Preferences",
-              "Miscellaneous/Show search box": true
-            }
-          },
-          "2,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Yaw PID Error",
-              "_title": "SmartDashboard/Yaw PID Error"
-            }
-          },
-          "2,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Yaw Position",
-              "_title": "SmartDashboard/Yaw Position"
-            }
-          },
-          "4,0": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Yaw Backward Limit",
-              "_title": "SmartDashboard/Yaw Backward Limit",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "6,0": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Yaw Forward Limit",
-              "_title": "SmartDashboard/Yaw Forward Limit",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "2,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Yaw PID Target",
-              "_title": "SmartDashboard/Yaw PID Target"
-            }
-          },
-          "2,3": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Yaw Ticks To Turn",
-              "_title": "SmartDashboard/Yaw Ticks To Turn"
-            }
-          },
-          "3,4": {
-            "size": [
-              7,
-              3
-            ],
-            "content": {
-              "_type": "Graph",
-              "_source0": "network_table:///SmartDashboard/Scissor Position",
-              "_title": "SmartDashboard/Scissor Position",
-              "Graph/Visible time": 30.0,
-              "Y-axis/Automatic bounds": true,
-              "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/Scissor Position": true
-            }
-          },
-          "4,3": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Zero Scissor and Winch Encoders",
-              "_title": "/SmartDashboard/Zero Scissor and Winch Encoders"
-            }
-          }
-        }
-      }
-    },
-    {
       "title": "Comp",
       "autoPopulate": false,
       "autoPopulatePrefix": "",
@@ -409,7 +149,7 @@
               "imageHeight": -1
             }
           },
-          "0,1": {
+          "0,0": {
             "size": [
               3,
               1
@@ -424,37 +164,26 @@
                 "0,1": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/RPi Data",
-                  "_title": "SmartDashboard/RPi Data"
+                  "_title": "Data"
                 },
                 "1,1": {
                   "_type": "Boolean Box",
                   "_source0": "network_table:///SmartDashboard/Spotted",
-                  "_title": "SmartDashboard/Spotted",
+                  "_title": "Spotted",
                   "Colors/Color when true": "#7CFC00FF",
                   "Colors/Color when false": "#8B0000FF"
                 },
                 "2,1": {
                   "_type": "Boolean Box",
                   "_source0": "network_table:///SmartDashboard/Updated",
-                  "_title": "SmartDashboard/Updated",
+                  "_title": "Updated",
                   "Colors/Color when true": "#7CFC00FF",
                   "Colors/Color when false": "#8B0000FF"
                 }
               }
             }
           },
-          "0,0": {
-            "size": [
-              5,
-              1
-            ],
-            "content": {
-              "_type": "Basic FMS Info",
-              "_source0": "network_table:///FMSInfo",
-              "_title": "/FMSInfo"
-            }
-          },
-          "0,2": {
+          "0,1": {
             "size": [
               3,
               3
@@ -575,20 +304,20 @@
               "_children": {}
             }
           },
-          "3,7": {
+          "0,7": {
             "size": [
-              1,
+              3,
               1
             ],
             "content": {
               "_type": "Boolean Box",
               "_source0": "network_table:///SmartDashboard/Run Winch",
-              "_title": "/SmartDashboard/Run Winch",
+              "_title": "Climber Dual Action",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "0,5": {
+          "0,4": {
             "size": [
               3,
               3
@@ -600,20 +329,17 @@
               "Layout/Number of rows": 3,
               "Layout/Label position": "BOTTOM",
               "_children": {
-                "0,0": {
-                  "_type": "Simple Dial",
-                  "_source0": "network_table:///SmartDashboard/Scissor Amps",
-                  "_title": "Scissor Amps",
-                  "Range/Min": 0.0,
-                  "Range/Max": 100.0,
-                  "Visuals/Show value": true
-                },
-                "0,1": {
+                "0,2": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/Scissor Position",
-                  "_title": "/SmartDashboard/Scissor Position"
+                  "_title": "Scissor Position"
                 },
-                "2,0": {
+                "2,2": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Winch Position",
+                  "_title": "Winch Position"
+                },
+                "2,1": {
                   "_type": "Simple Dial",
                   "_source0": "network_table:///SmartDashboard/Winch Amps",
                   "_title": "Winch Amps",
@@ -621,34 +347,159 @@
                   "Range/Max": 100.0,
                   "Visuals/Show value": true
                 },
-                "2,1": {
-                  "_type": "Text View",
-                  "_source0": "network_table:///SmartDashboard/Winch Position",
-                  "_title": "/SmartDashboard/Winch Position"
+                "0,1": {
+                  "_type": "Simple Dial",
+                  "_source0": "network_table:///SmartDashboard/Scissor Amps",
+                  "_title": "Scissor Amps",
+                  "Range/Min": 0.0,
+                  "Range/Max": 100.0,
+                  "Visuals/Show value": true
+                },
+                "0,0": {
+                  "_type": "Number Slider",
+                  "_source0": "network_table:///SmartDashboard/Scissor Out",
+                  "_title": "Scissor Out",
+                  "Slider Settings/Min": -1.0,
+                  "Slider Settings/Max": 1.0,
+                  "Slider Settings/Block increment": 0.0625
+                },
+                "2,0": {
+                  "_type": "Number Slider",
+                  "_source0": "network_table:///SmartDashboard/Winch Out",
+                  "_title": "Winch Out",
+                  "Slider Settings/Min": -1.0,
+                  "Slider Settings/Max": 1.0,
+                  "Slider Settings/Block increment": 0.0625
                 }
               }
             }
           },
-          "4,6": {
+          "13,6": {
             "size": [
-              1,
+              4,
               1
             ],
             "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Scissor Out",
-              "_title": "/SmartDashboard/Scissor Out"
+              "_type": "Grid Layout",
+              "_title": "Turret Yaw Encoder",
+              "Layout/Number of columns": 3,
+              "Layout/Number of rows": 3,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "1,1": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Yaw Position",
+                  "_title": "SmartDashboard/Yaw Position"
+                },
+                "2,1": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Yaw Forward Limit",
+                  "_title": "SmartDashboard/Yaw Forward Limit",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                "0,1": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Yaw Backward Limit",
+                  "_title": "SmartDashboard/Yaw Backward Limit",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                }
+              }
+            }
+          },
+          "13,7": {
+            "size": [
+              4,
+              1
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Turret Pitch Encoder",
+              "Layout/Number of columns": 3,
+              "Layout/Number of rows": 3,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "1,1": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Pitch Position",
+                  "_title": "SmartDashboard/Pitch Position"
+                },
+                "0,1": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Pitch Forward Limit",
+                  "_title": "SmartDashboard/Pitch Forward Limit",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                "2,1": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Pitch Backward Limit",
+                  "_title": "SmartDashboard/Pitch Backward Limit",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                }
+              }
+            }
+          },
+          "9,6": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Flywheel",
+              "Layout/Number of columns": 3,
+              "Layout/Number of rows": 3,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "0,0": {
+                  "_type": "Simple Dial",
+                  "_source0": "network_table:///SmartDashboard/FW Amps",
+                  "_title": "Amps",
+                  "Range/Min": 0.0,
+                  "Range/Max": 100.0,
+                  "Visuals/Show value": true
+                },
+                "2,0": {
+                  "_type": "Number Slider",
+                  "_source0": "network_table:///SmartDashboard/FW Output",
+                  "_title": "Output",
+                  "Slider Settings/Min": -1.0,
+                  "Slider Settings/Max": 1.0,
+                  "Slider Settings/Block increment": 0.0625
+                },
+                "1,0": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/FW Wheel Velocity",
+                  "_title": "SmartDashboard/FW Wheel Velocity"
+                }
+              }
             }
           },
           "5,6": {
             "size": [
-              1,
+              2,
               1
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Winch Out",
-              "_title": "/SmartDashboard/Winch Out"
+              "_source0": "network_table:///SmartDashboard/H Ticks To Turn",
+              "_title": "SmartDashboard/H Ticks To Turn"
+            }
+          },
+          "3,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Aligning",
+              "_title": "SmartDashboard/Aligning",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
             }
           }
         }
@@ -658,7 +509,7 @@
   "windowGeometry": {
     "x": -1928.0,
     "y": -8.0,
-    "width": 1936.0,
-    "height": 1056.0
+    "width": 1940.0,
+    "height": 1066.0
   }
 }

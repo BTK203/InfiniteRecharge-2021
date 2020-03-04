@@ -25,14 +25,19 @@ public class CyborgCommandSetTurretPosition extends CommandBase {
    */
   public CyborgCommandSetTurretPosition(SubsystemTurret turret, int yawTarget, int pitchTarget) {
     this.turret = turret;
-    this.yawPosition = yawTarget;
-    this.pitchPosition = pitchTarget;
+    // this.yawPosition = yawTarget;
+    // this.pitchPosition = pitchTarget;
+    this.yawPosition = (int) Util.getAndSetDouble("Test Yaw Position", 0);
+    this.pitchPosition = (int) Util.getAndSetDouble("Test Pitch Position", 0);
     addRequirements(this.turret);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    this.yawPosition = (int) Util.getAndSetDouble("Test Yaw Position", 0);
+    this.pitchPosition = (int) Util.getAndSetDouble("Test Pitch Position", 0);
+
     //set yaw pid
     double yawkP = Util.getAndSetDouble("Yaw Position kP", 0.004);
     double yawkI = Util.getAndSetDouble("Yaw Position kI", 0.001);

@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -60,6 +61,9 @@ public class SubsystemTurret extends SubsystemBase {
     SmartDashboard.putNumber("Yaw Amps", turretYaw.getStatorCurrent());
     SmartDashboard.putNumber("Pitch Amps", turretPitch.getStatorCurrent());
 
+    SmartDashboard.putNumber("Yaw Out", turretYaw.getMotorOutputPercent());
+    SmartDashboard.putNumber("Pitch Out", turretPitch.getMotorOutputPercent());
+  
     if(getYawLeftLimit()) {
       turretYaw.getSensorCollection().setQuadraturePosition(0, 0);
     }
@@ -115,13 +119,7 @@ public class SubsystemTurret extends SubsystemBase {
   public void setYawPosition(double position) {
     turretYaw.set(ControlMode.Position, position);
 
-    turretYaw.setSensorPhase(false);
-
     SmartDashboard.putNumber("Yaw PID Target", position);
-    SmartDashboard.putNumber("Yaw PID Error", Math.abs(turretYaw.getSensorCollection().getQuadraturePosition()) - position);
-
-    SmartDashboard.putNumber("Yaw Amps", turretYaw.getStatorCurrent());
-    SmartDashboard.putNumber("Pitch Amps", turretPitch.getStatorCurrent());
   }
 
   public void setPitchPosition(double position) {
@@ -205,5 +203,12 @@ public class SubsystemTurret extends SubsystemBase {
   private void configureMotors() {
     turretPitch.setNeutralMode(NeutralMode.Brake);
     turretYaw.setNeutralMode(NeutralMode.Brake);
+
+    turretPitch.setInverted(Constants.TURRET_PITCH_INVERT);
+    turretYaw.setInverted(Constants.TURRET_YAW_INVERT);
+
+    turretYaw.setSensorPhase(true);
+
+    turretYaw.configMaxIntegralAccumulator(0, 1000000000);
   }
 }
