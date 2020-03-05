@@ -49,7 +49,7 @@ public class SubsystemFlywheel extends SubsystemBase {
 
   
   public double getVelocity() {
-    return turretFlywheel.getEncoder().getVelocity();
+    return turretFlywheel.getEncoder().getVelocity() * Constants.FLYWHEEL_GEAR_RATIO;
   }
 
   public void setPIDF(double p, double i, double d, double f, double lowLimit, double highLimit, double izone) {

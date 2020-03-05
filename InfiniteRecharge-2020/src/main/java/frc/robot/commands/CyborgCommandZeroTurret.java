@@ -33,7 +33,7 @@ public class CyborgCommandZeroTurret extends CommandBase {
     double calibrateSpeed = Util.getAndSetDouble("Calibrate Speed", 0.5);
 
     if(!turret.getYawLeftLimit()) {
-      turret.setYawPercentOutput(calibrateSpeed);
+      turret.setYawPercentOutput(calibrateSpeed * -1);
     }
 
     if(!turret.getPitchLowerLimit()) {

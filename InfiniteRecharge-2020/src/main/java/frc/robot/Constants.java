@@ -148,15 +148,15 @@ public final class Constants {
         DEFAULT_TURRET_YAW_TICKS = 1615628,
         DEFAULT_TURRET_PITCH_TICKS = 1000,
         FLYWHEEL_STABLE_RPM = 5750,
-        TURRET_YAW_ALLOWABLE_ERROR = 500,
-        TURRET_PITCH_ALLOWABLE_ERROR = 5,
+        TURRET_YAW_ALLOWABLE_ERROR = 200000,
+        TURRET_PITCH_ALLOWABLE_ERROR = 50,
         TURRET_CENTER_ANGLE_OFFSET_YAW = 90,
         TURRET_PITCH_CAMERA_OFFSET = 25;
 
     public static final double 
         FLYWHEEL_GEAR_RATIO = 1.6071,
         DRIVETRAIN_WHEEL_DIAMETER = 7, //in
-        DRIVETRAIN_ALLOWABLE_ERROR = 0.0625,
+        DRIVETRAIN_ALLOWABLE_ERROR = 1,
         TURRET_HEIGHT = 24,
         TURRET_YAW_DEGREES_AT_ZERO = -90, //degrees from zero to turret looking forward
         TURRET_PITCH_DEGREES_AT_ZERO = 5;
@@ -174,5 +174,11 @@ public final class Constants {
         AUTO_INIT_BALL_COUNT = 3,
         AUTO_PAYLOAD_TIMEOUT = 3000, //ms
         DISTANCE_INIT_LINE_TO_ALLIANCE_WALL = 120,
-        KIWILIGHT_STABLE_DEGREES = 1; //in
+        KIWILIGHT_STABLE_DEGREES = 2, //in
+        TURRET_APPROX_TARGET_TICKS_CLOSE = -624258,
+        TURRET_TARGET_TICKS_PER_INCH = -1399, //ticks to turn per inch away from wall
+        AUTO_INIT_YAW_TARGET = -694;
+
+    public static final double 
+        DRIVE_ROTATIONS_PER_INCH = 0.45;
 }

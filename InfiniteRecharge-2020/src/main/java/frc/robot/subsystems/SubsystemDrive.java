@@ -10,11 +10,14 @@ package frc.robot.subsystems;
 
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.util.Util;
@@ -26,6 +29,8 @@ public class SubsystemDrive extends SubsystemBase {
   private static CANSparkMax rightMaster;
   private static CANSparkMax rightSlave;
 
+  private AHRS navX;
+
   /**
    * Creates a new SubsystemDrive.
    */
@@ -34,6 +39,8 @@ public class SubsystemDrive extends SubsystemBase {
     leftSlave = new CANSparkMax(Constants.DRIVE_LEFT_SLAVE_ID, MotorType.kBrushless);
     rightMaster = new CANSparkMax(Constants.DRIVE_RIGHT_MASTER_ID, MotorType.kBrushless);
     rightSlave = new CANSparkMax(Constants.DRIVE_RIGHT_SLAVE_ID, MotorType.kBrushless);
+
+    navX = new AHRS(Port.kUSB);
 
     setBraking();
     setRamps();
@@ -51,6 +58,8 @@ public class SubsystemDrive extends SubsystemBase {
 
     SmartDashboard.putNumber("Right Amps", rightMaster.getOutputCurrent());
     SmartDashboard.putNumber("Left Amps", leftMaster.getOutputCurrent());
+
+    SmartDashboard.putBoolean("NavX Connected", navX.isConnected());
   }
 
   /**

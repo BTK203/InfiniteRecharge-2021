@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemFeeder;
@@ -73,9 +74,14 @@ public class CyborgCommandShootPayload extends CommandBase {
   @Override
   public void execute() {
     double currentFlywheelRPM = this.flywheel.getVelocity();
+    boolean flywheelStable = currentFlywheelRPM >= Constants.FLYWHEEL_STABLE_RPM;
+
+    SmartDashboard.putBoolean("Auto Flywheel Stable", flywheelStable);
+    SmartDashboard.putBoolean("KiwiLight Aligned", kiwilightStable());
+    SmartDashboard.putNumber("Auto Balls Shot", ballsShot);
 
     //decide whether or not to drive the feeder
-    if(currentFlywheelRPM >= Constants.FLYWHEEL_STABLE_RPM && kiwilightStable()) {
+    if(flywheelStable && kiwilightStable()) {
       intake.driveSlapper(Util.getAndSetDouble("Slap Speed", 0.5));
       feeder.driveBeater(Util.getAndSetDouble("Beat Speed", 1));
       feeder.driveFeeder(Util.getAndSetDouble("Feed Speed", 1));
@@ -86,8 +92,11 @@ public class CyborgCommandShootPayload extends CommandBase {
       feeder.driveFeeder(0);
 
       if(lastFrameRPMStable) { //bro, rpm was stable last time, so we just shot a ball
+        if(timeSinceLastShot >= Util.getAndSetDouble("Ball Shot Timeout", 100)) {
+          ballsShot++;
+        }
+
         lastFrameRPMStable = false;
-        ballsShot++;
         timeSinceLastShot = System.currentTimeMillis();
       }
     }
@@ -121,8 +130,7 @@ public class CyborgCommandShootPayload extends CommandBase {
   }
 
   private boolean kiwilightStable() {
-    boolean horizontalStable = kiwilight.getHorizontalAngleToTarget() < Constants.KIWILIGHT_STABLE_DEGREES;
-    boolean verticalStable   = kiwilight.getVerticalAngleToTarget() < Constants.KIWILIGHT_STABLE_DEGREES;
-    return horizontalStable && verticalStable;
+    boolean horizontalStable = kiwilight.getHorizontalAngleToTarget() <= Constants.KIWILIGHT_STABLE_DEGREES;
+    return horizontalStable;
   }
 }

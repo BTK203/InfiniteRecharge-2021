@@ -29,16 +29,13 @@ public class CyborgCommandDriveDistance extends CommandBase {
     this.drivetrain = drivetrain;
     this.distance = distance;
     addRequirements(this.drivetrain);
-
-    
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     //figure out how many rotations to turn
-    double wheelCircumference = Math.PI * Constants.DRIVETRAIN_WHEEL_DIAMETER;
-    double rotations = distance / wheelCircumference;
+    double rotations = distance * Constants.DRIVE_ROTATIONS_PER_INCH; 
 
     this.leftDestination = drivetrain.getLeftPosition() + rotations;
     this.rightDestination = drivetrain.getRightPosition() + rotations;
@@ -76,8 +73,10 @@ public class CyborgCommandDriveDistance extends CommandBase {
     double rightError = Math.abs(rightDestination - drivetrain.getRightPosition());
     double leftError = Math.abs(leftDestination - drivetrain.getLeftPosition());
 
-    boolean rightWithinRange = rightError < Constants.DRIVETRAIN_ALLOWABLE_ERROR;
-    boolean leftWithinRange  = leftError  < Constants.DRIVETRAIN_ALLOWABLE_ERROR;
+    double allowableErrorRotations = Constants.DRIVETRAIN_ALLOWABLE_ERROR * Constants.DRIVE_ROTATIONS_PER_INCH;
+
+    boolean rightWithinRange = rightError < allowableErrorRotations;
+    boolean leftWithinRange  = leftError  < allowableErrorRotations;
 
     return rightWithinRange && leftWithinRange;
   }

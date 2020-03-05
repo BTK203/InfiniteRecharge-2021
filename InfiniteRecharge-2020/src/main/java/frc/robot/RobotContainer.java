@@ -147,7 +147,7 @@ public class RobotContainer {
     SmartDashboard.putData("Test Scissor PID", new CyborgCommandTestScissorPositition(SUB_CLIMB, OPERATOR));
     SmartDashboard.putData("Zero Turret", new CyborgCommandZeroTurret(SUB_TURRET));
     SmartDashboard.putData("Set Turret Position", new CyborgCommandSetTurretPosition(SUB_TURRET, 0, 0));
-    SmartDashboard.putData("Drive Distance", new CyborgCommandDriveDistance(SUB_DRIVE, 20));
+    SmartDashboard.putData("Drive Distance", new CyborgCommandDriveDistance(SUB_DRIVE, 240));
     SmartDashboard.putData("Zero Yaw", new InstantCommand(() -> SUB_TURRET.setCurrentYawEncoderPosition(0), SUB_TURRET));
     SmartDashboard.putData("Zero Drivetrain Encoders", new InstantCommand(() -> SUB_DRIVE.zeroEncoders()));
 
