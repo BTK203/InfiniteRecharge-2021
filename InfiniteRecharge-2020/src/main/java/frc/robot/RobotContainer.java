@@ -14,24 +14,24 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.auto.Auto;
+import frc.robot.auto.BareMinimumAuto;
+import frc.robot.auto.IAuto;
+import frc.robot.auto.InitAuto;
+import frc.robot.auto.SixBallSimpleAuto;
 import frc.robot.commands.ButtonCommandGroupRunIntakeFeeder;
 import frc.robot.commands.CyborgCommandAlignTurret;
 import frc.robot.commands.CyborgCommandCalibrateTurretPitch;
 import frc.robot.commands.CyborgCommandCalibrateTurretYaw;
 import frc.robot.commands.CyborgCommandDriveDistance;
 import frc.robot.commands.CyborgCommandFlywheelVelocity;
-import frc.robot.commands.CyborgCommandPositionControl;
 import frc.robot.commands.CyborgCommandSetTurretPosition;
 import frc.robot.commands.CyborgCommandTestScissorPositition;
 import frc.robot.commands.CyborgCommandZeroTurret;
 import frc.robot.commands.SemiManualCommandRunWinch;
 import frc.robot.commands.ToggleCommandDriveClimber;
-import frc.robot.commands.ToggleCommandDriveFlywheel;
+import frc.robot.enumeration.AutoMode;
 import frc.robot.subsystems.SubsystemClimb;
 import frc.robot.subsystems.SubsystemDrive;
 import frc.robot.subsystems.SubsystemFeeder;
@@ -71,9 +71,15 @@ public class RobotContainer {
     OPERATOR = new Joystick(1);
 
   /**
+   * Important Commands
+   */
+  private final CyborgCommandFlywheelVelocity driveFlywheelRPM = new CyborgCommandFlywheelVelocity(SUB_FLYWHEEL);
+
+  /**
    * Dashboard Items
    */
-  private SendableChooser<Command> autoChooser;
+  private SendableChooser<AutoMode> autoChooser;
+  private IAuto currentAuto;
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -81,12 +87,48 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    configureAutoChooser();
+  }
 
-    //auto chooser bro
-    autoChooser = new SendableChooser<Command>();
-    autoChooser.setDefaultOption("The Bare Minimum", Auto.theBareMinimum(SUB_DRIVE, SUB_TURRET, SUB_FLYWHEEL, SUB_INTAKE, SUB_FEEDER, SUB_RECEIVER));
-    autoChooser.addOption("Drive and Zero", Auto.autoInitCommand(SUB_DRIVE, SUB_TURRET));
-    SmartDashboard.putData("Auto Mode", autoChooser);
+  /**
+   * Schedules the autonomous command.
+   */
+  public void startAuto() {
+    AutoMode desiredAuto = autoChooser.getSelected();
+
+    //create the auto based on the enum
+    switch(desiredAuto) {
+      case INIT_ONLY:
+        currentAuto = new InitAuto(SUB_DRIVE, SUB_TURRET);
+        break;
+      case THE_BARE_MINIMUM:
+        currentAuto = new BareMinimumAuto(SUB_DRIVE, SUB_TURRET, SUB_RECEIVER, SUB_INTAKE, SUB_FEEDER, SUB_FLYWHEEL);
+        break;
+      case SIX_BALL_SIMPLE:
+        currentAuto = new SixBallSimpleAuto(SUB_DRIVE, SUB_TURRET, SUB_RECEIVER, SUB_INTAKE, SUB_FEEDER, SUB_FLYWHEEL);
+        break;
+      default:
+        currentAuto = new InitAuto(SUB_DRIVE, SUB_TURRET);
+        break;
+    }
+
+    currentAuto.getCommand().schedule();
+
+    //start flywheel if necessary
+    if(currentAuto.requiresFlywheel()) {
+      driveFlywheelRPM.schedule();
+    }
+  }
+  
+  /**
+   * Cancels the autonomous command.
+   */
+  public void cancelAuto() {
+    if(currentAuto != null) {
+      currentAuto.getCommand().cancel();
+    } else {
+      DriverStation.reportError("NO AUTO STARTED, THEREFORE NONE CANCELED.", false);
+    }
   }
 
   /**
@@ -96,12 +138,6 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    /**
-     * Things that run automatically
-     */
-    CyborgCommandFlywheelVelocity driveFlywheelRPM = new CyborgCommandFlywheelVelocity(SUB_FLYWHEEL);
-    SUB_FLYWHEEL.setDefaultCommand(driveFlywheelRPM);
-
     /**
      * DRIVER controls
      */
@@ -127,7 +163,7 @@ public class RobotContainer {
 
     //toggle commands
     JoystickButton toggleFlywheel = new JoystickButton(OPERATOR, Xbox.START);
-      toggleFlywheel.toggleWhenPressed(new ToggleCommandDriveFlywheel(SUB_FLYWHEEL, 0));
+      toggleFlywheel.toggleWhenPressed(driveFlywheelRPM);
 
     ToggleCommandDriveClimber climberManualDrive = new ToggleCommandDriveClimber(SUB_CLIMB, SUB_TURRET, OPERATOR);
     JoystickButton toggleClimberManual = new JoystickButton(OPERATOR, Xbox.BACK);
@@ -158,11 +194,11 @@ public class RobotContainer {
   }
 
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+  private void configureAutoChooser() {
+    //declare the different autos we will choose from
+    autoChooser = new SendableChooser<AutoMode>();
+    autoChooser.setDefaultOption("Bare Minimum Auto", AutoMode.THE_BARE_MINIMUM);
+    autoChooser.addOption("Init Only", AutoMode.INIT_ONLY);
+    SmartDashboard.putData("Auto Mode", autoChooser);
   }
 }

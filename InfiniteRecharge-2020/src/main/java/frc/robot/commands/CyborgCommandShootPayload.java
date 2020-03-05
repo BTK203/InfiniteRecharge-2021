@@ -34,7 +34,9 @@ public class CyborgCommandShootPayload extends CommandBase {
   private long
     timeSinceLastShot;
 
-  private boolean lastFrameRPMStable;
+  private boolean 
+    lastFrameRPMStable,
+    runIntake;
 
   /**
    * Creates a new CyborgCommandShootPayload.
@@ -48,7 +50,8 @@ public class CyborgCommandShootPayload extends CommandBase {
     SubsystemFlywheel flywheel, 
     SubsystemReceiver kiwilight, 
     int ballsToShoot, 
-    int timeToWait
+    int timeToWait,
+    boolean runIntake
   ) {
     this.intake = intake;
     this.feeder = feeder;
@@ -56,6 +59,7 @@ public class CyborgCommandShootPayload extends CommandBase {
     this.kiwilight = kiwilight;
     this.ballsToShoot = ballsToShoot;
     this.timeToWait = timeToWait;
+    this.runIntake = runIntake;
 
     addRequirements(this.intake);
     addRequirements(this.feeder);
@@ -100,11 +104,16 @@ public class CyborgCommandShootPayload extends CommandBase {
         timeSinceLastShot = System.currentTimeMillis();
       }
     }
+
+    if(runIntake) {
+      intake.driveEater(Util.getAndSetDouble("Eat Speed", 1));
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    intake.driveEater(0);
     intake.driveSlapper(0);
     feeder.driveBeater(0);
     feeder.driveFeeder(0);
