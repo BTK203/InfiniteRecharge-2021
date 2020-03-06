@@ -45,6 +45,7 @@ public class SubsystemDrive extends SubsystemBase {
     setBraking();
     setRamps();
     setFollowers();
+    setAmpLimits();
   }
 
   @Override
@@ -152,6 +153,15 @@ public class SubsystemDrive extends SubsystemBase {
     leftSlave.setOpenLoopRampRate(ramp);
     rightMaster.setOpenLoopRampRate(ramp);
     rightSlave.setOpenLoopRampRate(ramp);
+  }
+
+  private void setAmpLimits() {
+    int ampLimit = 60; //TODO: make constant
+    
+    leftMaster.setSmartCurrentLimit(ampLimit);
+    leftSlave.setSmartCurrentLimit(ampLimit);
+    rightMaster.setSmartCurrentLimit(ampLimit);
+    rightSlave.setSmartCurrentLimit(ampLimit);
   }
 
   private void setFollowers() {

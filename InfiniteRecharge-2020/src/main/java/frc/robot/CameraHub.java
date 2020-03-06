@@ -7,59 +7,60 @@
 
 package frc.robot;
 
+import org.opencv.core.Mat;
+import org.opencv.videoio.VideoCapture;
+
+import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.CvSource;
+import edu.wpi.cscore.MjpegServer;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.util.Util;
 
 /**
  * A collection of cameras that help the drivers see
  */
 public class CameraHub {
-    UsbCamera
-        frontCam,
-        backCam,
-        climberCam;
+    UsbCamera backCam;
 
     public CameraHub() {
-        frontCam   = new UsbCamera("Front", 0);
-        backCam    = new UsbCamera("Back",  1);
-        climberCam = new UsbCamera("Climber", 2);
-
-        configureCameras();
-
-        CameraServer.getInstance().addCamera(frontCam);
-        CameraServer.getInstance().addCamera(backCam);
-        CameraServer.getInstance().addCamera(climberCam);
+        new Thread(() -> {
+            backCam = CameraServer.getInstance().startAutomaticCapture(0);
+            configureCameras();
+            CvSink sink = CameraServer.getInstance().getVideo();
+            CvSource src = CameraServer.getInstance().putVideo("Pickup", 252, 128);
+            Mat img = new Mat();
+            while(!Thread.interrupted()) {
+                if(sink.grabFrame(img) == 0) {
+                    src.putFrame(img);
+                } else {
+                    DriverStation.reportWarning("COULD NOT READ IMAGE", false);
+                }
+            }
+        }).start();
     }
 
     public void configResolution() {
-        int camResX = (int) Util.getAndSetDouble("Camera Width", 80);
-        int camResY = (int) Util.getAndSetDouble("Camera Height", 55);
+        int camResX = (int) Util.getAndSetDouble("Camera Width", 252);
+        int camResY = (int) Util.getAndSetDouble("Camera Height", 128);
 
-        frontCam.setResolution(camResX, camResY);
         backCam.setResolution(camResX, camResY);
-        climberCam.setResolution(camResX, camResY);
     }
 
     public void configExposure(boolean automatic) {
         if(automatic) {
-            frontCam.setExposureAuto();
             backCam.setExposureAuto();
-            climberCam.setExposureAuto();
             return;
         }
 
         int camExposure = (int) Util.getAndSetDouble("Camera Exposure", 50);
-        frontCam.setExposureManual(camExposure);
         backCam.setExposureManual(camExposure);
-        climberCam.setExposureManual(camExposure);
     }
 
     public void configBrightness() {
         int camBrightness = (int) Util.getAndSetDouble("Camera Brightness", 50);
-        frontCam.setBrightness(camBrightness);
         backCam.setBrightness(camBrightness);
-        climberCam.setBrightness(camBrightness);
     }
 
     public void configureCameras() {

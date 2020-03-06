@@ -35,7 +35,7 @@ public class CyborgCommandShootPayload extends CommandBase {
     timeSinceLastShot;
 
   private boolean 
-    lastFrameRPMStable,
+    lastFrameStable,
     runIntake;
 
   /**
@@ -71,7 +71,7 @@ public class CyborgCommandShootPayload extends CommandBase {
   public void initialize() {
     this.ballsShot = 0;
     this.timeSinceLastShot = System.currentTimeMillis();
-    this.lastFrameRPMStable = false;
+    this.lastFrameStable = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -80,27 +80,23 @@ public class CyborgCommandShootPayload extends CommandBase {
     double currentFlywheelRPM = this.flywheel.getVelocity();
     boolean flywheelStable = currentFlywheelRPM >= Constants.FLYWHEEL_STABLE_RPM;
 
-    SmartDashboard.putBoolean("Auto Flywheel Stable", flywheelStable);
-    SmartDashboard.putBoolean("KiwiLight Aligned", kiwilightStable());
-    SmartDashboard.putNumber("Auto Balls Shot", ballsShot);
-
     //decide whether or not to drive the feeder
     if(flywheelStable && kiwilightStable()) {
       intake.driveSlapper(Util.getAndSetDouble("Slap Speed", 0.5));
       feeder.driveBeater(Util.getAndSetDouble("Beat Speed", 1));
       feeder.driveFeeder(Util.getAndSetDouble("Feed Speed", 1));
-      lastFrameRPMStable = true;
+      lastFrameStable = true;
     } else {
       intake.driveSlapper(0);
       feeder.driveBeater(0);
       feeder.driveFeeder(0);
 
-      if(lastFrameRPMStable) { //bro, rpm was stable last time, so we just shot a ball
+      if(lastFrameStable) { //bro, rpm was stable last time, so we just shot a ball
         if(timeSinceLastShot >= Util.getAndSetDouble("Ball Shot Timeout", 100)) {
           ballsShot++;
         }
 
-        lastFrameRPMStable = false;
+        lastFrameStable = false;
         timeSinceLastShot = System.currentTimeMillis();
       }
     }
@@ -108,6 +104,10 @@ public class CyborgCommandShootPayload extends CommandBase {
     if(runIntake) {
       intake.driveEater(Util.getAndSetDouble("Eat Speed", 1));
     }
+
+    SmartDashboard.putBoolean("Auto Flywheel Stable", flywheelStable);
+    SmartDashboard.putBoolean("KiwiLight Aligned", kiwilightStable());
+    SmartDashboard.putNumber("Auto Balls Shot", ballsShot);
   }
 
   // Called once the command ends or is interrupted.

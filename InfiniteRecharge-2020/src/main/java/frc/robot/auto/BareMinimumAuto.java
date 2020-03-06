@@ -61,7 +61,7 @@ public class BareMinimumAuto implements IAuto {
         Command initAndPosition = init.andThen(positionTurret);
 
         //align and shoot
-        Command alignAndShoot = this.alignTurret.alongWith(this.shootPayload);
+        Command alignAndShoot = this.alignTurret.raceWith(this.shootPayload);
 
         //init then position, then align and shoot
         return initAndPosition.andThen(alignAndShoot);

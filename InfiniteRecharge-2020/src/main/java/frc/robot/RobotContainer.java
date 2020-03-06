@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.auto.BareMinimumAuto;
@@ -40,7 +41,6 @@ import frc.robot.subsystems.SubsystemIntake;
 import frc.robot.subsystems.SubsystemReceiver;
 import frc.robot.subsystems.SubsystemSpinner;
 import frc.robot.subsystems.SubsystemTurret;
-import frc.robot.util.Util;
 import frc.robot.util.Xbox;
 
 /**
@@ -79,7 +79,12 @@ public class RobotContainer {
    * Dashboard Items
    */
   private SendableChooser<AutoMode> autoChooser;
+
+  /**
+   * Auto
+   */
   private IAuto currentAuto;
+  private Command autoCommand;
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -112,7 +117,8 @@ public class RobotContainer {
         break;
     }
 
-    currentAuto.getCommand().schedule();
+    autoCommand = currentAuto.getCommand();
+    autoCommand.schedule();
 
     //start flywheel if necessary
     if(currentAuto.requiresFlywheel()) {
@@ -125,7 +131,9 @@ public class RobotContainer {
    */
   public void cancelAuto() {
     if(currentAuto != null) {
-      currentAuto.getCommand().cancel();
+      if(autoCommand.isScheduled()) {
+        autoCommand.cancel();
+      }
     } else {
       DriverStation.reportError("NO AUTO STARTED, THEREFORE NONE CANCELED.", false);
     }
@@ -183,7 +191,7 @@ public class RobotContainer {
     SmartDashboard.putData("Test Scissor PID", new CyborgCommandTestScissorPositition(SUB_CLIMB, OPERATOR));
     SmartDashboard.putData("Zero Turret", new CyborgCommandZeroTurret(SUB_TURRET));
     SmartDashboard.putData("Set Turret Position", new CyborgCommandSetTurretPosition(SUB_TURRET, 0, 0));
-    SmartDashboard.putData("Drive Distance", new CyborgCommandDriveDistance(SUB_DRIVE, 240));
+    SmartDashboard.putData("Drive Distance", new CyborgCommandDriveDistance(SUB_DRIVE, 240, 0.75));
     SmartDashboard.putData("Zero Yaw", new InstantCommand(() -> SUB_TURRET.setCurrentYawEncoderPosition(0), SUB_TURRET));
     SmartDashboard.putData("Zero Drivetrain Encoders", new InstantCommand(() -> SUB_DRIVE.zeroEncoders()));
 
@@ -199,6 +207,7 @@ public class RobotContainer {
     autoChooser = new SendableChooser<AutoMode>();
     autoChooser.setDefaultOption("Bare Minimum Auto", AutoMode.THE_BARE_MINIMUM);
     autoChooser.addOption("Init Only", AutoMode.INIT_ONLY);
+    autoChooser.addOption("Simple Six Ball", AutoMode.SIX_BALL_SIMPLE);
     SmartDashboard.putData("Auto Mode", autoChooser);
   }
 }

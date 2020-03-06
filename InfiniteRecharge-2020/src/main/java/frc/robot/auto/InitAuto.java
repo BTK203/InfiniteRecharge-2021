@@ -28,7 +28,7 @@ public class InitAuto implements IAuto {
     public InitAuto(SubsystemDrive drivetrain, SubsystemTurret turret) {
         this.zeroDriveEncoders = new InstantCommand(() -> drivetrain.zeroEncoders(), drivetrain);
         this.zeroTurret = new CyborgCommandZeroTurret(turret);
-        this.driveOffLine = new CyborgCommandDriveDistance(drivetrain, Util.getAndSetDouble("Initiation Drive", -20));
+        this.driveOffLine = new CyborgCommandDriveDistance(drivetrain, Util.getAndSetDouble("Initiation Drive", -20), Util.getAndSetDouble("Drive Auto Inhibitor", 0.75));
     }
 
     public Command getCommand() {

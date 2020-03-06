@@ -18,16 +18,18 @@ public class CyborgCommandDriveDistance extends CommandBase {
   private double 
     distance,
     leftDestination,
-    rightDestination;
+    rightDestination,
+    inhibitor;
 
   /**
    * Creates a new CyborgCommandDriveDistance.
    * @param drivetrain the drivetrain to use.
    * @param distance the distance to drive in inches.
    */
-  public CyborgCommandDriveDistance(SubsystemDrive drivetrain, double distance) {
+  public CyborgCommandDriveDistance(SubsystemDrive drivetrain, double distance, double inhibitor) {
     this.drivetrain = drivetrain;
     this.distance = distance;
+    this.inhibitor = inhibitor;
     addRequirements(this.drivetrain);
   }
 
@@ -48,7 +50,7 @@ public class CyborgCommandDriveDistance extends CommandBase {
     double d = Util.getAndSetDouble("Drivetrain kD", 0);
     double f = Util.getAndSetDouble("Drivetrain kF", 0);
     double iZone = Util.getAndSetDouble("Drivetrain IZone", 0);
-    double out = Util.getAndSetDouble("Drivetrain Out Limit", 1);
+    double out = inhibitor;
 
     drivetrain.setPIDConstants(p, i, d, f, iZone, out);
   }
