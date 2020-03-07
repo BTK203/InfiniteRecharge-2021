@@ -130,6 +130,15 @@ public final class Constants {
         FLYWHEEL_AMP_LIMIT = 50;
     
     /*
+    * Climber Values
+    */
+    public static final double
+        LOWEST_HEIGHT = 0,
+        ON_WHEEL_HEIGHT = 30,
+        ABOVE_WHEEL_HEIGHT = 32,
+        HIGHEST_HEIGHT = 60;
+        
+    /*
     * FORMAT: Red_Min, Green_Min, Blue_Min, Red_Max, Green_Max, Blue_Max.
     */
     public static final int[]
