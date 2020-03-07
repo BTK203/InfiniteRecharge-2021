@@ -15,6 +15,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.enumeration.ClimbPosition;
 import frc.robot.Constants;
 import frc.robot.util.Xbox;
 
@@ -26,10 +27,12 @@ public class SubsystemClimb extends SubsystemBase {
   private static CANSparkMax 
     scissors,
     winch;
+  private static ClimbPosition storedPosition;
 
   public SubsystemClimb() {
     scissors = new CANSparkMax(Constants.CLIMBER_SCISSOR_ID, MotorType.kBrushless);
     winch    = new CANSparkMax(Constants.CLIMBER_WINCH_ID, MotorType.kBrushless);
+    storedPosition = ClimbPosition.LOWEST;
     configureMotors();
   }
 
@@ -105,5 +108,13 @@ public void setWinchPercentOutput(double speedz) {
 
   public void setScissorBraking(IdleMode mode) {
     scissors.setIdleMode(mode);
+  }
+
+  public void setStoredPosition(ClimbPosition position) {
+    storedPosition = position;
+  }
+
+  public ClimbPosition getStoredPosition() {
+    return storedPosition;
   }
 }

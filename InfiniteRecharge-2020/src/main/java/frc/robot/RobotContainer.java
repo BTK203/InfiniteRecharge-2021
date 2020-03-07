@@ -22,6 +22,7 @@ import frc.robot.auto.IAuto;
 import frc.robot.auto.InitAuto;
 import frc.robot.auto.SixBallSimpleAuto;
 import frc.robot.commands.ButtonCommandGroupRunIntakeFeeder;
+import frc.robot.commands.ButtonCommandMoveClimber;
 import frc.robot.commands.CyborgCommandAlignTurret;
 import frc.robot.commands.CyborgCommandCalibrateTurretPitch;
 import frc.robot.commands.CyborgCommandCalibrateTurretYaw;
@@ -30,6 +31,7 @@ import frc.robot.commands.CyborgCommandFlywheelVelocity;
 import frc.robot.commands.CyborgCommandSetTurretPosition;
 import frc.robot.commands.CyborgCommandTestScissorPositition;
 import frc.robot.commands.CyborgCommandZeroTurret;
+import frc.robot.commands.IterativeCommandMoveClimber;
 import frc.robot.commands.SemiManualCommandRunWinch;
 import frc.robot.commands.ToggleCommandDriveClimber;
 import frc.robot.enumeration.AutoMode;
@@ -153,6 +155,13 @@ public class RobotContainer {
     SUB_DRIVE.setDefaultCommand(
       new RunCommand(() -> SUB_DRIVE.DriveTankByController(DRIVER), SUB_DRIVE)
     );
+
+    //toggle commands
+    JoystickButton moveClimberUp = new JoystickButton(DRIVER, Xbox.START);
+    moveClimberUp.toggleWhenPressed(new ButtonCommandMoveClimber(SUB_CLIMB, 1));
+
+    JoystickButton moveClimberDown = new JoystickButton(DRIVER, Xbox.BACK);
+    moveClimberDown.toggleWhenPressed(new ButtonCommandMoveClimber(SUB_CLIMB, -1));
 
     /**
      * OPERATOR controls
