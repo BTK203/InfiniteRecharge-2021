@@ -18,27 +18,26 @@ public class CyborgCommandDriveDistance extends CommandBase {
   private double 
     distance,
     leftDestination,
-    rightDestination;
+    rightDestination,
+    inhibitor;
 
   /**
    * Creates a new CyborgCommandDriveDistance.
    * @param drivetrain the drivetrain to use.
    * @param distance the distance to drive in inches.
    */
-  public CyborgCommandDriveDistance(SubsystemDrive drivetrain, double distance) {
+  public CyborgCommandDriveDistance(SubsystemDrive drivetrain, double distance, double inhibitor) {
     this.drivetrain = drivetrain;
     this.distance = distance;
+    this.inhibitor = inhibitor;
     addRequirements(this.drivetrain);
-
-    
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     //figure out how many rotations to turn
-    double wheelCircumference = Math.PI * Constants.DRIVETRAIN_WHEEL_DIAMETER;
-    double rotations = distance / wheelCircumference;
+    double rotations = distance * Constants.DRIVE_ROTATIONS_PER_INCH; 
 
     this.leftDestination = drivetrain.getLeftPosition() + rotations;
     this.rightDestination = drivetrain.getRightPosition() + rotations;
@@ -51,7 +50,7 @@ public class CyborgCommandDriveDistance extends CommandBase {
     double d = Util.getAndSetDouble("Drivetrain kD", 0);
     double f = Util.getAndSetDouble("Drivetrain kF", 0);
     double iZone = Util.getAndSetDouble("Drivetrain IZone", 0);
-    double out = Util.getAndSetDouble("Drivetrain Out Limit", 1);
+    double out = inhibitor;
 
     drivetrain.setPIDConstants(p, i, d, f, iZone, out);
   }
@@ -76,8 +75,10 @@ public class CyborgCommandDriveDistance extends CommandBase {
     double rightError = Math.abs(rightDestination - drivetrain.getRightPosition());
     double leftError = Math.abs(leftDestination - drivetrain.getLeftPosition());
 
-    boolean rightWithinRange = rightError < Constants.DRIVETRAIN_ALLOWABLE_ERROR;
-    boolean leftWithinRange  = leftError  < Constants.DRIVETRAIN_ALLOWABLE_ERROR;
+    double allowableErrorRotations = Constants.DRIVETRAIN_ALLOWABLE_ERROR * Constants.DRIVE_ROTATIONS_PER_INCH;
+
+    boolean rightWithinRange = rightError < allowableErrorRotations;
+    boolean leftWithinRange  = leftError  < allowableErrorRotations;
 
     return rightWithinRange && leftWithinRange;
   }

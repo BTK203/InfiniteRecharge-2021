@@ -17,8 +17,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.auto.Auto;
+import frc.robot.auto.BareMinimumAuto;
+import frc.robot.auto.IAuto;
+import frc.robot.auto.InitAuto;
+import frc.robot.auto.SixBallSimpleAuto;
 import frc.robot.commands.ButtonCommandGroupRunIntakeFeeder;
 import frc.robot.commands.ButtonCommandMoveClimber;
 import frc.robot.commands.CyborgCommandAlignTurret;
@@ -26,14 +28,13 @@ import frc.robot.commands.CyborgCommandCalibrateTurretPitch;
 import frc.robot.commands.CyborgCommandCalibrateTurretYaw;
 import frc.robot.commands.CyborgCommandDriveDistance;
 import frc.robot.commands.CyborgCommandFlywheelVelocity;
-import frc.robot.commands.CyborgCommandPositionControl;
 import frc.robot.commands.CyborgCommandSetTurretPosition;
 import frc.robot.commands.CyborgCommandTestScissorPositition;
 import frc.robot.commands.CyborgCommandZeroTurret;
 import frc.robot.commands.IterativeCommandMoveClimber;
 import frc.robot.commands.SemiManualCommandRunWinch;
 import frc.robot.commands.ToggleCommandDriveClimber;
-import frc.robot.commands.ToggleCommandDriveFlywheel;
+import frc.robot.enumeration.AutoMode;
 import frc.robot.subsystems.SubsystemClimb;
 import frc.robot.subsystems.SubsystemDrive;
 import frc.robot.subsystems.SubsystemFeeder;
@@ -42,7 +43,6 @@ import frc.robot.subsystems.SubsystemIntake;
 import frc.robot.subsystems.SubsystemReceiver;
 import frc.robot.subsystems.SubsystemSpinner;
 import frc.robot.subsystems.SubsystemTurret;
-import frc.robot.util.Util;
 import frc.robot.util.Xbox;
 
 /**
@@ -73,9 +73,20 @@ public class RobotContainer {
     OPERATOR = new Joystick(1);
 
   /**
+   * Important Commands
+   */
+  private final CyborgCommandFlywheelVelocity driveFlywheelRPM = new CyborgCommandFlywheelVelocity(SUB_FLYWHEEL);
+
+  /**
    * Dashboard Items
    */
-  private SendableChooser<Command> autoChooser;
+  private SendableChooser<AutoMode> autoChooser;
+
+  /**
+   * Auto
+   */
+  private IAuto currentAuto;
+  private Command autoCommand;
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -83,12 +94,51 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    configureAutoChooser();
+  }
 
-    //auto chooser bro
-    autoChooser = new SendableChooser<Command>();
-    autoChooser.setDefaultOption("The Bare Minimum", Auto.theBareMinimum(SUB_DRIVE, SUB_TURRET, SUB_FLYWHEEL, SUB_INTAKE, SUB_FEEDER, SUB_RECEIVER));
-    autoChooser.addOption("Drive and Zero", Auto.autoInitCommand(SUB_DRIVE, SUB_TURRET));
-    SmartDashboard.putData("Auto Mode", autoChooser);
+  /**
+   * Schedules the autonomous command.
+   */
+  public void startAuto() {
+    AutoMode desiredAuto = autoChooser.getSelected();
+
+    //create the auto based on the enum
+    switch(desiredAuto) {
+      case INIT_ONLY:
+        currentAuto = new InitAuto(SUB_DRIVE, SUB_TURRET);
+        break;
+      case THE_BARE_MINIMUM:
+        currentAuto = new BareMinimumAuto(SUB_DRIVE, SUB_TURRET, SUB_RECEIVER, SUB_INTAKE, SUB_FEEDER, SUB_FLYWHEEL);
+        break;
+      case SIX_BALL_SIMPLE:
+        currentAuto = new SixBallSimpleAuto(SUB_DRIVE, SUB_TURRET, SUB_RECEIVER, SUB_INTAKE, SUB_FEEDER, SUB_FLYWHEEL);
+        break;
+      default:
+        currentAuto = new InitAuto(SUB_DRIVE, SUB_TURRET);
+        break;
+    }
+
+    autoCommand = currentAuto.getCommand();
+    autoCommand.schedule();
+
+    //start flywheel if necessary
+    if(currentAuto.requiresFlywheel()) {
+      driveFlywheelRPM.schedule();
+    }
+  }
+  
+  /**
+   * Cancels the autonomous command.
+   */
+  public void cancelAuto() {
+    if(currentAuto != null) {
+      if(autoCommand.isScheduled()) {
+        autoCommand.cancel();
+      }
+    } else {
+      DriverStation.reportError("NO AUTO STARTED, THEREFORE NONE CANCELED.", false);
+    }
   }
 
   /**
@@ -98,12 +148,6 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    /**
-     * Things that run automatically
-     */
-    CyborgCommandFlywheelVelocity driveFlywheelRPM = new CyborgCommandFlywheelVelocity(SUB_FLYWHEEL);
-    SUB_FLYWHEEL.setDefaultCommand(driveFlywheelRPM);
-
     /**
      * DRIVER controls
      */
@@ -136,7 +180,7 @@ public class RobotContainer {
 
     //toggle commands
     JoystickButton toggleFlywheel = new JoystickButton(OPERATOR, Xbox.START);
-      toggleFlywheel.toggleWhenPressed(new ToggleCommandDriveFlywheel(SUB_FLYWHEEL, 0));
+      toggleFlywheel.toggleWhenPressed(driveFlywheelRPM);
 
     ToggleCommandDriveClimber climberManualDrive = new ToggleCommandDriveClimber(SUB_CLIMB, SUB_TURRET, OPERATOR);
     JoystickButton toggleClimberManual = new JoystickButton(OPERATOR, Xbox.BACK);
@@ -156,7 +200,7 @@ public class RobotContainer {
     SmartDashboard.putData("Test Scissor PID", new CyborgCommandTestScissorPositition(SUB_CLIMB, OPERATOR));
     SmartDashboard.putData("Zero Turret", new CyborgCommandZeroTurret(SUB_TURRET));
     SmartDashboard.putData("Set Turret Position", new CyborgCommandSetTurretPosition(SUB_TURRET, 0, 0));
-    SmartDashboard.putData("Drive Distance", new CyborgCommandDriveDistance(SUB_DRIVE, 20));
+    SmartDashboard.putData("Drive Distance", new CyborgCommandDriveDistance(SUB_DRIVE, 240, 0.75));
     SmartDashboard.putData("Zero Yaw", new InstantCommand(() -> SUB_TURRET.setCurrentYawEncoderPosition(0), SUB_TURRET));
     SmartDashboard.putData("Zero Drivetrain Encoders", new InstantCommand(() -> SUB_DRIVE.zeroEncoders()));
 
@@ -167,11 +211,12 @@ public class RobotContainer {
   }
 
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+  private void configureAutoChooser() {
+    //declare the different autos we will choose from
+    autoChooser = new SendableChooser<AutoMode>();
+    autoChooser.setDefaultOption("Bare Minimum Auto", AutoMode.THE_BARE_MINIMUM);
+    autoChooser.addOption("Init Only", AutoMode.INIT_ONLY);
+    autoChooser.addOption("Simple Six Ball", AutoMode.SIX_BALL_SIMPLE);
+    SmartDashboard.putData("Auto Mode", autoChooser);
   }
 }

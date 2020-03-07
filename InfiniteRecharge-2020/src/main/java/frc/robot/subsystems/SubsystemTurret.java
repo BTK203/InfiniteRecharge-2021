@@ -120,10 +120,14 @@ public class SubsystemTurret extends SubsystemBase {
     turretYaw.set(ControlMode.Position, position);
 
     SmartDashboard.putNumber("Yaw PID Target", position);
+    SmartDashboard.putNumber("Yaw PID Error", Math.abs(turretYaw.getSensorCollection().getQuadraturePosition()) - position);
   }
 
   public void setPitchPosition(double position) {
     turretPitch.set(ControlMode.Position, position);
+
+    SmartDashboard.putNumber("Pitch PID Target", position);
+    SmartDashboard.putNumber("Pitch PID Error", turretPitch.getSensorCollection().getQuadraturePosition() - position);
   }
 
   public void setYawPercentOutput(double percent) {

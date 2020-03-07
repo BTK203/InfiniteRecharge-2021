@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemFeeder;
@@ -33,7 +34,9 @@ public class CyborgCommandShootPayload extends CommandBase {
   private long
     timeSinceLastShot;
 
-  private boolean lastFrameRPMStable;
+  private boolean 
+    lastFrameStable,
+    runIntake;
 
   /**
    * Creates a new CyborgCommandShootPayload.
@@ -47,7 +50,8 @@ public class CyborgCommandShootPayload extends CommandBase {
     SubsystemFlywheel flywheel, 
     SubsystemReceiver kiwilight, 
     int ballsToShoot, 
-    int timeToWait
+    int timeToWait,
+    boolean runIntake
   ) {
     this.intake = intake;
     this.feeder = feeder;
@@ -55,6 +59,7 @@ public class CyborgCommandShootPayload extends CommandBase {
     this.kiwilight = kiwilight;
     this.ballsToShoot = ballsToShoot;
     this.timeToWait = timeToWait;
+    this.runIntake = runIntake;
 
     addRequirements(this.intake);
     addRequirements(this.feeder);
@@ -66,36 +71,49 @@ public class CyborgCommandShootPayload extends CommandBase {
   public void initialize() {
     this.ballsShot = 0;
     this.timeSinceLastShot = System.currentTimeMillis();
-    this.lastFrameRPMStable = false;
+    this.lastFrameStable = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double currentFlywheelRPM = this.flywheel.getVelocity();
+    boolean flywheelStable = currentFlywheelRPM >= Constants.FLYWHEEL_STABLE_RPM;
 
     //decide whether or not to drive the feeder
-    if(currentFlywheelRPM >= Constants.FLYWHEEL_STABLE_RPM && kiwilightStable()) {
+    if(flywheelStable && kiwilightStable()) {
       intake.driveSlapper(Util.getAndSetDouble("Slap Speed", 0.5));
       feeder.driveBeater(Util.getAndSetDouble("Beat Speed", 1));
       feeder.driveFeeder(Util.getAndSetDouble("Feed Speed", 1));
-      lastFrameRPMStable = true;
+      lastFrameStable = true;
     } else {
       intake.driveSlapper(0);
       feeder.driveBeater(0);
       feeder.driveFeeder(0);
 
-      if(lastFrameRPMStable) { //bro, rpm was stable last time, so we just shot a ball
-        lastFrameRPMStable = false;
-        ballsShot++;
+      if(lastFrameStable) { //bro, rpm was stable last time, so we just shot a ball
+        if(timeSinceLastShot >= Util.getAndSetDouble("Ball Shot Timeout", 100)) {
+          ballsShot++;
+        }
+
+        lastFrameStable = false;
         timeSinceLastShot = System.currentTimeMillis();
       }
     }
+
+    if(runIntake) {
+      intake.driveEater(Util.getAndSetDouble("Eat Speed", 1));
+    }
+
+    SmartDashboard.putBoolean("Auto Flywheel Stable", flywheelStable);
+    SmartDashboard.putBoolean("KiwiLight Aligned", kiwilightStable());
+    SmartDashboard.putNumber("Auto Balls Shot", ballsShot);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    intake.driveEater(0);
     intake.driveSlapper(0);
     feeder.driveBeater(0);
     feeder.driveFeeder(0);
@@ -121,8 +139,7 @@ public class CyborgCommandShootPayload extends CommandBase {
   }
 
   private boolean kiwilightStable() {
-    boolean horizontalStable = kiwilight.getHorizontalAngleToTarget() < Constants.KIWILIGHT_STABLE_DEGREES;
-    boolean verticalStable   = kiwilight.getVerticalAngleToTarget() < Constants.KIWILIGHT_STABLE_DEGREES;
-    return horizontalStable && verticalStable;
+    boolean horizontalStable = kiwilight.getHorizontalAngleToTarget() <= Constants.KIWILIGHT_STABLE_DEGREES;
+    return horizontalStable;
   }
 }

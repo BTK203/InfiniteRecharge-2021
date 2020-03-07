@@ -25,19 +25,14 @@ public class CyborgCommandSetTurretPosition extends CommandBase {
    */
   public CyborgCommandSetTurretPosition(SubsystemTurret turret, int yawTarget, int pitchTarget) {
     this.turret = turret;
-    // this.yawPosition = yawTarget;
-    // this.pitchPosition = pitchTarget;
-    this.yawPosition = (int) Util.getAndSetDouble("Test Yaw Position", 0);
-    this.pitchPosition = (int) Util.getAndSetDouble("Test Pitch Position", 0);
+    this.yawPosition = yawTarget;
+    this.pitchPosition = pitchTarget;
     addRequirements(this.turret);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    this.yawPosition = (int) Util.getAndSetDouble("Test Yaw Position", 0);
-    this.pitchPosition = (int) Util.getAndSetDouble("Test Pitch Position", 0);
-
     //set yaw pid
     double yawkP = Util.getAndSetDouble("Yaw Position kP", 0.004);
     double yawkI = Util.getAndSetDouble("Yaw Position kI", 0.001);
@@ -76,7 +71,7 @@ public class CyborgCommandSetTurretPosition extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    double yawError = Math.abs(yawPosition - turret.getYawPosition());
+    double yawError = Math.abs(Math.abs(turret.getYawPosition()) - yawPosition);
     double pitchError = Math.abs(pitchPosition - turret.getPitchPosition());
 
     boolean yawStable = yawError <= Constants.TURRET_YAW_ALLOWABLE_ERROR;

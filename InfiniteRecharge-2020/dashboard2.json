@@ -10,15 +10,93 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
-          "7,0": {
+          "4,0": {
             "size": [
-              5,
+              3,
+              8
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Commands",
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Calibrate Turret Pitch",
+                  "_title": "/SmartDashboard/Calibrate Turret Pitch"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Calibrate Turret Yaw",
+                  "_title": "/SmartDashboard/Calibrate Turret Yaw"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Drive Distance",
+                  "_title": "/SmartDashboard/Drive Distance"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Drive Flywheel RPM",
+                  "_title": "/SmartDashboard/Drive Flywheel RPM"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Run  Winch",
+                  "_title": "/SmartDashboard/Run  Winch"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Set Turret Position",
+                  "_title": "/SmartDashboard/Set Turret Position"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Test Scissor PID",
+                  "_title": "/SmartDashboard/Test Scissor PID"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Toggle Winch",
+                  "_title": "/SmartDashboard/Toggle Winch"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Zero Drivetrain Encoders",
+                  "_title": "/SmartDashboard/Zero Drivetrain Encoders"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Zero Scissor and Winch Encoders",
+                  "_title": "/SmartDashboard/Zero Scissor and Winch Encoders"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Zero Turret",
+                  "_title": "/SmartDashboard/Zero Turret"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Zero Yaw",
+                  "_title": "/SmartDashboard/Zero Yaw"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Turret Hunt",
+                  "_title": "/SmartDashboard/Turret Hunt"
+                }
+              ]
+            }
+          },
+          "0,0": {
+            "size": [
+              4,
               8
             ],
             "content": {
               "_type": "Robot Preferences",
               "_source0": "network_table:///Preferences",
-              "_title": "Preferences",
+              "_title": "/Preferences",
               "Miscellaneous/Show search box": true
             }
           }
@@ -120,6 +198,7 @@
             ],
             "content": {
               "_type": "Camera Stream",
+              "_source0": "camera_server://USB Camera 0",
               "_title": "Camera Stream",
               "Crosshair/Show crosshair": true,
               "Crosshair/Crosshair color": "#FFFFFFFF",
@@ -222,7 +301,7 @@
                 "0,2": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/Left Position",
-                  "_title": "/SmartDashboard/Left Position"
+                  "_title": "Left Position"
                 },
                 "2,1": {
                   "_type": "Simple Dial",
@@ -235,7 +314,7 @@
                 "2,2": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/Right Position",
-                  "_title": "/SmartDashboard/Right Position"
+                  "_title": "Right Position"
                 }
               }
             }
@@ -381,7 +460,7 @@
             ],
             "content": {
               "_type": "Grid Layout",
-              "_title": "Turret Yaw Encoder",
+              "_title": "Turret Yaw",
               "Layout/Number of columns": 3,
               "Layout/Number of rows": 3,
               "Layout/Label position": "BOTTOM",
@@ -389,19 +468,19 @@
                 "1,1": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/Yaw Position",
-                  "_title": "SmartDashboard/Yaw Position"
+                  "_title": "Position"
                 },
                 "2,1": {
                   "_type": "Boolean Box",
                   "_source0": "network_table:///SmartDashboard/Yaw Forward Limit",
-                  "_title": "SmartDashboard/Yaw Forward Limit",
+                  "_title": "Forward Limit",
                   "Colors/Color when true": "#7CFC00FF",
                   "Colors/Color when false": "#8B0000FF"
                 },
                 "0,1": {
                   "_type": "Boolean Box",
                   "_source0": "network_table:///SmartDashboard/Yaw Backward Limit",
-                  "_title": "SmartDashboard/Yaw Backward Limit",
+                  "_title": "Back Limit",
                   "Colors/Color when true": "#7CFC00FF",
                   "Colors/Color when false": "#8B0000FF"
                 }
@@ -415,7 +494,7 @@
             ],
             "content": {
               "_type": "Grid Layout",
-              "_title": "Turret Pitch Encoder",
+              "_title": "Turret Pitch",
               "Layout/Number of columns": 3,
               "Layout/Number of rows": 3,
               "Layout/Label position": "BOTTOM",
@@ -423,19 +502,19 @@
                 "1,1": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/Pitch Position",
-                  "_title": "SmartDashboard/Pitch Position"
+                  "_title": "Position"
                 },
                 "0,1": {
                   "_type": "Boolean Box",
                   "_source0": "network_table:///SmartDashboard/Pitch Forward Limit",
-                  "_title": "SmartDashboard/Pitch Forward Limit",
+                  "_title": "Forward Limit",
                   "Colors/Color when true": "#7CFC00FF",
                   "Colors/Color when false": "#8B0000FF"
                 },
                 "2,1": {
                   "_type": "Boolean Box",
                   "_source0": "network_table:///SmartDashboard/Pitch Backward Limit",
-                  "_title": "SmartDashboard/Pitch Backward Limit",
+                  "_title": "Backward Limit",
                   "Colors/Color when true": "#7CFC00FF",
                   "Colors/Color when false": "#8B0000FF"
                 }
@@ -473,20 +552,9 @@
                 "1,0": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/FW Wheel Velocity",
-                  "_title": "SmartDashboard/FW Wheel Velocity"
+                  "_title": "Velocity"
                 }
               }
-            }
-          },
-          "5,6": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/H Ticks To Turn",
-              "_title": "SmartDashboard/H Ticks To Turn"
             }
           },
           "3,0": {
@@ -497,9 +565,197 @@
             "content": {
               "_type": "Boolean Box",
               "_source0": "network_table:///SmartDashboard/Aligning",
-              "_title": "SmartDashboard/Aligning",
+              "_title": "Aligning",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "3,5": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Gyro",
+              "_source0": "network_table:///LiveWindow/Ungrouped/navX-Sensor",
+              "_title": "NAVX",
+              "Visuals/Major tick spacing": 45.0,
+              "Visuals/Starting angle": 180.0,
+              "Visuals/Show tick mark ring": true,
+              "Visuals/Counter clockwise": false
+            }
+          },
+          "3,7": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/NavX Connected",
+              "_title": "NAVX Connected",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Config",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 96.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Auto Mode",
+              "_title": "/SmartDashboard/Auto Mode"
+            }
+          },
+          "3,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Preferences/Auto Start Offset",
+              "_title": "/Preferences/Auto Start Offset"
+            }
+          },
+          "6,3": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Auto Yaw Target",
+              "_title": "/SmartDashboard/Auto Yaw Target"
+            }
+          },
+          "4,5": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Yaw PID Error",
+              "_title": "/SmartDashboard/Yaw PID Error"
+            }
+          },
+          "6,5": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Pitch PID Error",
+              "_title": "/SmartDashboard/Pitch PID Error"
+            }
+          },
+          "4,4": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Auto Flywheel Stable",
+              "_title": "/SmartDashboard/Auto Flywheel Stable",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "6,4": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/KiwiLight Aligned",
+              "_title": "/SmartDashboard/KiwiLight Aligned",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "5,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Preferences/Auto Payload Timeout",
+              "_title": "/Preferences/Auto Payload Timeout"
+            }
+          },
+          "7,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Preferences/Initiation Drive",
+              "_title": "/Preferences/Initiation Drive"
+            }
+          },
+          "9,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Preferences/Ball Shot Timeout",
+              "_title": "/Preferences/Ball Shot Timeout"
+            }
+          },
+          "11,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Preferences/Init Auto Payload",
+              "_title": "/Preferences/Init Auto Payload"
+            }
+          },
+          "8,3": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Auto Balls Shot",
+              "_title": "/SmartDashboard/Auto Balls Shot"
+            }
+          },
+          "13,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Preferences/Trench Distance",
+              "_title": "Preferences/Trench Distance"
             }
           }
         }
@@ -508,7 +764,7 @@
   ],
   "windowGeometry": {
     "x": -1928.0,
-    "y": -109.0,
+    "y": -8.0,
     "width": 1936.0,
     "height": 1056.0
   }

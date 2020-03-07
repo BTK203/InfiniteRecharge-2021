@@ -7,19 +7,25 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.SubsystemTurret;
+import frc.robot.subsystems.SubsystemFeeder;
+import frc.robot.subsystems.SubsystemIntake;
 import frc.robot.util.Util;
 
-public class CyborgCommandZeroTurret extends CommandBase {
-  private SubsystemTurret turret;
+public class ConstantCommandDriveIntake extends CommandBase {
+  private SubsystemIntake intake;
+  private SubsystemFeeder feeder;
 
   /**
-   * Creates a new CyborgCommandZeroTurret.
+   * Creates a new ConstantCommandDriveIntake.
    */
-  public CyborgCommandZeroTurret(SubsystemTurret turret) {
-    this.turret = turret;
-    addRequirements(this.turret);
+  public ConstantCommandDriveIntake(SubsystemIntake intake, SubsystemFeeder feeder) {
+    this.intake = intake;
+    this.feeder = feeder;
+
+    addRequirements(intake);
+    addRequirements(feeder);
   }
 
   // Called when the command is initially scheduled.
@@ -30,30 +36,23 @@ public class CyborgCommandZeroTurret extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double calibrateSpeed = Util.getAndSetDouble("Calibrate Speed", 0.5);
-
-    if(!turret.getYawLeftLimit()) {
-      turret.setYawPercentOutput(calibrateSpeed * -1);
-    }
-
-    if(!turret.getPitchLowerLimit()) {
-      turret.setPitchPercentOutput(calibrateSpeed);
-    } else {
-      turret.setPitchPercentOutput(0);
-      turret.setPitchPosition(0);
-    }
+    intake.driveEater(Util.getAndSetDouble("Eat Speed", 1));
+    intake.driveSlapper(Util.getAndSetDouble("Slap Speed", 0.5));
+    feeder.driveBeater(Util.getAndSetDouble("Beat Speed", 1));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    turret.setYawPercentOutput(0);
-    turret.setPitchPercentOutput(0);
+    intake.driveEater(0);
+    intake.driveSlapper(0);
+    feeder.driveBeater(0);
+    feeder.driveFeeder(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return turret.getYawLeftLimit() && turret.getPitchLowerLimit();
+    return false;
   }
 }
