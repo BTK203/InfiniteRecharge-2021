@@ -51,7 +51,7 @@ public class SemiManualCommandRunWinch extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climber.decendByController(controller);
+    climber.moveWinchByController(controller);
     double winchPosition = climber.getWinchPosition();
     double winchInches = (Math.pow(Math.E, -0.001504 * winchPosition) * -56.96) + 57.07;
     double targetScissorPosition = (-.0547 * winchPosition) - .1042; 

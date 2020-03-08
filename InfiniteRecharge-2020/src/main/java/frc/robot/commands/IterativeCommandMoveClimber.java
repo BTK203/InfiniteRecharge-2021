@@ -21,6 +21,7 @@ public class IterativeCommandMoveClimber extends CommandBase {
   private SubsystemClimb climber;
   private ClimbPosition position;
   private double winchHeight;
+  private boolean finished;
 
   /**
    * Creates a new IterativeCommandMoveClimber.
@@ -46,8 +47,9 @@ public class IterativeCommandMoveClimber extends CommandBase {
     double lowerOutLimit = Util.getAndSetDouble("Scissor Position Min Out", -1);
 
     climber.setScissorPIDF(p, i, d, f, IZone, lowerOutLimit, upperOutLimit);
-    climber.zeroEncoders(); //this line is VERY important, DO NOT remove it! The climber might break without it.
     climber.setScissorBraking(IdleMode.kBrake);
+    finished = false;
+
     SmartDashboard.putBoolean("Move Climber", true);
   }
 
@@ -74,17 +76,27 @@ public class IterativeCommandMoveClimber extends CommandBase {
         break;
 
       default:
-        winchHeight = (Double) null;
+        winchHeight = Constants.LOWEST_HEIGHT;
         break;
     }
 
     if (!Double.isNaN(winchHeight))
     {
+      //sets target winch position
       climber.setWinchPosition(winchHeight);
+
+      //calculate target scissor position based on winch position
       double winchPosition = climber.getWinchPosition();
       double winchInches = (Math.pow(Math.E, -0.001504 * winchPosition) * -56.96) + 57.07;
       double targetScissorPosition = (-.0547 * winchPosition) - .1042;
       climber.setScissorsPosition(targetScissorPosition);
+
+      //mark the command as done if the winch is done moving
+      double winchError = Math.abs(winchHeight - winchPosition);
+      if(winchError < Constants.CLIMBER_WINCH_ALLOWABLE_ERROR) {
+        finished = true;
+      }
+      
       SmartDashboard.putNumber("Target Scissor Position", targetScissorPosition);
       SmartDashboard.putNumber("Winch Inches", winchInches);
     }
@@ -101,6 +113,6 @@ public class IterativeCommandMoveClimber extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return finished;
   }
 }

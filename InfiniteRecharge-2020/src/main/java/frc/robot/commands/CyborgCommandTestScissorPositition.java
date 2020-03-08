@@ -50,7 +50,7 @@ public class CyborgCommandTestScissorPositition extends CommandBase {
   public void execute() {
     double scissorsTargetPosition = Util.getAndSetDouble("Scissors Target Position", 0);
     scissors.setScissorsPosition(scissorsTargetPosition);
-    scissors.decendByController(controller);
+    scissors.moveWinchByController(controller);
   }
 
   // Called once the command ends or is interrupted.

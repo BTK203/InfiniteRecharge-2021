@@ -41,8 +41,8 @@ public class ToggleCommandDriveClimber extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climber.ascendByController(controller);
-    climber.decendByController(controller);
+    climber.moveScissorsByController(controller);
+    climber.moveWinchByController(controller);
   }
 
   // Called once the command ends or is interrupted.

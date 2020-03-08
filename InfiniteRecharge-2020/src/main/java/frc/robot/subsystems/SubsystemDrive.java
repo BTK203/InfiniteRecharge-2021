@@ -48,6 +48,9 @@ public class SubsystemDrive extends SubsystemBase {
     setAmpLimits();
   }
 
+  /**
+   * Runs with every robot frame.
+   */
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -89,6 +92,10 @@ public class SubsystemDrive extends SubsystemBase {
     rightSlave.set(driveRight);
   }
 
+  /**
+   * Sets the percent output of the drive motors.
+   * @param percentOutput the percent to set the motors to.
+   */
   public void setPercentOutput(double percentOutput) {
     rightMaster.set(percentOutput);
     rightSlave.set(percentOutput);
@@ -96,27 +103,53 @@ public class SubsystemDrive extends SubsystemBase {
     leftSlave.set(percentOutput);
   }
 
+  /**
+   * Sets the target position of the left motors.
+   * @param leftPosition target position (rotations) to set the motors to.
+   */
   public void setLeftPosition(double leftPosition) {
     leftMaster.getPIDController().setReference(leftPosition, ControlType.kPosition);
   }
 
+  /**
+   * Sets the target position of the right motors.
+   * @param rightPosition target position (rotations) to set the motors to.
+   */
   public void setRightPosition(double rightPosition) {
     rightMaster.getPIDController().setReference(rightPosition, ControlType.kPosition);
   }
 
+  /**
+   * Sets the encoder counts of the motors to 0.
+   */
   public void zeroEncoders() {
     leftMaster.getEncoder().setPosition(0);
     rightMaster.getEncoder().setPosition(0);
   }
 
+  /**
+   * Returns the current position (rotations) of the left motors.
+   */
   public double getLeftPosition() {
     return leftMaster.getEncoder().getPosition();
   }
 
+  /**
+   * Returns the current position (rotations) of the right motor.
+   */
   public double getRightPosition() {
     return rightMaster.getEncoder().getPosition();
   }
 
+  /**
+   * Sets the PID constants of all motors.
+   * @param kP new P gain
+   * @param kI new I gain
+   * @param kD new D gain
+   * @param kF new F gain
+   * @param iZone Proximity to target at which I takes effect
+   * @param outLimit maximum percent output of the motors.
+   */
   public void setPIDConstants(double kP, double kI, double kD, double kF, double iZone, double outLimit) {
     leftMaster.getPIDController().setP(kP);
     leftMaster.getPIDController().setI(kI);
@@ -133,6 +166,9 @@ public class SubsystemDrive extends SubsystemBase {
     rightMaster.getPIDController().setOutputRange(outLimit * -1, outLimit);
   }
 
+  /**
+   * Sets the inverts of the drive motors.
+   */
   private void setInverts() {
     leftMaster.setInverted(Constants.DRIVE_LEFT_MASTER_INVERT);
     leftSlave.setInverted(Constants.DRIVE_LEFT_SLAVE_INVERT);
@@ -140,6 +176,9 @@ public class SubsystemDrive extends SubsystemBase {
     rightSlave.setInverted(Constants.DRIVE_RIGHT_SLAVE_INVERT);
   }
 
+  /**
+   * Sets all motors to braking mode.
+   */
   private void setBraking() {
     leftMaster.setIdleMode(IdleMode.kBrake);
     leftSlave.setIdleMode(IdleMode.kBrake);
@@ -147,6 +186,9 @@ public class SubsystemDrive extends SubsystemBase {
     rightSlave.setIdleMode(IdleMode.kBrake);
   }
 
+  /**
+   * Configures the ramp rate of the motors.
+   */
   private void setRamps() {
     double ramp = Util.getAndSetDouble("Drive Ramp", 0.25);
     leftMaster.setOpenLoopRampRate(ramp);
@@ -155,15 +197,19 @@ public class SubsystemDrive extends SubsystemBase {
     rightSlave.setOpenLoopRampRate(ramp);
   }
 
-  private void setAmpLimits() {
-    int ampLimit = 60; //TODO: make constant
-    
-    leftMaster.setSmartCurrentLimit(ampLimit);
-    leftSlave.setSmartCurrentLimit(ampLimit);
-    rightMaster.setSmartCurrentLimit(ampLimit);
-    rightSlave.setSmartCurrentLimit(ampLimit);
+  /**
+   * Sets the amp limits of the motors.
+   */
+  private void setAmpLimits() {    
+    leftMaster.setSmartCurrentLimit(Constants.DRIVE_AMP_LIMIT);
+    leftSlave.setSmartCurrentLimit(Constants.DRIVE_AMP_LIMIT);
+    rightMaster.setSmartCurrentLimit(Constants.DRIVE_AMP_LIMIT);
+    rightSlave.setSmartCurrentLimit(Constants.DRIVE_AMP_LIMIT);
   }
 
+  /**
+   * Marks the slave motors as "following" the master motors.
+   */
   private void setFollowers() {
     leftSlave.follow(leftMaster);
     rightSlave.follow(rightMaster);

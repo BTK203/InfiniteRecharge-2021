@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import frc.robot.util.Point3D;
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants. This class should not be used for any other
@@ -160,15 +158,13 @@ public final class Constants {
         TURRET_YAW_ALLOWABLE_ERROR = 200000,
         TURRET_PITCH_ALLOWABLE_ERROR = 50,
         TURRET_CENTER_ANGLE_OFFSET_YAW = 90,
-        TURRET_PITCH_CAMERA_OFFSET = 25;
+        TURRET_PITCH_CAMERA_OFFSET = 25,
+        DRIVE_AMP_LIMIT = 60;
 
     public static final double 
         FLYWHEEL_GEAR_RATIO = 1.6071,
-        DRIVETRAIN_WHEEL_DIAMETER = 7, //in
         DRIVETRAIN_ALLOWABLE_ERROR = 1,
-        TURRET_HEIGHT = 24,
-        TURRET_YAW_DEGREES_AT_ZERO = -90, //degrees from zero to turret looking forward
-        TURRET_PITCH_DEGREES_AT_ZERO = 5;
+        CLIMBER_WINCH_ALLOWABLE_ERROR = 0.5;
 
     public static final boolean
         DRIVE_CAMERA_AUTOMATIC_EXPOSURE = true;
@@ -176,9 +172,6 @@ public final class Constants {
     /**
      * Auto values
      */
-    public static final Point3D
-        POWERPORT_LOCATION = new Point3D(94.66, 0, 122.25);
-
     public static final int
         AUTO_INIT_BALL_COUNT = 3,
         AUTO_PAYLOAD_TIMEOUT = 3000, //ms

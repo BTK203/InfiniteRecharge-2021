@@ -10,7 +10,7 @@ package frc.robot.auto;
 import frc.robot.Constants;
 
 /**
- * Class that links together everything auto.
+ * Class that provides some game specific utils for auto.
  */
 public class Auto {
     /**

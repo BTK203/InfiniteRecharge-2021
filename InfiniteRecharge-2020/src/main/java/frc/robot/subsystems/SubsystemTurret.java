@@ -20,10 +20,11 @@ import frc.robot.Constants;
 import frc.robot.util.Util;
 import frc.robot.util.Xbox;
 
+/**
+ * Turret pitch and yaw
+ */
 public class SubsystemTurret extends SubsystemBase {
-  /**
-   * Creates a new SubsystemTurret.
-   */
+ 
   private TalonSRX 
     turretYaw,
     turretPitch;
@@ -32,6 +33,9 @@ public class SubsystemTurret extends SubsystemBase {
     totalYawTicks,
     totalPitchTicks;
 
+  /**
+   * Creates a new SubsystemTurret.
+   */
   public SubsystemTurret() {
     turretYaw = new TalonSRX(Constants.TURRET_YAW_ID);
     turretPitch = new TalonSRX(Constants.TURRET_PITCH_ID);
@@ -42,6 +46,9 @@ public class SubsystemTurret extends SubsystemBase {
     configureMotors();
   }
 
+  /**
+   * Runs with every robot frame.
+   */
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -91,6 +98,15 @@ public class SubsystemTurret extends SubsystemBase {
     turretPitch.set(ControlMode.PercentOutput, speedy);
   }
 
+  /**
+   * Sets the PIDF constants of the turret motor.
+   * @param p desired P gain
+   * @param i desired I gain
+   * @param d desired D gain
+   * @param f desired F gain
+   * @param highOut maximum output percent
+   * @param izone proximity to target at which I gain starts to take effect
+   */
   public void setYawPIDF(double p, double i, double d, double f, double highOut, int izone) {
 
     turretYaw.config_kP(0, p);
@@ -104,6 +120,15 @@ public class SubsystemTurret extends SubsystemBase {
     turretYaw.configAllowableClosedloopError(0, 0, 0);
   }
 
+  /**
+   * Sets the PIDF constants of the pitch motor.
+   * @param p desired P gain
+   * @param i desired I gain
+   * @param d desired D gain
+   * @param f desired F gain
+   * @param highOut maximum output percent
+   * @param izone proximity to target at which I gain starts to take effect
+   */
   public void setPitchPIDF(double p, double i, double d, double f, double highOut, int izone) {
     turretPitch.config_kP(0, p);
     turretPitch.config_kI(0, i);
@@ -116,6 +141,10 @@ public class SubsystemTurret extends SubsystemBase {
     turretPitch.configAllowableClosedloopError(0, 0, 0);
   }
 
+  /**
+   * Sets the target yaw position
+   * @param position target yaw position in ticks.
+   */
   public void setYawPosition(double position) {
     turretYaw.set(ControlMode.Position, position);
 
@@ -123,6 +152,10 @@ public class SubsystemTurret extends SubsystemBase {
     SmartDashboard.putNumber("Yaw PID Error", Math.abs(turretYaw.getSensorCollection().getQuadraturePosition()) - position);
   }
 
+  /**
+   * Sets the target pitch position
+   * @param position target pitch position in ticks.
+   */
   public void setPitchPosition(double position) {
     turretPitch.set(ControlMode.Position, position);
 
@@ -130,18 +163,32 @@ public class SubsystemTurret extends SubsystemBase {
     SmartDashboard.putNumber("Pitch PID Error", turretPitch.getSensorCollection().getQuadraturePosition() - position);
   }
 
+  /**
+   * Sets the percent output of the yaw motor.
+   * @param percent percent output 
+   */
   public void setYawPercentOutput(double percent) {
     turretYaw.set(ControlMode.PercentOutput, percent);
   }
 
+  /**
+   * Sets the percent output of the pitch motor.
+   * @param percent percent output
+   */
   public void setPitchPercentOutput(double percent) {
     turretPitch.set(ControlMode.PercentOutput, percent);
   }
   
+  /**
+   * Returns the current position of the yaw motor in ticks.
+   */
   public double getYawPosition() {
     return turretYaw.getSensorCollection().getQuadraturePosition();
   }
 
+  /**
+   * Returns the current position of pitch motor in ticks.
+   */
   public double getPitchPosition() {
     return turretPitch.getSensorCollection().getQuadraturePosition();
   }
@@ -156,28 +203,48 @@ public class SubsystemTurret extends SubsystemBase {
 
   /**
    * Returns the Yaw motors left limit switches state(true for closed).
-   * NOTE Left limit is the "high" limit.
+   * NOTE: Left limit is the "high" limit.
    */
   public boolean getYawLeftLimit() {
     return turretYaw.isRevLimitSwitchClosed() == 1;
   }
 
+  /**
+   * Returns true if the pitch motor's lower limit is closed, false otherwise.
+   */
   public boolean getPitchLowerLimit() {
     return turretPitch.isFwdLimitSwitchClosed() == 1;
   }
 
+  /**
+   * Returns true if the pitch motor's upper limit is closed, false otherwise.
+   */
   public boolean getPitchUpperLimit() {
     return turretPitch.isRevLimitSwitchClosed() == 1;
   }
 
+  /**
+   * Sets the current yaw encoder position.
+   * @param newPosition the new current yaw position, in encoder ticks.
+   */
   public void setCurrentYawEncoderPosition(int newPosition) {
     turretYaw.getSensorCollection().setQuadraturePosition(newPosition, 0);
   }
 
+  /**
+   * Sets the current pitch encoder position.
+   * @param newPosition the new current pitch position, in encoder ticks.
+   */
   public void setCurrentPitchEncoderPosition(int newPosition) {
     turretPitch.getSensorCollection().setQuadraturePosition(newPosition, 0);
   }
 
+  /**
+   * Attempts to set the total yaw ticks by hitting the right limit.
+   * NOTE: Motor percent output must be set elsewhere. This method only checks the limit switch
+   * and sets the encoder position if it is closed.
+   * @return true if the total tick count was successfully set, false otherwise.
+   */
   public boolean attemptToSetTotalYawTicks() {
     if(getYawRightlimit()) {
       this.totalYawTicks = turretYaw.getSensorCollection().getQuadraturePosition();
@@ -187,6 +254,12 @@ public class SubsystemTurret extends SubsystemBase {
     return false;
   }
 
+  /**
+   * Attempts to set the total pitch ticks by hitting the upper limit.
+   * NOTE: Just like attemptToSetTotalYawTicks(), this method does not
+   * set the motor percent output. That must be called along with this method.
+   * @return true if the total pitch tick count was successfully set, false otherwise.
+   */
   public boolean attemptToSetTotalPitchTicks() {
     if(getPitchUpperLimit()) {
       this.totalPitchTicks = turretPitch.getSensorCollection().getQuadraturePosition();
@@ -196,14 +269,24 @@ public class SubsystemTurret extends SubsystemBase {
     return false;
   }
 
+  /**
+   * Returns the total tick count of the yaw encoder.
+   */
   public double getTotalYawTicks() {
     return totalYawTicks;
   }
 
+  /**
+   * Returns the total tick count of the pitch encoder.
+   * @return
+   */
   public double getTotalPitchTicks() {
     return totalPitchTicks;
   }
 
+  /**
+   * Sets output inverts, encoder inverts, and neutral modes of the motors.
+   */
   private void configureMotors() {
     turretPitch.setNeutralMode(NeutralMode.Brake);
     turretYaw.setNeutralMode(NeutralMode.Brake);
@@ -212,7 +295,5 @@ public class SubsystemTurret extends SubsystemBase {
     turretYaw.setInverted(Constants.TURRET_YAW_INVERT);
 
     turretYaw.setSensorPhase(true);
-
-    turretYaw.configMaxIntegralAccumulator(0, 1000000000);
   }
 }

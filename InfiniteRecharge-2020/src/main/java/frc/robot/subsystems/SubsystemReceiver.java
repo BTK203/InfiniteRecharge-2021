@@ -18,6 +18,9 @@ import frc.robot.util.Util;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+/**
+ * The thing that listens to the Pi.
+ */
 public class SubsystemReceiver extends SubsystemBase {
   private String latestSegment;
   private double[] latestData;
@@ -99,26 +102,44 @@ public class SubsystemReceiver extends SubsystemBase {
     return latestData;
   }
 
+  /**
+   * Returns the width of the seen target in pixels, or -1 if no target is seen.
+   */
   public double getTargetWidthPixels() {
     return latestData[2];
   }
 
+  /**
+   * Returns the height of the seen target in pixels, or -1 if no target is seen.
+   */
   public double getTargetHeightPixels() {
     return latestData[3];
   }
 
+  /**
+   * Returns the distance of the camera to the target, or -1 if no target is seen.
+   */
   public double getDistanceToTarget() {
     return latestData[4];
   }
 
+  /**
+   * Returns the horizontal angle (degrees) to the target, or 180 if no target is seen.
+   */
   public double getHorizontalAngleToTarget() {
     return latestData[5];
   }
 
+  /**
+   * Returns the vertical angle (degrees) to the target, or 180 if no target is seen.
+   */
   public double getVerticalAngleToTarget() {
     return latestData[6];
   }
 
+  /**
+   * Returns true if a target is seen, false otherwise.
+   */
   public boolean targetSpotted() {
     return latestData[2] > -1;
   }

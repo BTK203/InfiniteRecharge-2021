@@ -15,6 +15,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+/**
+ * Nom nom
+ */
 public class SubsystemIntake extends SubsystemBase {
   
   private TalonSRX 
@@ -31,25 +34,42 @@ public class SubsystemIntake extends SubsystemBase {
     configureMotors();
   }
 
+  /**
+   * Runs with every robot frame.
+   */
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Eater Amps", eater.getStatorCurrent());
     SmartDashboard.putNumber("Slapper Amps", slapper.getStatorCurrent());
   }
 
+  /**
+   * Sets the percent output of the eater motor
+   * @param percent desired percent output
+   */
   public void driveEater(double percent) {
     eater.set(ControlMode.PercentOutput, percent);
   }
 
+  /**
+   * Sets the percent output of the slapper motor
+   * @param percent desired percent output
+   */
   public void driveSlapper(double percent) {
     slapper.set(ControlMode.PercentOutput, percent);
   }
 
+  /**
+   * Stops the motors.
+   */
   public void stopMotors() {
     eater.set(ControlMode.PercentOutput, 0);
     slapper.set(ControlMode.PercentOutput, 0);
   }
   
+  /**
+   * Sets the NeutralModes and inverts of the motors.
+   */
   private void configureMotors() {
     NeutralMode mode = (Constants.INTAKE_BRAKING ? NeutralMode.Brake : NeutralMode.Coast);
     eater.setNeutralMode(mode);
