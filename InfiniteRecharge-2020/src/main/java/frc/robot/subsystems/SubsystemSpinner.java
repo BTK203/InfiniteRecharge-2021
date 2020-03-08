@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,6 +17,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.ColorSensorV3;
 import frc.robot.Constants;
 import frc.robot.util.Util;
+import frc.robot.util.Xbox;
 
 /**
  * Thing that spins the color wheel.
@@ -54,6 +56,14 @@ public class SubsystemSpinner extends SubsystemBase {
     SmartDashboard.putBoolean("Found Yellow", isYellow(detectedColor));
 
     SmartDashboard.putNumber("Spinner Amps", spinner.getStatorCurrent());
+  }
+
+  /**
+   * Drives the spinner using input from passed controller.
+   * @param controller The controller to use.
+   */
+  public void driveByController(Joystick controller) {
+    spinner.set(ControlMode.PercentOutput, Xbox.RIGHT_X(controller));
   }
 
   /**
