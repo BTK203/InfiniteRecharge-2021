@@ -194,6 +194,10 @@ public class RobotContainer {
     /**
      * Dashboard Buttons
      */
+    SmartDashboard.putData("Toggle Winch", winchCommand);
+    SmartDashboard.putData("Drive Flywheel RPM", driveFlywheelRPM);
+    SmartDashboard.putData("Drive Flywheel PO", new ToggleCommandDriveFlywheel(SUB_FLYWHEEL));
+    SmartDashboard.putData("Align Turret", new CyborgCommandAlignTurret(SUB_TURRET, SUB_RECEIVER));
     SmartDashboard.putData("Calibrate Turret Yaw", new CyborgCommandCalibrateTurretYaw(SUB_TURRET));
     SmartDashboard.putData("Calibrate Turret Pitch", new CyborgCommandCalibrateTurretPitch(SUB_TURRET));
     SmartDashboard.putData("Zero Scissor and Winch Encoders", new InstantCommand(() -> SUB_CLIMB.zeroEncoders(), SUB_CLIMB));
@@ -209,8 +213,7 @@ public class RobotContainer {
     SmartDashboard.putData("Align Turret", alignTurret);
     SmartDashboard.putData("Run  Winch", semiManualWinchCommand);
   }
-
-
+  
   private void configureAutoChooser() {
     //declare the different autos we will choose from
     autoChooser = new SendableChooser<AutoMode>();

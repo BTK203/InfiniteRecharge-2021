@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SubsystemClimb;
 import frc.robot.util.Util;
 
-
 public class CyborgCommandTestScissorPositition extends CommandBase {
   private SubsystemClimb scissors;
   private Joystick controller;
@@ -41,7 +40,6 @@ public class CyborgCommandTestScissorPositition extends CommandBase {
     double lowerOutLimit = Util.getAndSetDouble("Scissor Position Min Out", -1);
 
     scissors.setScissorPIDF(p, i, d, f, IZone, lowerOutLimit, upperOutLimit);
-
     SmartDashboard.putBoolean("Test Scissor Climb", true);
   }
 
