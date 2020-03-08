@@ -29,10 +29,10 @@ public class CyborgCommandFlywheelVelocity extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    double p = Util.getAndSetDouble("FW Velocity kP", 0);
-    double i = Util.getAndSetDouble("FW Velocity kI", 0);
+    double p = Util.getAndSetDouble("FW Velocity kP", 0.0014);
+    double i = Util.getAndSetDouble("FW Velocity kI", 0.000005);
     double d = Util.getAndSetDouble("FW Velocity kD", 0);
-    double f = Util.getAndSetDouble("FW Velocity kF", 0);
+    double f = Util.getAndSetDouble("FW Velocity kF", 0.000185);
 
     double upperOutLimit = Util.getAndSetDouble("FW Velocity Max Out", 1);
     double lowerOutLimit = Util.getAndSetDouble("FW Velocity Min Out", -1);

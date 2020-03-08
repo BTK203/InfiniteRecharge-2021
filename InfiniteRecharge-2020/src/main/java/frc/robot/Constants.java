@@ -8,12 +8,14 @@
 package frc.robot;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants.  This class should not be used for any other purpose.  All constants should be
- * declared globally (i.e. public static).  Do not put anything functional in this class.
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean constants. This class should not be used for any other
+ * purpose. All constants should be declared globally (i.e. public static). Do
+ * not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
 
@@ -90,7 +92,7 @@ public final class Constants {
      */
     public static final boolean
         CLIMBER_SCISSOR_INVERT = false,
-        CLIMBER_WINCH_INVERT   = false;
+        CLIMBER_WINCH_INVERT   = true;
 
     /**
      * Spinner Inverts
@@ -126,6 +128,15 @@ public final class Constants {
         FLYWHEEL_AMP_LIMIT = 50;
     
     /*
+    * Climber Values
+    */
+    public static final double
+        LOWEST_HEIGHT = 0,
+        ON_WHEEL_HEIGHT = 30,
+        ABOVE_WHEEL_HEIGHT = 32,
+        HIGHEST_HEIGHT = 60;
+        
+    /*
     * FORMAT: Red_Min, Green_Min, Blue_Min, Red_Max, Green_Max, Blue_Max.
     */
     public static final int[]
@@ -141,12 +152,35 @@ public final class Constants {
         SPINNER_SPEED = 1,
         TURRET_YAW_DEGREES = 345,
         TURRET_PITCH_DEGREES = 100,
-        DEFAULT_TURRET_YAW_TICKS = 5000,
-        DEFAULT_TURRET_PITCH_TICKS = 1000;
+        DEFAULT_TURRET_YAW_TICKS = 1615628,
+        DEFAULT_TURRET_PITCH_TICKS = 1000,
+        FLYWHEEL_STABLE_RPM = 5750,
+        TURRET_YAW_ALLOWABLE_ERROR = 200000,
+        TURRET_PITCH_ALLOWABLE_ERROR = 50,
+        TURRET_CENTER_ANGLE_OFFSET_YAW = 90,
+        TURRET_PITCH_CAMERA_OFFSET = 25,
+        DRIVE_AMP_LIMIT = 60;
 
     public static final double 
-        FLYWHEEL_GEAR_RATIO = 1.6071;
+        FLYWHEEL_GEAR_RATIO = 1.6071,
+        DRIVETRAIN_ALLOWABLE_ERROR = 1,
+        CLIMBER_WINCH_ALLOWABLE_ERROR = 0.5;
 
     public static final boolean
         DRIVE_CAMERA_AUTOMATIC_EXPOSURE = true;
+
+    /**
+     * Auto values
+     */
+    public static final int
+        AUTO_INIT_BALL_COUNT = 3,
+        AUTO_PAYLOAD_TIMEOUT = 3000, //ms
+        DISTANCE_INIT_LINE_TO_ALLIANCE_WALL = 120,
+        KIWILIGHT_STABLE_DEGREES = 2, //in
+        TURRET_APPROX_TARGET_TICKS_CLOSE = -624258,
+        TURRET_TARGET_TICKS_PER_INCH = -1399, //ticks to turn per inch away from wall
+        AUTO_INIT_YAW_TARGET = -694;
+
+    public static final double 
+        DRIVE_ROTATIONS_PER_INCH = 0.45;
 }

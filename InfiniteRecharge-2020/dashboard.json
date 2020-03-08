@@ -236,6 +236,131 @@
               "_source0": "network_table:///SmartDashboard/FW Output",
               "_title": "FW Output"
             }
+          },
+          "11,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Yaw Out",
+              "_title": "Yaw Out"
+            }
+          },
+          "2,2": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Pitch Forward Limit",
+              "_title": "Pitch Forward Limit",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "12,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Pitch Ticks",
+              "_title": "Pitch Ticks"
+            }
+          },
+          "11,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Calibrate Turret Pitch",
+              "_title": "Calibrate Turret Pitch"
+            }
+          },
+          "0,3": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Calibrate Turret Yaw",
+              "_title": "Calibrate Turret Yaw"
+            }
+          },
+          "4,3": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Align Turret",
+              "_title": "Align Turret"
+            }
+          },
+          "4,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Yaw Ticks",
+              "_title": "Yaw Ticks"
+            }
+          },
+          "6,3": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Pitch Backward Limit",
+              "_title": "Pitch Backward Limit",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "8,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/GREEN",
+              "_title": "GREEN"
+            }
+          },
+          "9,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/RED",
+              "_title": "RED"
+            }
+          },
+          "10,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/BLUE",
+              "_title": "BLUE"
+            }
           }
         }
       }
@@ -415,12 +540,144 @@
           }
         }
       }
+    },
+    {
+      "title": "Conf",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 96.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "14,0": {
+            "size": [
+              3,
+              8
+            ],
+            "content": {
+              "_type": "Robot Preferences",
+              "_source0": "network_table:///Preferences",
+              "_title": "Preferences",
+              "Miscellaneous/Show search box": true
+            }
+          },
+          "12,0": {
+            "size": [
+              2,
+              8
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "List Layout",
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Align Turret",
+                  "_title": "SmartDashboard/Align Turret"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Calibrate Turret Pitch",
+                  "_title": "SmartDashboard/Calibrate Turret Pitch"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Calibrate Turret Yaw",
+                  "_title": "SmartDashboard/Calibrate Turret Yaw"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Drive Flywheel PO",
+                  "_title": "SmartDashboard/Drive Flywheel PO"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Drive Flywheel RPM",
+                  "_title": "SmartDashboard/Drive Flywheel RPM"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Toggle Winch",
+                  "_title": "SmartDashboard/Toggle Winch"
+                }
+              ]
+            }
+          },
+          "2,0": {
+            "size": [
+              9,
+              8
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/FW Motor Velocity",
+              "_source1": "network_table:///SmartDashboard/FW Wheel Velocity",
+              "_source2": "network_table:///SmartDashboard/FW Output",
+              "_title": "SmartDashboard/FW Motor Velocity",
+              "Graph/Visible time": 30.0,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Visible data/SmartDashboard/FW Motor Velocity": true,
+              "Visible data/SmartDashboard/FW Output": true,
+              "Visible data/SmartDashboard/FW Wheel Velocity": true
+            }
+          },
+          "11,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/FW Motor Velocity",
+              "_title": "SmartDashboard/FW Motor Velocity"
+            }
+          },
+          "11,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/FW Output",
+              "_title": "SmartDashboard/FW Output"
+            }
+          },
+          "11,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/FW Wheel Velocity",
+              "_title": "SmartDashboard/FW Wheel Velocity"
+            }
+          },
+          "11,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Pitch Position",
+              "_title": "SmartDashboard/Pitch Position"
+            }
+          }
+        }
+      }
     }
   ],
   "windowGeometry": {
-    "x": -6.400000095367432,
-    "y": -6.400000095367432,
-    "width": 640.0,
-    "height": 480.0
+    "x": -1928.0,
+    "y": -8.0,
+    "width": 1936.0,
+    "height": 1056.0
   }
 }

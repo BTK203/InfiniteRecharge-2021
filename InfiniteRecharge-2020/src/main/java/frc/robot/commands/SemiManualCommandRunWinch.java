@@ -7,24 +7,26 @@
 
 package frc.robot.commands;
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SubsystemClimb;
 import frc.robot.util.Util;
 
-public class CyborgCommandTestScissorPositition extends CommandBase {
-  private SubsystemClimb scissors;
-  private Joystick controller;
+public class SemiManualCommandRunWinch extends CommandBase {
+  private SubsystemClimb climber;
+  private Joystick controller; 
   /**
-   * Creates a new CyborgCommandTestScissorPositition.
+   * Creates a new SemiManualCommandRunWinch.
    */
-  public CyborgCommandTestScissorPositition(SubsystemClimb scissors, Joystick controller) {
+  public SemiManualCommandRunWinch( SubsystemClimb climber, Joystick controller) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.scissors = scissors;
+    this.climber = climber;
     this.controller = controller;
-    addRequirements(this.scissors);
-    SmartDashboard.putBoolean("Test Scissor Climb", false);
+    addRequirements(this.climber);
+    SmartDashboard.putBoolean("Run Winch", false);
   }
 
   // Called when the command is initially scheduled.
@@ -39,23 +41,32 @@ public class CyborgCommandTestScissorPositition extends CommandBase {
     double upperOutLimit = Util.getAndSetDouble("Scissor Position Max Out", 1);
     double lowerOutLimit = Util.getAndSetDouble("Scissor Position Min Out", -1);
 
-    scissors.setScissorPIDF(p, i, d, f, IZone, lowerOutLimit, upperOutLimit);
-    SmartDashboard.putBoolean("Test Scissor Climb", true);
+    climber.setScissorPIDF(p, i, d, f, IZone, lowerOutLimit, upperOutLimit);
+    climber.zeroEncoders(); //this line is VERY important, DO NOT remove it! The climber might break without it.
+    climber.setScissorBraking(IdleMode.kBrake);
+
+    SmartDashboard.putBoolean("Run Winch", true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double scissorsTargetPosition = Util.getAndSetDouble("Scissors Target Position", 0);
-    scissors.setScissorsPosition(scissorsTargetPosition);
-    scissors.moveWinchByController(controller);
-  }
+    climber.moveWinchByController(controller);
+    double winchPosition = climber.getWinchPosition();
+    double winchInches = (Math.pow(Math.E, -0.001504 * winchPosition) * -56.96) + 57.07;
+    double targetScissorPosition = (-.0547 * winchPosition) - .1042; 
+    // old target equation -> (Math.pow(Math.E, 0.02766 * winchInches) * -57.05) + 57.09;
+    climber.setScissorsPosition(targetScissorPosition);
+    SmartDashboard.putNumber("Target Scissor Position", targetScissorPosition);
+    SmartDashboard.putNumber("Winch Inches", winchInches);
+   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    scissors.setScissorsPercentOutput(0);
-    SmartDashboard.putBoolean("Test Scissor Climb", false);
+    climber.setWinchPercentOutput(0);
+    climber.setScissorsPercentOutput(0);
+    SmartDashboard.putBoolean("Run Winch", false);
   }
 
   // Returns true when the command should end.

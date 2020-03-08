@@ -37,15 +37,15 @@ public class CyborgCommandCalibrateTurretYaw extends CommandBase {
   @Override
   public void execute() {    
     if(zeroing) {
-      turret.setYawPercentOutput(Util.getAndSetDouble("Calibrate Speed", 0.3));
+      turret.setYawPercentOutput(Util.getAndSetDouble("Calibrate Speed", 0.3) * -1);
 
-      if(turret.getYawRightlimit()) {
+      if(turret.getYawLeftLimit()) {
         turret.setCurrentYawEncoderPosition(0);
         zeroing = false;
       }
     } else {
       DriverStation.reportWarning("Looking For Max", false);
-      turret.setYawPercentOutput(Util.getAndSetDouble("Calibrate Speed", 0.3) * -1);
+      turret.setYawPercentOutput(Util.getAndSetDouble("Calibrate Speed", 0.3));
       if(turret.attemptToSetTotalYawTicks()) {
         finished = true;
       }

@@ -10,10 +10,14 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.util.Util;
 
+/**
+ * Digestive System
+ */
 public class SubsystemFeeder extends SubsystemBase {
   
   private TalonSRX 
@@ -30,24 +34,42 @@ public class SubsystemFeeder extends SubsystemBase {
     configureMotors();
   }
 
+  /**
+   * Runs with every robot frame.
+   */
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Beater Amps", beater.getStatorCurrent());
+    SmartDashboard.putNumber("Feeder Amps", feeder.getStatorCurrent());
   }
 
+  /**
+   * Sets the percent output of the beater motor.
+   * @param percent desired percent output of beater
+   */
   public void driveBeater(double percent) {
     beater.set(ControlMode.PercentOutput, percent);
   }
 
+  /**
+   * Sets the percent output of the feeder motor
+   * @param percent desired percent output of feeder
+   */
   public void driveFeeder(double percent) {
     feeder.set(ControlMode.PercentOutput, percent);
   }
 
+  /**
+   * Stops all motors
+   */
   public void stopMotors() {
     beater.set(ControlMode.PercentOutput, 0);
     feeder.set(ControlMode.PercentOutput, 0);
   }
 
+  /**
+   * Configures neutral modes and inverts of the motors.
+   */
   private void configureMotors() {
     NeutralMode mode = (Constants.FEEDER_BRAKING ? NeutralMode.Brake : NeutralMode.Coast);
     beater.setNeutralMode(mode);

@@ -7,27 +7,25 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SubsystemFeeder;
 import frc.robot.subsystems.SubsystemIntake;
 import frc.robot.util.Util;
-import frc.robot.util.Xbox;
 
-public class ButtonCommandEat extends CommandBase {
+public class ConstantCommandDriveIntake extends CommandBase {
   private SubsystemIntake intake;
   private SubsystemFeeder feeder;
-  private Joystick operator;
 
   /**
-   * Creates a new ButtonCommandEat.
+   * Creates a new ConstantCommandDriveIntake.
    */
-  public ButtonCommandEat(SubsystemIntake intake, SubsystemFeeder feeder, Joystick operator) {
+  public ConstantCommandDriveIntake(SubsystemIntake intake, SubsystemFeeder feeder) {
     this.intake = intake;
     this.feeder = feeder;
-    this.operator = operator;
-    addRequirements(this.intake);
-    addRequirements(this.feeder);
+
+    addRequirements(intake);
+    addRequirements(feeder);
   }
 
   // Called when the command is initially scheduled.
@@ -38,25 +36,18 @@ public class ButtonCommandEat extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double eatSpeed = Util.getAndSetDouble("Eat Speed", 0.5);
-    double slapSpeed = Util.getAndSetDouble("Slap Speed", 0.33);
-    double beatSpeed = Util.getAndSetDouble("Beat Speed", 0.5);
-
-    intake.driveEater(eatSpeed);
-    intake.driveSlapper(slapSpeed);
-    feeder.driveBeater(beatSpeed);
-
-    if(operator.getRawButton(Xbox.X)) {
-      double feedSpeed = Util.getAndSetDouble("Feed Speed", 0.5);
-      feeder.driveFeeder(feedSpeed);
-    }
+    intake.driveEater(Util.getAndSetDouble("Eat Speed", 1));
+    intake.driveSlapper(Util.getAndSetDouble("Slap Speed", 0.5));
+    feeder.driveBeater(Util.getAndSetDouble("Beat Speed", 1));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stopMotors();
-    feeder.stopMotors();
+    intake.driveEater(0);
+    intake.driveSlapper(0);
+    feeder.driveBeater(0);
+    feeder.driveFeeder(0);
   }
 
   // Returns true when the command should end.

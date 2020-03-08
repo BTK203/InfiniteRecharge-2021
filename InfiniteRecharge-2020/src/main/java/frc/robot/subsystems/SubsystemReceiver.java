@@ -18,6 +18,9 @@ import frc.robot.util.Util;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+/**
+ * The thing that listens to the Pi.
+ */
 public class SubsystemReceiver extends SubsystemBase {
   private String latestSegment;
   private double[] latestData;
@@ -34,8 +37,8 @@ public class SubsystemReceiver extends SubsystemBase {
    * Creates a new SubsystemReceiver.
    */
   public SubsystemReceiver() {
-    latestSegment = "-1,-1,-1,180,180";
-    latestData = new double[] {-1, -1, -1, 180, 180};
+    latestSegment = "-1,-1,-1,-1,-1,180,180";
+    latestData = new double[] {-1, -1, -1, -1, -1, 180, 180};
     latestTime    = System.currentTimeMillis();
 
     SmartDashboard.putString("RPi Data", latestSegment);
@@ -99,18 +102,44 @@ public class SubsystemReceiver extends SubsystemBase {
     return latestData;
   }
 
-  public double getDistanceToTarget() {
+  /**
+   * Returns the width of the seen target in pixels, or -1 if no target is seen.
+   */
+  public double getTargetWidthPixels() {
     return latestData[2];
   }
 
-  public double getHorizontalAngleToTarget() {
+  /**
+   * Returns the height of the seen target in pixels, or -1 if no target is seen.
+   */
+  public double getTargetHeightPixels() {
     return latestData[3];
   }
 
-  public double getVerticalAngleToTarget() {
+  /**
+   * Returns the distance of the camera to the target, or -1 if no target is seen.
+   */
+  public double getDistanceToTarget() {
     return latestData[4];
   }
 
+  /**
+   * Returns the horizontal angle (degrees) to the target, or 180 if no target is seen.
+   */
+  public double getHorizontalAngleToTarget() {
+    return latestData[5];
+  }
+
+  /**
+   * Returns the vertical angle (degrees) to the target, or 180 if no target is seen.
+   */
+  public double getVerticalAngleToTarget() {
+    return latestData[6];
+  }
+
+  /**
+   * Returns true if a target is seen, false otherwise.
+   */
   public boolean targetSpotted() {
     return latestData[2] > -1;
   }
@@ -150,10 +179,10 @@ public class SubsystemReceiver extends SubsystemBase {
    *         {-1,-1,-1,-1} for no known location
    */
   private double[] analyzeData(String input) {
-    double[] newData = {-1, -1, -1, 180, 180};
+    double[] newData = {-1, -1, -1, -1, -1, 180, 180};
     String[] stringData = input.split(",");
 
-    if(stringData.length != 5) {
+    if(stringData.length != newData.length) {
       DriverStation.reportWarning("INPUT STRING IMPROPERLY FORMATTED!", true);
       return newData;
     }
