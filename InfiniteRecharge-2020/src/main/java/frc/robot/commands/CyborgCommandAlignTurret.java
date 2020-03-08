@@ -7,8 +7,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -20,8 +18,6 @@ public class CyborgCommandAlignTurret extends CommandBase {
   private SubsystemTurret turret;
   private SubsystemReceiver kiwilight;
 
-  private boolean targetPreviouslySeen;
-
   /**
    * Creates a new CyborgCommandAlignTurret.
    */
@@ -29,8 +25,6 @@ public class CyborgCommandAlignTurret extends CommandBase {
     this.turret = turret;
     this.kiwilight = kiwilight;
     addRequirements(this.turret);
-
-    targetPreviouslySeen = false;
   }
 
   // Called when the command is initially scheduled.

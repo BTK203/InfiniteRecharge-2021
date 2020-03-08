@@ -31,7 +31,6 @@ import frc.robot.commands.CyborgCommandFlywheelVelocity;
 import frc.robot.commands.CyborgCommandSetTurretPosition;
 import frc.robot.commands.CyborgCommandTestScissorPositition;
 import frc.robot.commands.CyborgCommandZeroTurret;
-import frc.robot.commands.IterativeCommandMoveClimber;
 import frc.robot.commands.SemiManualCommandRunWinch;
 import frc.robot.commands.ToggleCommandDriveClimber;
 import frc.robot.enumeration.AutoMode;
@@ -156,7 +155,11 @@ public class RobotContainer {
       new RunCommand(() -> SUB_DRIVE.DriveTankByController(DRIVER), SUB_DRIVE)
     );
 
-    //toggle commands
+    SUB_SPINNER.setDefaultCommand(
+      new RunCommand(() -> SUB_SPINNER.driveByController(DRIVER), SUB_SPINNER)
+    );
+
+    //button commands
     JoystickButton moveClimberUp = new JoystickButton(DRIVER, Xbox.START);
     moveClimberUp.toggleWhenPressed(new ButtonCommandMoveClimber(SUB_CLIMB, 1));
 
@@ -194,9 +197,7 @@ public class RobotContainer {
     /**
      * Dashboard Buttons
      */
-    SmartDashboard.putData("Toggle Winch", winchCommand);
     SmartDashboard.putData("Drive Flywheel RPM", driveFlywheelRPM);
-    SmartDashboard.putData("Drive Flywheel PO", new ToggleCommandDriveFlywheel(SUB_FLYWHEEL));
     SmartDashboard.putData("Align Turret", new CyborgCommandAlignTurret(SUB_TURRET, SUB_RECEIVER));
     SmartDashboard.putData("Calibrate Turret Yaw", new CyborgCommandCalibrateTurretYaw(SUB_TURRET));
     SmartDashboard.putData("Calibrate Turret Pitch", new CyborgCommandCalibrateTurretPitch(SUB_TURRET));
