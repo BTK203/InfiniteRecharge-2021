@@ -46,9 +46,9 @@ public class SubsystemSpinner extends SubsystemBase {
   public void periodic() {
     detectedColor = sensor.getColor();
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("RED", detectedColor.red * 255.0);
-    SmartDashboard.putNumber("BLUE", detectedColor.blue * 255.0);
-    SmartDashboard.putNumber("GREEN", detectedColor.green * 255.0);
+    SmartDashboard.putNumber("RED", detectedColor.red);
+    SmartDashboard.putNumber("BLUE", detectedColor.blue);
+    SmartDashboard.putNumber("GREEN", detectedColor.green);
 
     SmartDashboard.putBoolean("Found Red", isRed(detectedColor));
     SmartDashboard.putBoolean("Found Green", isGreen(detectedColor));

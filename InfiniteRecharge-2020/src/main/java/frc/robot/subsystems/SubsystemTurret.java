@@ -292,6 +292,6 @@ public class SubsystemTurret extends SubsystemBase {
     turretPitch.setInverted(Constants.TURRET_PITCH_INVERT);
     turretYaw.setInverted(Constants.TURRET_YAW_INVERT);
 
-    turretYaw.setSensorPhase(false);
+    turretYaw.setSensorPhase(true);
   }
 }

@@ -61,6 +61,7 @@ public class CyborgCommandSmartDriveDistance extends CommandBase {
 
     //set up heading controller
     this.heading = drivetrain.getGyroAngle();
+    // this.heading = Util.getAndSetDouble("Test Drivetrain Heading", 0);
     double headingP = Util.getAndSetDouble("Drive Heading kP", 0);
     double headingI = Util.getAndSetDouble("Drive Heading kI", 0);
     double headingD = Util.getAndSetDouble("Drive Heading kD", 0);
@@ -93,8 +94,8 @@ public class CyborgCommandSmartDriveDistance extends CommandBase {
     double maxHeadingOutput = Util.getAndSetDouble("Drive Distance Heading Inhibitor", 0.3);
     outputForHeading = (outputForHeading > maxHeadingOutput ? maxHeadingOutput : (maxHeadingOutput < maxHeadingOutput * -1 ? maxHeadingOutput * -1 : outputForHeading));
 
-    double leftOutput = outputForDistance + outputForHeading;
-    double rightOutput = outputForDistance - outputForHeading;
+    double leftOutput = outputForDistance - outputForHeading;
+    double rightOutput = outputForDistance + outputForHeading;
 
     drivetrain.setLeftPercentOutput(leftOutput);
     drivetrain.setRightPercentOutput(rightOutput);

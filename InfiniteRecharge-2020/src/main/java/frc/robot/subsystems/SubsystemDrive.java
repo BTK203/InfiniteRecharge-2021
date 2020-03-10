@@ -42,6 +42,9 @@ public class SubsystemDrive extends SubsystemBase {
 
     navX = new AHRS(Port.kUSB);
 
+    leftSlave.restoreFactoryDefaults();
+    rightSlave.restoreFactoryDefaults();
+
     setBraking();
     setRamps();
     setFollowers();
@@ -224,5 +227,21 @@ public class SubsystemDrive extends SubsystemBase {
   private void setFollowers() {
     leftSlave.follow(leftMaster);
     rightSlave.follow(rightMaster);
+  }
+
+  /**
+   * METHODS FOR DEVELOPMENT PURPOSES ONLY
+   */
+
+  public void driveJustMasters(Joystick controller) {
+    double drive = Xbox.RT(controller) - Xbox.LT(controller);
+    leftMaster.set(drive);
+    rightMaster.set(drive);
+  }
+
+  public void driveJustSlaves(Joystick controller) {
+    double drive = Xbox.RT(controller) - Xbox.LT(controller);
+    leftSlave.set(drive);
+    rightSlave.set(drive);
   }
 }

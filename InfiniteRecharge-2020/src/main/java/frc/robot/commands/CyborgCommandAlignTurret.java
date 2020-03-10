@@ -72,7 +72,7 @@ public class CyborgCommandAlignTurret extends CommandBase {
 
       SmartDashboard.putNumber("Yaw Ticks To Turn", horizontalTicksToTurn);
 
-      double newTargetPosition = turret.getYawPosition() + horizontalTicksToTurn;
+      double newTargetPosition = (turret.getYawPosition() * -1) + horizontalTicksToTurn;
       turret.setYawPosition(newTargetPosition);
     } else {
       //disable motors
