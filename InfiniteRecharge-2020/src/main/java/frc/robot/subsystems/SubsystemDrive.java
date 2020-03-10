@@ -93,14 +93,21 @@ public class SubsystemDrive extends SubsystemBase {
   }
 
   /**
-   * Sets the percent output of the drive motors.
-   * @param percentOutput the percent to set the motors to.
+   * Sets the output of the right drive motors.
+   * @param output output (-1 to 1) to set the motors to.
    */
-  public void setPercentOutput(double percentOutput) {
-    rightMaster.set(percentOutput);
-    rightSlave.set(percentOutput);
-    leftMaster.set(percentOutput);
-    leftSlave.set(percentOutput);
+  public void setRightPercentOutput(double output) {
+    rightMaster.set(output);
+    rightSlave.set(output);
+  }
+
+  /**
+   * Sets the output of the left drive motors.
+   * @param output output (-1 to 1) to set the motors to.
+   */
+  public void setLeftPercentOutput(double output) {
+    leftMaster.set(output);
+    leftSlave.set(output);
   }
 
   /**
@@ -164,6 +171,10 @@ public class SubsystemDrive extends SubsystemBase {
     rightMaster.getPIDController().setFF(kF);
     rightMaster.getPIDController().setIZone(iZone);
     rightMaster.getPIDController().setOutputRange(outLimit * -1, outLimit);
+  }
+
+  public double getGyroAngle() {
+    return navX.getAngle();
   }
 
   /**

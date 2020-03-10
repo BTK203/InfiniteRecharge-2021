@@ -179,8 +179,11 @@ public final class Constants {
         KIWILIGHT_STABLE_DEGREES = 2, //in
         TURRET_APPROX_TARGET_TICKS_CLOSE = -624258,
         TURRET_TARGET_TICKS_PER_INCH = -1399, //ticks to turn per inch away from wall
-        AUTO_INIT_PITCH_TARGET = -694;
+        AUTO_INIT_PITCH_TARGET = -694,
+        AUTO_DEEP_TRENCH_DISTANCE = -150;
+
 
     public static final double 
         DRIVE_ROTATIONS_PER_INCH = 0.45;
+
 }

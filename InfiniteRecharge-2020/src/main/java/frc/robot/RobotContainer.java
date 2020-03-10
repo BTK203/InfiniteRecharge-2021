@@ -21,6 +21,7 @@ import frc.robot.auto.BareMinimumAuto;
 import frc.robot.auto.IAuto;
 import frc.robot.auto.InitAuto;
 import frc.robot.auto.SixBallSimpleAuto;
+import frc.robot.auto.TrenchAuto;
 import frc.robot.commands.ButtonCommandGroupRunIntakeFeeder;
 import frc.robot.commands.ButtonCommandMoveClimber;
 import frc.robot.commands.CyborgCommandAlignTurret;
@@ -113,6 +114,9 @@ public class RobotContainer {
       case SIX_BALL_SIMPLE:
         currentAuto = new SixBallSimpleAuto(SUB_DRIVE, SUB_TURRET, SUB_RECEIVER, SUB_INTAKE, SUB_FEEDER, SUB_FLYWHEEL);
         break;
+      case EIGHT_BALL_TRENCH:
+        currentAuto = new TrenchAuto(SUB_DRIVE, SUB_TURRET, SUB_RECEIVER, SUB_INTAKE, SUB_FEEDER, SUB_FLYWHEEL);
+        break;
       default:
         currentAuto = new InitAuto(SUB_DRIVE, SUB_TURRET);
         break;
@@ -136,7 +140,7 @@ public class RobotContainer {
         autoCommand.cancel();
       }
     } else {
-      DriverStation.reportError("NO AUTO STARTED, THEREFORE NONE CANCELED.", false);
+      DriverStation.reportError("NO AUTO STARTED, THEREFORE NONE CANCELLED.", false);
     }
   }
 
@@ -222,6 +226,7 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Bare Minimum Auto", AutoMode.THE_BARE_MINIMUM);
     autoChooser.addOption("Init Only", AutoMode.INIT_ONLY);
     autoChooser.addOption("Simple Six Ball", AutoMode.SIX_BALL_SIMPLE);
+    autoChooser.addOption("Eight Ball", AutoMode.EIGHT_BALL_TRENCH);
     SmartDashboard.putData("Auto Mode", autoChooser);
   }
 }

@@ -11,38 +11,36 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.commands.ConstantCommandDriveIntake;
 import frc.robot.commands.CyborgCommandAlignTurret;
-import frc.robot.commands.CyborgCommandDriveDistance;
 import frc.robot.commands.CyborgCommandSetTurretPosition;
 import frc.robot.commands.CyborgCommandShootPayload;
+import frc.robot.commands.CyborgCommandSmartDriveDistance;
 import frc.robot.subsystems.SubsystemDrive;
-import frc.robot.subsystems.SubsystemFeeder;
-import frc.robot.subsystems.SubsystemFlywheel;
-import frc.robot.subsystems.SubsystemIntake;
-import frc.robot.subsystems.SubsystemReceiver;
 import frc.robot.subsystems.SubsystemTurret;
 import frc.robot.util.Util;
+import frc.robot.subsystems.SubsystemReceiver;
+import frc.robot.subsystems.SubsystemIntake;
+import frc.robot.subsystems.SubsystemFeeder;
+import frc.robot.subsystems.SubsystemFlywheel;
+
 
 /**
- * A slightly cooler auto than it's other simpler counterparts.
- * This auto will back off the line while zeroing the turret, and 
- * then slowly drive backwards, collecting power cells from the trench while shooting power
- * cells already loaded in.
+ * Possible 8 ball auto. Backs off line, shoots the 3 preloaded balls, then
+ * backs to collect the 5 balls in the trench run. Drives to the front of the
+ * trench run and shoots those 5 balls.
  */
-public class SixBallSimpleAuto implements IAuto {
+public class TrenchAuto implements IAuto {
     private Command
         init,
         positionTurret,
-        shootOneBall,
-        driveBack,
+        shootStartingPayload,
+        setLowerTurretPosition,
         collectBalls,
+        backIntoTrench,
         driveForward,
         alignTurret,
-        shootPayload;
+        shootRemainingPayload;
 
-    /**
-     * Creates a new SixBallSimpleAuto, initalizing commands
-     */
-    public SixBallSimpleAuto (
+    public TrenchAuto(
         SubsystemDrive drivetrain,
         SubsystemTurret turret,
         SubsystemReceiver kiwilight,
@@ -59,23 +57,25 @@ public class SixBallSimpleAuto implements IAuto {
 
         //align
         this.alignTurret = new CyborgCommandAlignTurret(turret, kiwilight);
-        this.shootOneBall = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, 1, 15000, false);
-        
-        double trenchDistance = Util.getAndSetDouble("Trench Distance", -132);
-        this.driveBack = new CyborgCommandDriveDistance(drivetrain, trenchDistance, 0.75);
+        this.shootStartingPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, 3, 15000, false);
+
+        //set the lower turret position so that the turret doesn't get destroyed
+        this.setLowerTurretPosition = new CyborgCommandSetTurretPosition(turret, yawTarget, 0);
+
+        this.backIntoTrench = new CyborgCommandSmartDriveDistance(drivetrain, Constants.AUTO_DEEP_TRENCH_DISTANCE, 0.75);
         this.collectBalls = new ConstantCommandDriveIntake(intake, feeder);
-        this.driveForward = new CyborgCommandDriveDistance(drivetrain, trenchDistance * -1, 0.75);
+        this.driveForward = new CyborgCommandSmartDriveDistance(drivetrain, Constants.AUTO_DEEP_TRENCH_DISTANCE * -1, 0.75);
 
         //shoot balls
-        int ballsToShoot = (int) Util.getAndSetDouble("Init Auto Payload", 3);
-        int timeToWait = (int) Util.getAndSetDouble("Auto Payload Timeout", 3000);
-        this.shootPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, ballsToShoot, timeToWait, false);
+        this.shootRemainingPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, 1000, 15000, false);
     }
 
     public Command getCommand() {
-        Command initAndShoot = init.andThen(positionTurret, shootOneBall.raceWith(alignTurret));
-        Command driveAndCollect = driveBack.raceWith(collectBalls).andThen(driveForward);
-        return initAndShoot.andThen(driveAndCollect, shootPayload);
+        Command initAndShoot = init.andThen(positionTurret, shootStartingPayload.raceWith(alignTurret));
+        Command lowerTurretAndDrive = setLowerTurretPosition.andThen(backIntoTrench.raceWith(collectBalls), driveForward);
+        Command shootForRemainingTime = positionTurret.andThen(shootRemainingPayload.raceWith(alignTurret));
+
+        return initAndShoot.andThen(lowerTurretAndDrive, shootForRemainingTime);
     }
 
     public boolean requiresFlywheel() {

@@ -13,5 +13,6 @@ package frc.robot.enumeration;
 public enum AutoMode {
     INIT_ONLY,
     THE_BARE_MINIMUM,
-    SIX_BALL_SIMPLE
+    SIX_BALL_SIMPLE,
+    EIGHT_BALL_TRENCH
 }
