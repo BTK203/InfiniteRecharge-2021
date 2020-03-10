@@ -56,7 +56,7 @@ public class CyborgCommandAlignTurret extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double horizontalAngle = kiwilight.getHorizontalAngleToTarget();
+    double horizontalAngle = kiwilight.getHorizontalAngleToTarget() * -1;
     horizontalAngle *= Util.getAndSetDouble("Vision multiplier", 1);
 
     double horizontalTicks = turret.getTotalYawTicks();
@@ -72,7 +72,7 @@ public class CyborgCommandAlignTurret extends CommandBase {
 
       SmartDashboard.putNumber("Yaw Ticks To Turn", horizontalTicksToTurn);
 
-      double newTargetPosition = (turret.getYawPosition() * -1) + horizontalTicksToTurn;
+      double newTargetPosition = turret.getYawPosition() + horizontalTicksToTurn;
       turret.setYawPosition(newTargetPosition);
     } else {
       //disable motors

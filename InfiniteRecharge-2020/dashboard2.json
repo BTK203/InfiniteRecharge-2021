@@ -10,7 +10,7 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
-          "4,0": {
+          "9,0": {
             "size": [
               3,
               8
@@ -84,19 +84,24 @@
                   "_type": "Command",
                   "_source0": "network_table:///SmartDashboard/Turret Hunt",
                   "_title": "/SmartDashboard/Turret Hunt"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Apply Camera Settings",
+                  "_title": "/SmartDashboard/Apply Camera Settings"
                 }
               ]
             }
           },
-          "0,0": {
+          "12,0": {
             "size": [
-              4,
+              5,
               8
             ],
             "content": {
               "_type": "Robot Preferences",
               "_source0": "network_table:///Preferences",
-              "_title": "/Preferences",
+              "_title": "Preferences",
               "Miscellaneous/Show search box": true
             }
           }
@@ -199,15 +204,15 @@
             "content": {
               "_type": "Camera Stream",
               "_source0": "camera_server://USB Camera 0",
-              "_title": "Camera Stream",
+              "_title": "Back",
               "Crosshair/Show crosshair": true,
               "Crosshair/Crosshair color": "#FFFFFFFF",
               "Controls/Show controls": true,
               "Controls/Rotation": "NONE",
               "compression": -1.0,
-              "fps": -1,
-              "imageWidth": -1,
-              "imageHeight": -1
+              "fps": 30,
+              "imageWidth": 120,
+              "imageHeight": 90
             }
           },
           "11,0": {
@@ -367,20 +372,6 @@
                   "_title": "/SmartDashboard/Feeder Amps"
                 }
               }
-            }
-          },
-          "3,3": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "Grid Layout",
-              "_title": "Color Sensor",
-              "Layout/Number of columns": 3,
-              "Layout/Number of rows": 3,
-              "Layout/Label position": "BOTTOM",
-              "_children": {}
             }
           },
           "0,7": {
@@ -596,6 +587,49 @@
               "_title": "NAVX Connected",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "3,3": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Colors",
+              "Layout/Number of columns": 3,
+              "Layout/Number of rows": 3,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "0,0": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Found Blue",
+                  "_title": "Blue",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                "2,0": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Found Green",
+                  "_title": "Green",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                "0,2": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Found Red",
+                  "_title": "Red",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                "2,2": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Found Yellow",
+                  "_title": "Yellow",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                }
+              }
             }
           }
         }

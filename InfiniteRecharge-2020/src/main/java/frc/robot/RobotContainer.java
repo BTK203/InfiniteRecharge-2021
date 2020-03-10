@@ -62,7 +62,7 @@ public class RobotContainer {
   private final SubsystemSpinner   SUB_SPINNER  = new SubsystemSpinner();
   private final SubsystemClimb     SUB_CLIMB    = new SubsystemClimb();
   private final SubsystemReceiver  SUB_RECEIVER = new SubsystemReceiver();
-  // private final CameraHub          CAMERA_HUB   = new CameraHub();
+  private final CameraHub          CAMERA_HUB   = new CameraHub();
 
   /**
    * Controllers
@@ -208,6 +208,7 @@ public class RobotContainer {
     SmartDashboard.putData("Drive Distance", new CyborgCommandDriveDistance(SUB_DRIVE, 240, 0.75));
     SmartDashboard.putData("Zero Yaw", new InstantCommand(() -> SUB_TURRET.setCurrentYawEncoderPosition(0), SUB_TURRET));
     SmartDashboard.putData("Zero Drivetrain Encoders", new InstantCommand(() -> SUB_DRIVE.zeroEncoders()));
+    SmartDashboard.putData("Apply Camera Settings", new InstantCommand(() -> CAMERA_HUB.configureCameras()));
 
     SmartDashboard.putData("Toggle Winch", climberManualDrive);
     SmartDashboard.putData("Drive Flywheel RPM", driveFlywheelRPM);
