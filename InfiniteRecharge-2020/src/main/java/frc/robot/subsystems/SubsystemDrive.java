@@ -42,9 +42,6 @@ public class SubsystemDrive extends SubsystemBase {
 
     navX = new AHRS(Port.kUSB);
 
-    leftSlave.restoreFactoryDefaults();
-    rightSlave.restoreFactoryDefaults();
-
     setBraking();
     setRamps();
     setFollowers();
@@ -66,7 +63,37 @@ public class SubsystemDrive extends SubsystemBase {
     SmartDashboard.putNumber("Right Amps", rightMaster.getOutputCurrent());
     SmartDashboard.putNumber("Left Amps", leftMaster.getOutputCurrent());
 
-    SmartDashboard.putBoolean("NavX Connected", navX.isConnected());
+    SmartDashboard.putBoolean("NavX Connected", getNavXConnected());
+  }
+
+  /**
+   * Prints dashboard indicators indicating whether the subsystem is ready for a match.
+   * Indicators are to be used for pre-match only. They do not provide an accurite indication
+   * of the state of a subsystem in mid match.
+   * @return true if the system is ready for a match, false otherwise.
+   */
+  public boolean getSystemIsGo() {
+    boolean leftMasterConnected = leftMaster.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+    boolean rightMasterConnected = rightMaster.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+    boolean leftSlaveConnected = leftSlave.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+    boolean rightSlaveConnected = rightSlave.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+    boolean navXConnected = navX.isConnected();
+
+    SmartDashboard.putBoolean("Left Master Connected", leftMasterConnected);
+    SmartDashboard.putBoolean("Right Master Connected", rightMasterConnected);
+    SmartDashboard.putBoolean("Left Slave Connected", leftSlaveConnected);
+    SmartDashboard.putBoolean("Right Slave Connected", rightSlaveConnected);
+
+    return 
+      leftMasterConnected &&
+      rightMasterConnected &&
+      leftSlaveConnected &&
+      rightSlaveConnected && 
+      navXConnected;
+  }
+
+  public boolean getNavXConnected() {
+    return navX.isConnected();
   }
 
   /**

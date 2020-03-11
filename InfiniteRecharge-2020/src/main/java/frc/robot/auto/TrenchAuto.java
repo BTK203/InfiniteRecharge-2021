@@ -51,7 +51,7 @@ public class TrenchAuto implements IAuto {
         this.init = new InitAuto(drivetrain, turret).getCommand();
         
         //position turret to get target in vision view
-        int yawTarget = Auto.getYawTicksToTarget(Util.getAndSetDouble("Auto Start Offset", 0));
+        int yawTarget = Auto.getYawTicksToTarget();
         int pitchTarget = Constants.AUTO_INIT_PITCH_TARGET;
         this.positionTurret = new CyborgCommandSetTurretPosition(turret, yawTarget, pitchTarget);
 

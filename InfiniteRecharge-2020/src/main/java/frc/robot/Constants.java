@@ -149,17 +149,15 @@ public final class Constants {
      * Extraneous values
      */
     public static final int
-        SPINNER_SPEED = 1,
         TURRET_YAW_DEGREES = 345,
-        TURRET_PITCH_DEGREES = 100,
         DEFAULT_TURRET_YAW_TICKS = 1615628,
         DEFAULT_TURRET_PITCH_TICKS = 1000,
         FLYWHEEL_STABLE_RPM = 5750,
         TURRET_YAW_ALLOWABLE_ERROR = 200000,
         TURRET_PITCH_ALLOWABLE_ERROR = 50,
-        TURRET_CENTER_ANGLE_OFFSET_YAW = 90,
-        TURRET_PITCH_CAMERA_OFFSET = 25,
-        DRIVE_AMP_LIMIT = 60;
+        DRIVE_AMP_LIMIT = 60,
+        SPARK_MINIMUM_VOLTAGE = 8, //used to check if motor controllers are connected
+        TALON_MINIMUM_AMPERAGE = 1;
 
     public static final double 
         FLYWHEEL_GEAR_RATIO = 1.6071,
@@ -173,16 +171,18 @@ public final class Constants {
      * Auto values
      */
     public static final int
-        AUTO_INIT_BALL_COUNT = 3,
-        AUTO_PAYLOAD_TIMEOUT = 3000, //ms
         DISTANCE_INIT_LINE_TO_ALLIANCE_WALL = 120,
-        KIWILIGHT_STABLE_DEGREES = 2, //in
+        KIWILIGHT_STABLE_DEGREES = 2, //degrees
         TURRET_APPROX_TARGET_TICKS_CLOSE = -624258,
         TURRET_TARGET_TICKS_PER_INCH = -1399, //ticks to turn per inch away from wall
         AUTO_INIT_PITCH_TARGET = -694,
-        AUTO_DEEP_TRENCH_DISTANCE = -150;
+        AUTO_DEEP_TRENCH_DISTANCE = -150,
+        AUTO_SHALLOW_TRENCH_DISTANCE = -132,
+        TRENCH_AUTO_WAIT_TIME = 500;
 
-
+    /**
+     * More auto values but doubles
+     */
     public static final double 
         DRIVE_ROTATIONS_PER_INCH = 0.45;
 

@@ -154,6 +154,34 @@ public class RobotContainer {
   }
 
   /**
+   * Prints dashboard indicators indicating whether the robot subsystems are ready for a match.
+   * Indicators are to be used for pre-match only. They do not provide an accurite indication
+   * of the state of a subsystem in mid match.
+   */
+  public void printAllSystemsGo() {
+    boolean climbIsGo     = SUB_CLIMB.getSystemIsGo();
+    boolean driveIsGo     = SUB_DRIVE.getSystemIsGo();
+    boolean feederIsGo    = SUB_FEEDER.getSystemIsGo();
+    boolean flywheelIsGo  = SUB_FLYWHEEL.getSystemIsGo();
+    boolean intakeIsGo    = SUB_INTAKE.getSystemIsGo();
+    boolean kiwilightIsGo = SUB_RECEIVER.getSystemIsGo();
+    boolean spinnerIsGo   = SUB_SPINNER.getSystemIsGo();
+    boolean turretIsGo    = SUB_TURRET.getSystemIsGo();
+
+    boolean allSystemsGo = 
+      climbIsGo &&
+      driveIsGo &&
+      feederIsGo &&
+      flywheelIsGo &&
+      intakeIsGo &&
+      kiwilightIsGo &&
+      spinnerIsGo &&
+      turretIsGo;
+    
+    SmartDashboard.putBoolean("All Systems Go", allSystemsGo);
+  }
+
+  /**
    * Use this method to define your button->command mappings.  Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a

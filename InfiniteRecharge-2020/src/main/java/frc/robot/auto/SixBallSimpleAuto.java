@@ -15,6 +15,7 @@ import frc.robot.commands.CyborgCommandDriveDistance;
 import frc.robot.commands.CyborgCommandSetTurretPosition;
 import frc.robot.commands.CyborgCommandShootPayload;
 import frc.robot.commands.CyborgCommandSmartDriveDistance;
+import frc.robot.commands.CyborgCommandWait;
 import frc.robot.subsystems.SubsystemDrive;
 import frc.robot.subsystems.SubsystemFeeder;
 import frc.robot.subsystems.SubsystemFlywheel;
@@ -36,6 +37,7 @@ public class SixBallSimpleAuto implements IAuto {
         shootOneBall,
         driveBack,
         collectBalls,
+        wait,
         driveForward,
         alignTurret,
         shootPayload;
@@ -57,14 +59,15 @@ public class SixBallSimpleAuto implements IAuto {
         int yawTarget = Auto.getYawTicksToTarget(Util.getAndSetDouble("Auto Start Offset", 0));
         int pitchTarget = Constants.AUTO_INIT_PITCH_TARGET;
         this.positionTurret = new CyborgCommandSetTurretPosition(turret, yawTarget, pitchTarget);
-
+        
         //align
         this.alignTurret = new CyborgCommandAlignTurret(turret, kiwilight);
         this.shootOneBall = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, 1, 15000, false);
         
-        double trenchDistance = Util.getAndSetDouble("Trench Distance", -132);
+        double trenchDistance = (double) Constants.AUTO_SHALLOW_TRENCH_DISTANCE;
         this.driveBack = new CyborgCommandSmartDriveDistance(drivetrain, trenchDistance, 0.6);
         this.collectBalls = new ConstantCommandDriveIntake(intake, feeder);
+        this.wait = new CyborgCommandWait(Constants.TRENCH_AUTO_WAIT_TIME);
         this.driveForward = new CyborgCommandSmartDriveDistance(drivetrain, trenchDistance * -1, 0.6);
 
         //shoot balls
@@ -73,7 +76,7 @@ public class SixBallSimpleAuto implements IAuto {
 
     public Command getCommand() {
         Command initAndShoot = init.andThen(positionTurret, shootOneBall.raceWith(alignTurret));
-        Command driveAndCollect = (driveBack.andThen(driveForward)).raceWith(collectBalls);
+        Command driveAndCollect = (driveBack.andThen(wait, driveForward)).raceWith(collectBalls);
         return initAndShoot.andThen(driveAndCollect, shootPayload);
     }
 

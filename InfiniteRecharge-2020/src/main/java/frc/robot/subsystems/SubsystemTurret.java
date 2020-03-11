@@ -84,6 +84,22 @@ public class SubsystemTurret extends SubsystemBase {
   }
 
   /**
+   * Prints dashboard indicators indicating whether the subsystem is ready for a match.
+   * Indicators are to be used for pre-match only. They do not provide an accurite indication
+   * of the state of a subsystem in mid match.
+   * @return true if the system is ready for a match, false otherwise.
+   */
+  public boolean getSystemIsGo() {
+    boolean yawConnected = turretYaw.getSupplyCurrent() > Constants.TALON_MINIMUM_AMPERAGE;
+    boolean pitchConnected = turretPitch.getSupplyCurrent() > Constants.TALON_MINIMUM_AMPERAGE;
+
+    SmartDashboard.putBoolean("Yaw Connected", yawConnected);
+    SmartDashboard.putBoolean("Pitch Connected", pitchConnected);
+
+    return yawConnected && pitchConnected;
+  }
+
+  /**
    * Move the turret
    * @param controller The controller to use.
    */

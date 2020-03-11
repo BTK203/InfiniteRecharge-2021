@@ -45,14 +45,12 @@ public class BareMinimumAuto implements IAuto {
 
         //set turret position and align
         int yawTarget = Auto.getYawTicksToTarget(Util.getAndSetDouble("Auto Start Offset", 0));
-        SmartDashboard.putNumber("Auto Yaw Target", yawTarget);
 
         this.positionTurret = new CyborgCommandSetTurretPosition(turret, yawTarget, Constants.AUTO_INIT_PITCH_TARGET);
         this.alignTurret = new CyborgCommandAlignTurret(turret, kiwilight);
         
         //shoot preloaded power cells
-        int timeToWait = (int) Util.getAndSetDouble("Auto Payload Timeout", 15000);
-        this.shootPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, 1000, timeToWait, false);
+        this.shootPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, 1000, 15000, false);
     }
 
     public Command getCommand() {

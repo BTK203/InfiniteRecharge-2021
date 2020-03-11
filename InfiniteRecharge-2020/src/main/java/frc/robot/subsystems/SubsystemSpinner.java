@@ -59,6 +59,18 @@ public class SubsystemSpinner extends SubsystemBase {
   }
 
   /**
+   * Prints dashboard indicators indicating whether the subsystem is ready for a match.
+   * Indicators are to be used for pre-match only. They do not provide an accurite indication
+   * of the state of a subsystem in mid match.
+   * @return true if the system is ready for a match, false otherwise.
+   */
+  public boolean getSystemIsGo() {
+    boolean spinnerConnected = spinner.getSupplyCurrent() > Constants.TALON_MINIMUM_AMPERAGE;
+    SmartDashboard.putBoolean("Spinner Connected", spinnerConnected);
+    return spinnerConnected;
+  }
+
+  /**
    * Drives the spinner using input from passed controller.
    * @param controller The controller to use.
    */
@@ -125,7 +137,7 @@ public class SubsystemSpinner extends SubsystemBase {
    * @return true if position control was completed, false otherwise.
    */
   public boolean spinColor(char colorToFind) {
-    startSpinner(Util.getAndSetDouble("Spin Inhibitor", Constants.SPINNER_SPEED));
+    startSpinner(Util.getAndSetDouble("Spin Inhibitor", 1));
 
     switch(colorToFind){
       case 'R':
