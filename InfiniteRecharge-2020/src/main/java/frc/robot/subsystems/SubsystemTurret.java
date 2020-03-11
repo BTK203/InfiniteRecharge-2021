@@ -31,6 +31,9 @@ public class SubsystemTurret extends SubsystemBase {
     totalYawTicks,
     totalPitchTicks;
 
+  private boolean 
+    pitchPositioningDisabled;
+
   /**
    * Creates a new SubsystemTurret.
    */
@@ -40,6 +43,8 @@ public class SubsystemTurret extends SubsystemBase {
 
     totalYawTicks = Constants.DEFAULT_TURRET_YAW_TICKS;
     totalPitchTicks = Constants.DEFAULT_TURRET_PITCH_TICKS;
+
+    pitchPositioningDisabled = false;
 
     configureMotors();
   }
@@ -155,10 +160,12 @@ public class SubsystemTurret extends SubsystemBase {
    * @param position target pitch position in ticks.
    */
   public void setPitchPosition(double position) {
-    turretPitch.set(ControlMode.Position, position);
+    if(!pitchPositioningDisabled) {
+      turretPitch.set(ControlMode.Position, position);
 
-    SmartDashboard.putNumber("Pitch PID Target", position);
-    SmartDashboard.putNumber("Pitch PID Error", turretPitch.getSensorCollection().getQuadraturePosition() - position);
+      SmartDashboard.putNumber("Pitch PID Target", position);
+      SmartDashboard.putNumber("Pitch PID Error", turretPitch.getSensorCollection().getQuadraturePosition() - position);
+    }
   }
 
   /**
@@ -174,7 +181,11 @@ public class SubsystemTurret extends SubsystemBase {
    * @param percent percent output
    */
   public void setPitchPercentOutput(double percent) {
-    turretPitch.set(ControlMode.PercentOutput, percent);
+      turretPitch.set(ControlMode.PercentOutput, percent);
+  }
+
+  public void setPitchPositioningDisabled(boolean disabled) {
+    pitchPositioningDisabled = disabled;
   }
   
   /**

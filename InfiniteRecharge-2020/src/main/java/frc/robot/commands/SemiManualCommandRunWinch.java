@@ -54,8 +54,7 @@ public class SemiManualCommandRunWinch extends CommandBase {
     climber.moveWinchByController(controller);
     double winchPosition = climber.getWinchPosition();
     double winchInches = (Math.pow(Math.E, -0.001504 * winchPosition) * -56.96) + 57.07;
-    double targetScissorPosition = (-.0547 * winchPosition) - .1042; 
-    // old target equation -> (Math.pow(Math.E, 0.02766 * winchInches) * -57.05) + 57.09;
+    double targetScissorPosition = (-.049 * winchPosition) - .1042; 
     climber.setScissorsPosition(targetScissorPosition);
     SmartDashboard.putNumber("Target Scissor Position", targetScissorPosition);
     SmartDashboard.putNumber("Winch Inches", winchInches);

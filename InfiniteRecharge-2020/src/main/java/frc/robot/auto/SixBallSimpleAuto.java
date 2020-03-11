@@ -73,7 +73,7 @@ public class SixBallSimpleAuto implements IAuto {
 
     public Command getCommand() {
         Command initAndShoot = init.andThen(positionTurret, shootOneBall.raceWith(alignTurret));
-        Command driveAndCollect = driveBack.raceWith(collectBalls).andThen(driveForward);
+        Command driveAndCollect = (driveBack.andThen(driveForward)).raceWith(collectBalls);
         return initAndShoot.andThen(driveAndCollect, shootPayload);
     }
 

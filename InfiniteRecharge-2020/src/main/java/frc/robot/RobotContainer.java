@@ -57,9 +57,9 @@ public class RobotContainer {
    * Subsystems
    */
   private final SubsystemDrive     SUB_DRIVE    = new SubsystemDrive();
+  private final SubsystemTurret    SUB_TURRET   = new SubsystemTurret();
   private final SubsystemIntake    SUB_INTAKE   = new SubsystemIntake();
   private final SubsystemFeeder    SUB_FEEDER   = new SubsystemFeeder();
-  private final SubsystemTurret    SUB_TURRET   = new SubsystemTurret();
   private final SubsystemFlywheel  SUB_FLYWHEEL = new SubsystemFlywheel();
   private final SubsystemSpinner   SUB_SPINNER  = new SubsystemSpinner();
   private final SubsystemClimb     SUB_CLIMB    = new SubsystemClimb();
@@ -69,7 +69,7 @@ public class RobotContainer {
   /**
    * Controllers
    */
-  private final Joystick
+  private static final Joystick
     DRIVER   = new Joystick(0),
     OPERATOR = new Joystick(1);
 
@@ -145,6 +145,14 @@ public class RobotContainer {
     }
   }
 
+  public static Joystick getDriver() {
+    return DRIVER;
+  }
+
+  public static Joystick getOperator() {
+    return OPERATOR;
+  }
+
   /**
    * Use this method to define your button->command mappings.  Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -180,7 +188,7 @@ public class RobotContainer {
     );
 
     SUB_INTAKE.setDefaultCommand(
-      new ButtonCommandGroupRunIntakeFeeder(SUB_INTAKE, SUB_FEEDER, OPERATOR)
+      new ButtonCommandGroupRunIntakeFeeder(SUB_INTAKE, SUB_FEEDER, SUB_TURRET, OPERATOR)
     );
 
     SemiManualCommandRunWinch semiManualWinchCommand = new SemiManualCommandRunWinch(SUB_CLIMB, OPERATOR);

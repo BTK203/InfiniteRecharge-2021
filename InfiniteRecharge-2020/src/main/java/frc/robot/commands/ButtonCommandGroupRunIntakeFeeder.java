@@ -11,20 +11,23 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SubsystemFeeder;
 import frc.robot.subsystems.SubsystemIntake;
+import frc.robot.subsystems.SubsystemTurret;
 import frc.robot.util.Util;
 import frc.robot.util.Xbox;
 
 public class ButtonCommandGroupRunIntakeFeeder extends CommandBase {
   private SubsystemIntake intake;
   private SubsystemFeeder feeder;
+  private SubsystemTurret turret;
   private Joystick controller;
 
   /**
    * Creates a new ButtonCommandGroupRunIntakeFeeder.
    */
-  public ButtonCommandGroupRunIntakeFeeder(SubsystemIntake intake, SubsystemFeeder feeder, Joystick controller) {
+  public ButtonCommandGroupRunIntakeFeeder(SubsystemIntake intake, SubsystemFeeder feeder, SubsystemTurret turret, Joystick controller) {
     this.intake = intake;
     this.feeder = feeder;
+    this.turret = turret;
     this.controller = controller;
     addRequirements(this.intake);
     addRequirements(this.feeder);
@@ -54,6 +57,11 @@ public class ButtonCommandGroupRunIntakeFeeder extends CommandBase {
       slapSpeed = Util.getAndSetDouble("Slap Speed", 0.33);
       beatSpeed = Util.getAndSetDouble("Beat Speed", 0.5);
       feedSpeed = Util.getAndSetDouble("Feed Speed", 0.5);
+
+      //disable height adjustment on aligning
+      turret.setPitchPositioningDisabled(true);
+    } else {
+      turret.setPitchPositioningDisabled(false);
     }
 
     if(controller.getRawButton(Xbox.B)) {

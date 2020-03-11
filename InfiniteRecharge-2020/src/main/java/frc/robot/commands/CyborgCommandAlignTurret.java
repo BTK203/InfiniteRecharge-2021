@@ -7,9 +7,12 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.SubsystemReceiver;
 import frc.robot.subsystems.SubsystemTurret;
 import frc.robot.util.Util;
@@ -17,6 +20,8 @@ import frc.robot.util.Util;
 public class CyborgCommandAlignTurret extends CommandBase {
   private SubsystemTurret turret;
   private SubsystemReceiver kiwilight;
+  private Joystick operator;
+  private boolean targetPreviouslySeen;
 
   /**
    * Creates a new CyborgCommandAlignTurret.
@@ -24,6 +29,7 @@ public class CyborgCommandAlignTurret extends CommandBase {
   public CyborgCommandAlignTurret(SubsystemTurret turret, SubsystemReceiver kiwilight) {
     this.turret = turret;
     this.kiwilight = kiwilight;
+    this.operator = RobotContainer.getOperator();
     addRequirements(this.turret);
   }
 
@@ -51,6 +57,7 @@ public class CyborgCommandAlignTurret extends CommandBase {
     turret.setPitchPIDF(pitchkP, pitchkI, pitchkD, pitchkF, pitchhighOutLimit, (int) pitchIZone);
 
     SmartDashboard.putBoolean("Aligning", true);
+    targetPreviouslySeen = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -69,7 +76,6 @@ public class CyborgCommandAlignTurret extends CommandBase {
       double horizontalTicksToTurn = horizontalAngle * horizontalTicksPerDegree;
 
       SmartDashboard.putNumber("H Ticks To Turn", horizontalTicksToTurn);
-
       SmartDashboard.putNumber("Yaw Ticks To Turn", horizontalTicksToTurn);
 
       double newTargetPosition = (turret.getYawPosition() * -1) + horizontalTicksToTurn;
@@ -87,7 +93,7 @@ public class CyborgCommandAlignTurret extends CommandBase {
         //equation: f(x) = 0.006851x^2 - 2.654x - 447.8 | where: x is the distance kiwilight reports and f returns the pitch position.
         double ax2 = 0.006851 * Math.pow(targetDistance, 2);
         double bx  = -2.654 * targetDistance;
-        double c   = -446.8;
+        double c   = -475.8;
 
         newPitchPosition = ax2 + bx + c;
 
@@ -101,9 +107,16 @@ public class CyborgCommandAlignTurret extends CommandBase {
 
       turret.setPitchPosition(newPitchPosition);
     } else {
-      //disable motors
-      turret.setPitchPercentOutput(0);
+      //pass input to driver
+      turret.moveTurret(operator);
     }
+    
+    //rumble the operator controller if the target becomes spotted
+    if(!targetPreviouslySeen && kiwilight.targetSpotted()) {
+      new CyborgCommandRumble(operator, 500, RumbleType.kLeftRumble).schedule();
+    }
+    
+    targetPreviouslySeen = kiwilight.targetSpotted();
   }
 
   // Called once the command ends or is interrupted.
