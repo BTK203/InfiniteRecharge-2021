@@ -34,12 +34,13 @@ public class SixBallSimpleAuto implements IAuto {
     private Command
         init,
         positionTurret,
-        shootOneBall,
+        alignTurret,
+        shootTwoBalls,
         driveBack,
         collectBalls,
         wait,
         driveForward,
-        alignTurret,
+        alignAgain,
         shootPayload;
 
     /**
@@ -61,23 +62,24 @@ public class SixBallSimpleAuto implements IAuto {
         this.positionTurret = new CyborgCommandSetTurretPosition(turret, yawTarget, pitchTarget);
         
         //align
-        this.alignTurret = new CyborgCommandAlignTurret(turret, kiwilight);
-        this.shootOneBall = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, 1, 15000, false);
+        this.alignTurret = new CyborgCommandAlignTurret(turret, kiwilight, true);
+        this.shootTwoBalls = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, turret, 2, 15000, false);
         
         double trenchDistance = (double) Constants.AUTO_SHALLOW_TRENCH_DISTANCE;
-        this.driveBack = new CyborgCommandSmartDriveDistance(drivetrain, trenchDistance, 0.6);
+        this.driveBack = new CyborgCommandSmartDriveDistance(drivetrain, trenchDistance, 0.4);
         this.collectBalls = new ConstantCommandDriveIntake(intake, feeder);
         this.wait = new CyborgCommandWait(Constants.TRENCH_AUTO_WAIT_TIME);
-        this.driveForward = new CyborgCommandSmartDriveDistance(drivetrain, trenchDistance * -1, 0.6);
+        this.driveForward = new CyborgCommandSmartDriveDistance(drivetrain, trenchDistance * -1, 0.75);
 
         //shoot balls
-        this.shootPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, 1000, 15000, false);
+        this.alignAgain = new CyborgCommandAlignTurret(turret, kiwilight, true);
+        this.shootPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, turret, 1000, 15000, false);
     }
 
     public Command getCommand() {
-        Command initAndShoot = init.andThen(positionTurret, shootOneBall.raceWith(alignTurret));
+        Command initAndShoot = init.andThen(positionTurret, alignTurret, shootTwoBalls);
         Command driveAndCollect = (driveBack.andThen(wait, driveForward)).raceWith(collectBalls);
-        return initAndShoot.andThen(driveAndCollect, shootPayload);
+        return initAndShoot.andThen(driveAndCollect, alignAgain, shootPayload);
     }
 
     public boolean requiresFlywheel() {

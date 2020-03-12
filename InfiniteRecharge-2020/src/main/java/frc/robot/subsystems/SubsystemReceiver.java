@@ -97,7 +97,7 @@ public class SubsystemReceiver extends SubsystemBase {
    * @return true if the system is ready for a match, false otherwise.
    */
   public boolean getSystemIsGo() {
-    return getSecondsSinceUpdate() > 0.5;
+    return getSecondsSinceUpdate() < 0.5;
   }
 
   /**

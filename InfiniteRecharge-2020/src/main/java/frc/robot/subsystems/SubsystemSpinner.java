@@ -65,7 +65,7 @@ public class SubsystemSpinner extends SubsystemBase {
    * @return true if the system is ready for a match, false otherwise.
    */
   public boolean getSystemIsGo() {
-    boolean spinnerConnected = spinner.getSupplyCurrent() > Constants.TALON_MINIMUM_AMPERAGE;
+    boolean spinnerConnected = spinner.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
     SmartDashboard.putBoolean("Spinner Connected", spinnerConnected);
     return spinnerConnected;
   }

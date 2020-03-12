@@ -177,7 +177,7 @@ public final class Constants {
         TURRET_TARGET_TICKS_PER_INCH = -1399, //ticks to turn per inch away from wall
         AUTO_INIT_PITCH_TARGET = -694,
         AUTO_DEEP_TRENCH_DISTANCE = -150,
-        AUTO_SHALLOW_TRENCH_DISTANCE = -132,
+        AUTO_SHALLOW_TRENCH_DISTANCE = -144,
         TRENCH_AUTO_WAIT_TIME = 500;
 
     /**

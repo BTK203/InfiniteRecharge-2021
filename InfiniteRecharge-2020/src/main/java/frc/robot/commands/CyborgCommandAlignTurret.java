@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,15 +23,28 @@ public class CyborgCommandAlignTurret extends CommandBase {
   private SubsystemReceiver kiwilight;
   private Joystick operator;
   private boolean targetPreviouslySeen;
+  private boolean
+    endable,
+    yawAligned,
+    pitchAligned;
+
+  private long 
+    lastAlignedTime,
+    alignedTime;
 
   /**
    * Creates a new CyborgCommandAlignTurret.
    */
-  public CyborgCommandAlignTurret(SubsystemTurret turret, SubsystemReceiver kiwilight) {
+  public CyborgCommandAlignTurret(SubsystemTurret turret, SubsystemReceiver kiwilight, boolean endable) {
     this.turret = turret;
     this.kiwilight = kiwilight;
     this.operator = RobotContainer.getOperator();
+    this.endable = endable;
     addRequirements(this.turret);
+  }
+
+  public CyborgCommandAlignTurret(SubsystemTurret turret, SubsystemReceiver kiwilight) {
+    this(turret, kiwilight, false);
   }
 
   // Called when the command is initially scheduled.
@@ -58,6 +72,7 @@ public class CyborgCommandAlignTurret extends CommandBase {
 
     SmartDashboard.putBoolean("Aligning", true);
     targetPreviouslySeen = false;
+    lastAlignedTime = Long.MAX_VALUE;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -66,8 +81,8 @@ public class CyborgCommandAlignTurret extends CommandBase {
     double horizontalAngle = kiwilight.getHorizontalAngleToTarget() * -1;
     horizontalAngle *= Util.getAndSetDouble("Vision multiplier", 1);
 
+    double horizontalPosition = turret.getYawPosition() * -1;
     double horizontalTicks = turret.getTotalYawTicks();
-
     double targetDistance = kiwilight.getDistanceToTarget();
 
     //horizontal angle
@@ -80,6 +95,9 @@ public class CyborgCommandAlignTurret extends CommandBase {
 
       double newTargetPosition = (turret.getYawPosition() * -1) + horizontalTicksToTurn;
       turret.setYawPosition(newTargetPosition);
+
+      yawAligned = Math.abs(newTargetPosition - horizontalPosition) < Constants.TURRET_YAW_ALLOWABLE_ERROR;
+      SmartDashboard.putBoolean("Yaw Aligned", yawAligned);
     } else {
       //disable motors
       turret.setYawPercentOutput(0);
@@ -96,6 +114,7 @@ public class CyborgCommandAlignTurret extends CommandBase {
         double c   = -475.8;
 
         newPitchPosition = ax2 + bx + c;
+        newPitchPosition += Util.getAndSetDouble("Align Degree Boost", 50);
 
         SmartDashboard.putNumber("Pitch Error", turret.getPitchPosition() - newPitchPosition);
       } else {
@@ -106,6 +125,9 @@ public class CyborgCommandAlignTurret extends CommandBase {
       }
 
       turret.setPitchPosition(newPitchPosition);
+
+      pitchAligned = Math.abs(newPitchPosition - turret.getPitchPosition()) < Constants.TURRET_PITCH_ALLOWABLE_ERROR;
+      SmartDashboard.putBoolean("Pitch Aligned", pitchAligned);
     } else {
       //pass input to driver
       turret.moveTurret(operator);
@@ -114,6 +136,14 @@ public class CyborgCommandAlignTurret extends CommandBase {
     //rumble the operator controller if the target becomes spotted
     if(!targetPreviouslySeen && kiwilight.targetSpotted()) {
       new CyborgCommandRumble(operator, 500, RumbleType.kLeftRumble).schedule();
+    }
+
+    if(stable()) {
+      long timeSinceLastFrame = System.currentTimeMillis() - lastAlignedTime;
+      alignedTime += timeSinceLastFrame;
+      lastAlignedTime = System.currentTimeMillis();
+    } else {
+      alignedTime = 0;
     }
     
     targetPreviouslySeen = kiwilight.targetSpotted();
@@ -131,6 +161,15 @@ public class CyborgCommandAlignTurret extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if(endable) {
+      boolean stableForTime = alignedTime > 250;
+      return stable() && stableForTime;
+    } else {
+      return false;
+    }
+  }
+
+  private boolean stable() {
+    return yawAligned && pitchAligned;
   }
 }

@@ -50,11 +50,12 @@ public class SubsystemFeeder extends SubsystemBase {
    * @return true if the system is ready for a match, false otherwise.
    */
   public boolean getSystemIsGo() {
-    boolean beaterConnected = beater.getSupplyCurrent() > Constants.TALON_MINIMUM_AMPERAGE;
-    boolean feederConnected = feeder.getSupplyCurrent() > Constants.TALON_MINIMUM_AMPERAGE;
+    boolean beaterConnected = beater.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+    boolean feederConnected = feeder.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
 
     SmartDashboard.putBoolean("Beater Connected", beaterConnected);
     SmartDashboard.putBoolean("Feeder Connected", feederConnected);
+
 
     return beaterConnected && feederConnected;
   }

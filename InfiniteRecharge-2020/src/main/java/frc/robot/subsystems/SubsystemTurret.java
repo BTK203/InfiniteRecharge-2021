@@ -90,8 +90,8 @@ public class SubsystemTurret extends SubsystemBase {
    * @return true if the system is ready for a match, false otherwise.
    */
   public boolean getSystemIsGo() {
-    boolean yawConnected = turretYaw.getSupplyCurrent() > Constants.TALON_MINIMUM_AMPERAGE;
-    boolean pitchConnected = turretPitch.getSupplyCurrent() > Constants.TALON_MINIMUM_AMPERAGE;
+    boolean yawConnected = turretYaw.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+    boolean pitchConnected = turretPitch.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
 
     SmartDashboard.putBoolean("Yaw Connected", yawConnected);
     SmartDashboard.putBoolean("Pitch Connected", pitchConnected);

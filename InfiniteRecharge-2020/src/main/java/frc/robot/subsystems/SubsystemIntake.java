@@ -50,8 +50,8 @@ public class SubsystemIntake extends SubsystemBase {
    * @return true if the system is ready for a match, false otherwise.
    */
   public boolean getSystemIsGo() {
-    boolean eaterConnected = eater.getSupplyCurrent() > Constants.TALON_MINIMUM_AMPERAGE;
-    boolean slapperConnected = slapper.getSupplyCurrent() > Constants.TALON_MINIMUM_AMPERAGE;
+    boolean eaterConnected = eater.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+    boolean slapperConnected = slapper.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
 
     SmartDashboard.putBoolean("Eater Connected", eaterConnected);
     SmartDashboard.putBoolean("Slapper Connected", slapperConnected);
