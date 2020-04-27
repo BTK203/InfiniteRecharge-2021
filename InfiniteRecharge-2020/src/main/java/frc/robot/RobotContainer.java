@@ -21,6 +21,7 @@ import frc.robot.auto.BareMinimumAuto;
 import frc.robot.auto.IAuto;
 import frc.robot.auto.InitAuto;
 import frc.robot.auto.SixBallSimpleAuto;
+import frc.robot.auto.TrenchAuto;
 import frc.robot.commands.ButtonCommandGroupRunIntakeFeeder;
 import frc.robot.commands.ButtonCommandMoveClimber;
 import frc.robot.commands.CyborgCommandAlignTurret;
@@ -29,6 +30,7 @@ import frc.robot.commands.CyborgCommandCalibrateTurretYaw;
 import frc.robot.commands.CyborgCommandDriveDistance;
 import frc.robot.commands.CyborgCommandFlywheelVelocity;
 import frc.robot.commands.CyborgCommandSetTurretPosition;
+import frc.robot.commands.CyborgCommandSmartDriveDistance;
 import frc.robot.commands.CyborgCommandTestScissorPositition;
 import frc.robot.commands.CyborgCommandZeroTurret;
 import frc.robot.commands.SemiManualCommandRunWinch;
@@ -55,19 +57,19 @@ public class RobotContainer {
    * Subsystems
    */
   private final SubsystemDrive     SUB_DRIVE    = new SubsystemDrive();
+  private final SubsystemTurret    SUB_TURRET   = new SubsystemTurret();
   private final SubsystemIntake    SUB_INTAKE   = new SubsystemIntake();
   private final SubsystemFeeder    SUB_FEEDER   = new SubsystemFeeder();
-  private final SubsystemTurret    SUB_TURRET   = new SubsystemTurret();
   private final SubsystemFlywheel  SUB_FLYWHEEL = new SubsystemFlywheel();
   private final SubsystemSpinner   SUB_SPINNER  = new SubsystemSpinner();
   private final SubsystemClimb     SUB_CLIMB    = new SubsystemClimb();
   private final SubsystemReceiver  SUB_RECEIVER = new SubsystemReceiver();
-  // private final CameraHub          CAMERA_HUB   = new CameraHub();
+  private final CameraHub          CAMERA_HUB   = new CameraHub();
 
   /**
    * Controllers
    */
-  private final Joystick
+  private static final Joystick
     DRIVER   = new Joystick(0),
     OPERATOR = new Joystick(1);
 
@@ -113,6 +115,9 @@ public class RobotContainer {
       case SIX_BALL_SIMPLE:
         currentAuto = new SixBallSimpleAuto(SUB_DRIVE, SUB_TURRET, SUB_RECEIVER, SUB_INTAKE, SUB_FEEDER, SUB_FLYWHEEL);
         break;
+      case EIGHT_BALL_TRENCH:
+        currentAuto = new TrenchAuto(SUB_DRIVE, SUB_TURRET, SUB_RECEIVER, SUB_INTAKE, SUB_FEEDER, SUB_FLYWHEEL);
+        break;
       default:
         currentAuto = new InitAuto(SUB_DRIVE, SUB_TURRET);
         break;
@@ -136,8 +141,44 @@ public class RobotContainer {
         autoCommand.cancel();
       }
     } else {
-      DriverStation.reportError("NO AUTO STARTED, THEREFORE NONE CANCELED.", false);
+      DriverStation.reportError("NO AUTO STARTED, THEREFORE NONE CANCELLED.", false);
     }
+  }
+
+  public static Joystick getDriver() {
+    return DRIVER;
+  }
+
+  public static Joystick getOperator() {
+    return OPERATOR;
+  }
+
+  /**
+   * Prints dashboard indicators indicating whether the robot subsystems are ready for a match.
+   * Indicators are to be used for pre-match only. They do not provide an accurite indication
+   * of the state of a subsystem in mid match.
+   */
+  public void printAllSystemsGo() {
+    boolean climbIsGo     = SUB_CLIMB.getSystemIsGo();
+    boolean driveIsGo     = SUB_DRIVE.getSystemIsGo();
+    boolean feederIsGo    = SUB_FEEDER.getSystemIsGo();
+    boolean flywheelIsGo  = SUB_FLYWHEEL.getSystemIsGo();
+    boolean intakeIsGo    = SUB_INTAKE.getSystemIsGo();
+    boolean kiwilightIsGo = SUB_RECEIVER.getSystemIsGo();
+    boolean spinnerIsGo   = SUB_SPINNER.getSystemIsGo();
+    boolean turretIsGo    = SUB_TURRET.getSystemIsGo();
+
+    boolean allSystemsGo = 
+      climbIsGo &&
+      driveIsGo &&
+      feederIsGo &&
+      flywheelIsGo &&
+      intakeIsGo &&
+      kiwilightIsGo &&
+      spinnerIsGo &&
+      turretIsGo;
+    
+    SmartDashboard.putBoolean("All Systems Go", allSystemsGo);
   }
 
   /**
@@ -175,7 +216,7 @@ public class RobotContainer {
     );
 
     SUB_INTAKE.setDefaultCommand(
-      new ButtonCommandGroupRunIntakeFeeder(SUB_INTAKE, SUB_FEEDER, OPERATOR)
+      new ButtonCommandGroupRunIntakeFeeder(SUB_INTAKE, SUB_FEEDER, SUB_TURRET, OPERATOR)
     );
 
     SemiManualCommandRunWinch semiManualWinchCommand = new SemiManualCommandRunWinch(SUB_CLIMB, OPERATOR);
@@ -204,10 +245,14 @@ public class RobotContainer {
     SmartDashboard.putData("Zero Scissor and Winch Encoders", new InstantCommand(() -> SUB_CLIMB.zeroEncoders(), SUB_CLIMB));
     SmartDashboard.putData("Test Scissor PID", new CyborgCommandTestScissorPositition(SUB_CLIMB, OPERATOR));
     SmartDashboard.putData("Zero Turret", new CyborgCommandZeroTurret(SUB_TURRET));
-    SmartDashboard.putData("Set Turret Position", new CyborgCommandSetTurretPosition(SUB_TURRET, 0, 0));
-    SmartDashboard.putData("Drive Distance", new CyborgCommandDriveDistance(SUB_DRIVE, 240, 0.75));
+    SmartDashboard.putData("Set Turret Position", new CyborgCommandSetTurretPosition(SUB_TURRET, 500000, 0));
+    SmartDashboard.putData("Drive Distance", new CyborgCommandDriveDistance(SUB_DRIVE, 24, 0.75));
     SmartDashboard.putData("Zero Yaw", new InstantCommand(() -> SUB_TURRET.setCurrentYawEncoderPosition(0), SUB_TURRET));
     SmartDashboard.putData("Zero Drivetrain Encoders", new InstantCommand(() -> SUB_DRIVE.zeroEncoders()));
+    SmartDashboard.putData("Apply Camera Settings", new InstantCommand(() -> CAMERA_HUB.configureCameras()));
+    SmartDashboard.putData("Drive Just Masters", new RunCommand(() -> SUB_DRIVE.driveJustMasters(DRIVER), SUB_DRIVE));
+    SmartDashboard.putData("Drive Just Slaves", new RunCommand(() -> SUB_DRIVE.driveJustSlaves(DRIVER), SUB_DRIVE));
+    SmartDashboard.putData("Drive Straight", new CyborgCommandSmartDriveDistance(SUB_DRIVE, 60, 0.6));
 
     SmartDashboard.putData("Toggle Winch", climberManualDrive);
     SmartDashboard.putData("Drive Flywheel RPM", driveFlywheelRPM);
@@ -221,6 +266,7 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Bare Minimum Auto", AutoMode.THE_BARE_MINIMUM);
     autoChooser.addOption("Init Only", AutoMode.INIT_ONLY);
     autoChooser.addOption("Simple Six Ball", AutoMode.SIX_BALL_SIMPLE);
+    autoChooser.addOption("Eight Ball", AutoMode.EIGHT_BALL_TRENCH);
     SmartDashboard.putData("Auto Mode", autoChooser);
   }
 }

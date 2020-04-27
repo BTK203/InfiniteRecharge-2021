@@ -8,6 +8,7 @@
 package frc.robot.auto;
 
 import frc.robot.Constants;
+import frc.robot.util.Util;
 
 /**
  * Class that provides some game specific utils for auto.
@@ -22,5 +23,9 @@ public class Auto {
         double offsetYawTicks = (offsetY * Constants.TURRET_TARGET_TICKS_PER_INCH) + Constants.TURRET_APPROX_TARGET_TICKS_CLOSE;
         offsetYawTicks *= -1;
         return (int) offsetYawTicks;
+    }
+
+    public static int getYawTicksToTarget() {
+        return getYawTicksToTarget(Util.getAndSetDouble("Auto Start Offset", 0));
     }
 }

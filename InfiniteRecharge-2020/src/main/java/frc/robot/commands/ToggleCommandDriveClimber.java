@@ -35,7 +35,7 @@ public class ToggleCommandDriveClimber extends CommandBase {
   public void initialize() {
     new CyborgCommandRumble(controller, 1000, RumbleType.kLeftRumble).schedule();
     new CyborgCommandRumble(controller, 1000, RumbleType.kRightRumble).schedule();
-    climber.setScissorBraking(IdleMode.kCoast);
+    climber.setScissorBraking(IdleMode.kBrake);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

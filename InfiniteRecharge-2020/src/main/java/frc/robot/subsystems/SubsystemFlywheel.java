@@ -46,6 +46,18 @@ public class SubsystemFlywheel extends SubsystemBase {
   }
 
   /**
+   * Prints dashboard indicators indicating whether the subsystem is ready for a match.
+   * Indicators are to be used for pre-match only. They do not provide an accurite indication
+   * of the state of a subsystem in mid match.
+   * @return true if the system is ready for a match, false otherwise.
+   */
+  public boolean getSystemIsGo() {
+    boolean flywheelConnected = turretFlywheel.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+    SmartDashboard.putBoolean("Flywheel Connected", flywheelConnected);
+    return flywheelConnected;
+  }
+
+  /**
    * Set the turretFlywheel speed
    * @param speedz The percent to drive (-1 to 1)
    */

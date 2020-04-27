@@ -15,6 +15,7 @@ import frc.robot.subsystems.SubsystemFeeder;
 import frc.robot.subsystems.SubsystemFlywheel;
 import frc.robot.subsystems.SubsystemIntake;
 import frc.robot.subsystems.SubsystemReceiver;
+import frc.robot.subsystems.SubsystemTurret;
 import frc.robot.util.Util;
 
 /**
@@ -25,6 +26,7 @@ public class CyborgCommandShootPayload extends CommandBase {
   private SubsystemFeeder feeder;
   private SubsystemFlywheel flywheel;
   private SubsystemReceiver kiwilight;
+  private SubsystemTurret turret;
 
   private int
     ballsToShoot,
@@ -49,6 +51,7 @@ public class CyborgCommandShootPayload extends CommandBase {
     SubsystemFeeder feeder, 
     SubsystemFlywheel flywheel, 
     SubsystemReceiver kiwilight, 
+    SubsystemTurret turret,
     int ballsToShoot, 
     int timeToWait,
     boolean runIntake
@@ -57,6 +60,7 @@ public class CyborgCommandShootPayload extends CommandBase {
     this.feeder = feeder;
     this.flywheel = flywheel;
     this.kiwilight = kiwilight;
+    this.turret = turret;
     this.ballsToShoot = ballsToShoot;
     this.timeToWait = timeToWait;
     this.runIntake = runIntake;
@@ -86,19 +90,21 @@ public class CyborgCommandShootPayload extends CommandBase {
       feeder.driveBeater(Util.getAndSetDouble("Beat Speed", 1));
       feeder.driveFeeder(Util.getAndSetDouble("Feed Speed", 1));
       lastFrameStable = true;
+      turret.setPitchPositioningDisabled(true);
     } else {
       intake.driveSlapper(0);
       feeder.driveBeater(0);
       feeder.driveFeeder(0);
+      turret.setPitchPositioningDisabled(false);
+    }
 
-      if(lastFrameStable) { //bro, rpm was stable last time, so we just shot a ball
-        if(timeSinceLastShot >= Util.getAndSetDouble("Ball Shot Timeout", 100)) {
-          ballsShot++;
-        }
-
-        lastFrameStable = false;
-        timeSinceLastShot = System.currentTimeMillis();
+    if(lastFrameStable && !flywheelStable) { //bro, rpm was stable last time, so we just shot a ball
+      if(timeSinceLastShot >= Util.getAndSetDouble("Ball Shot Timeout", 100)) {
+        ballsShot++;
       }
+
+      lastFrameStable = false;
+      timeSinceLastShot = System.currentTimeMillis();
     }
 
     if(runIntake) {

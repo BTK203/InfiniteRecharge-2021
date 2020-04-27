@@ -24,6 +24,7 @@ public class SubsystemClimb extends SubsystemBase {
   private static CANSparkMax 
     scissors,
     winch;
+
   private static ClimbPosition storedPosition;
 
   /**
@@ -49,6 +50,22 @@ public class SubsystemClimb extends SubsystemBase {
 
     SmartDashboard.putNumber("Scissor Out", scissors.getAppliedOutput());
     SmartDashboard.putNumber("Winch Out", winch.getAppliedOutput());
+  }
+
+  /**
+   * Prints dashboard indicators indicating whether the subsystem is ready for a match.
+   * Indicators are to be used for pre-match only. They do not provide an accurite indication
+   * of the state of a subsystem in mid match. This method should be called periodically from RobotContainer.
+   * @return true if the system is ready for a match, false otherwise.
+   */
+  public boolean getSystemIsGo() {
+    boolean winchConnected = winch.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+    boolean scissorsConnected = scissors.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+
+    SmartDashboard.putBoolean("Winch Connected", winchConnected);
+    SmartDashboard.putBoolean("Scissor Connected", scissorsConnected);
+
+    return winchConnected && scissorsConnected;
   }
 
   /**

@@ -63,7 +63,37 @@ public class SubsystemDrive extends SubsystemBase {
     SmartDashboard.putNumber("Right Amps", rightMaster.getOutputCurrent());
     SmartDashboard.putNumber("Left Amps", leftMaster.getOutputCurrent());
 
-    SmartDashboard.putBoolean("NavX Connected", navX.isConnected());
+    SmartDashboard.putBoolean("NavX Connected", getNavXConnected());
+  }
+
+  /**
+   * Prints dashboard indicators indicating whether the subsystem is ready for a match.
+   * Indicators are to be used for pre-match only. They do not provide an accurite indication
+   * of the state of a subsystem in mid match.
+   * @return true if the system is ready for a match, false otherwise.
+   */
+  public boolean getSystemIsGo() {
+    boolean leftMasterConnected = leftMaster.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+    boolean rightMasterConnected = rightMaster.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+    boolean leftSlaveConnected = leftSlave.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+    boolean rightSlaveConnected = rightSlave.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+    boolean navXConnected = navX.isConnected();
+
+    SmartDashboard.putBoolean("Left Master Connected", leftMasterConnected);
+    SmartDashboard.putBoolean("Right Master Connected", rightMasterConnected);
+    SmartDashboard.putBoolean("Left Slave Connected", leftSlaveConnected);
+    SmartDashboard.putBoolean("Right Slave Connected", rightSlaveConnected);
+
+    return 
+      leftMasterConnected &&
+      rightMasterConnected &&
+      leftSlaveConnected &&
+      rightSlaveConnected && 
+      navXConnected;
+  }
+
+  public boolean getNavXConnected() {
+    return navX.isConnected();
   }
 
   /**
@@ -93,14 +123,21 @@ public class SubsystemDrive extends SubsystemBase {
   }
 
   /**
-   * Sets the percent output of the drive motors.
-   * @param percentOutput the percent to set the motors to.
+   * Sets the output of the right drive motors.
+   * @param output output (-1 to 1) to set the motors to.
    */
-  public void setPercentOutput(double percentOutput) {
-    rightMaster.set(percentOutput);
-    rightSlave.set(percentOutput);
-    leftMaster.set(percentOutput);
-    leftSlave.set(percentOutput);
+  public void setRightPercentOutput(double output) {
+    rightMaster.set(output);
+    rightSlave.set(output);
+  }
+
+  /**
+   * Sets the output of the left drive motors.
+   * @param output output (-1 to 1) to set the motors to.
+   */
+  public void setLeftPercentOutput(double output) {
+    leftMaster.set(output);
+    leftSlave.set(output);
   }
 
   /**
@@ -166,6 +203,10 @@ public class SubsystemDrive extends SubsystemBase {
     rightMaster.getPIDController().setOutputRange(outLimit * -1, outLimit);
   }
 
+  public double getGyroAngle() {
+    return navX.getAngle();
+  }
+
   /**
    * Sets the inverts of the drive motors.
    */
@@ -213,5 +254,21 @@ public class SubsystemDrive extends SubsystemBase {
   private void setFollowers() {
     leftSlave.follow(leftMaster);
     rightSlave.follow(rightMaster);
+  }
+
+  /**
+   * METHODS FOR DEVELOPMENT PURPOSES ONLY
+   */
+
+  public void driveJustMasters(Joystick controller) {
+    double drive = Xbox.RT(controller) - Xbox.LT(controller);
+    leftMaster.set(drive);
+    rightMaster.set(drive);
+  }
+
+  public void driveJustSlaves(Joystick controller) {
+    double drive = Xbox.RT(controller) - Xbox.LT(controller);
+    leftSlave.set(drive);
+    rightSlave.set(drive);
   }
 }

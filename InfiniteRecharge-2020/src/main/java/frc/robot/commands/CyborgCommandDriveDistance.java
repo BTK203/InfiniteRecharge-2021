@@ -66,7 +66,8 @@ public class CyborgCommandDriveDistance extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     //override and stop the PID
-    drivetrain.setPercentOutput(0);
+    drivetrain.setRightPercentOutput(0);
+    drivetrain.setLeftPercentOutput(0);
   }
 
   // Returns true when the command should end.

@@ -61,9 +61,15 @@ public class CameraHub {
         backCam.setBrightness(camBrightness);
     }
 
+    public void configFPS() {
+        int fps = (int) Util.getAndSetDouble("Camera FPS", 30);
+        backCam.setFPS(fps);
+    }
+
     public void configureCameras() {
         configResolution();
         configExposure(Constants.DRIVE_CAMERA_AUTOMATIC_EXPOSURE);
         configBrightness();
+        configFPS();
     }
 }

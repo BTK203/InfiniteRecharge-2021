@@ -8,10 +8,14 @@
 package frc.robot.auto;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.commands.ConstantCommandDriveIntake;
 import frc.robot.commands.CyborgCommandAlignTurret;
 import frc.robot.commands.CyborgCommandDriveDistance;
+import frc.robot.commands.CyborgCommandSetTurretPosition;
 import frc.robot.commands.CyborgCommandShootPayload;
+import frc.robot.commands.CyborgCommandSmartDriveDistance;
+import frc.robot.commands.CyborgCommandWait;
 import frc.robot.subsystems.SubsystemDrive;
 import frc.robot.subsystems.SubsystemFeeder;
 import frc.robot.subsystems.SubsystemFlywheel;
@@ -28,11 +32,15 @@ import frc.robot.util.Util;
  */
 public class SixBallSimpleAuto implements IAuto {
     private Command
-        initAndShoot,
+        init,
+        positionTurret,
+        alignTurret,
+        shootTwoBalls,
         driveBack,
         collectBalls,
+        wait,
         driveForward,
-        alignTurret,
+        alignAgain,
         shootPayload;
 
     /**
@@ -46,28 +54,32 @@ public class SixBallSimpleAuto implements IAuto {
         SubsystemFeeder feeder,
         SubsystemFlywheel flywheel
     ) {
-        this.initAndShoot = new BareMinimumAuto(drivetrain, turret, kiwilight, intake, feeder, flywheel).getCommand();
+        this.init = new InitAuto(drivetrain, turret).getCommand();
         
-        double trenchDistance = Util.getAndSetDouble("Trench Distance", -132);
-        this.driveBack = new CyborgCommandDriveDistance(drivetrain, trenchDistance, 0.75);
-        this.collectBalls = new ConstantCommandDriveIntake(intake, feeder);
-        this.driveForward = new CyborgCommandDriveDistance(drivetrain, trenchDistance * -1, 0.75);
-
+        //position turret to get target in vision view
+        int yawTarget = Auto.getYawTicksToTarget(Util.getAndSetDouble("Auto Start Offset", 0));
+        int pitchTarget = Constants.AUTO_INIT_PITCH_TARGET;
+        this.positionTurret = new CyborgCommandSetTurretPosition(turret, yawTarget, pitchTarget);
+        
         //align
-        this.alignTurret = new CyborgCommandAlignTurret(turret, kiwilight);
+        this.alignTurret = new CyborgCommandAlignTurret(turret, kiwilight, true);
+        this.shootTwoBalls = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, turret, 2, 15000, false);
+        
+        double trenchDistance = (double) Constants.AUTO_SHALLOW_TRENCH_DISTANCE;
+        this.driveBack = new CyborgCommandSmartDriveDistance(drivetrain, trenchDistance, 0.4);
+        this.collectBalls = new ConstantCommandDriveIntake(intake, feeder);
+        this.wait = new CyborgCommandWait(Constants.TRENCH_AUTO_WAIT_TIME);
+        this.driveForward = new CyborgCommandSmartDriveDistance(drivetrain, trenchDistance * -1, 0.75);
 
         //shoot balls
-        int ballsToShoot = (int) Util.getAndSetDouble("Init Auto Payload", 3);
-        int timeToWait = (int) Util.getAndSetDouble("Auto Payload Timeout", 3000);
-        this.shootPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, ballsToShoot, timeToWait, false);
+        this.alignAgain = new CyborgCommandAlignTurret(turret, kiwilight, true);
+        this.shootPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, turret, 1000, 15000, false);
     }
 
     public Command getCommand() {
-        return initAndShoot.andThen(
-            driveBack.raceWith(collectBalls).andThen(
-                driveForward.andThen(shootPayload.raceWith(alignTurret))
-            )
-        );
+        Command initAndShoot = init.andThen(positionTurret, alignTurret, shootTwoBalls);
+        Command driveAndCollect = (driveBack.andThen(wait, driveForward)).raceWith(collectBalls);
+        return initAndShoot.andThen(driveAndCollect, alignAgain, shootPayload);
     }
 
     public boolean requiresFlywheel() {

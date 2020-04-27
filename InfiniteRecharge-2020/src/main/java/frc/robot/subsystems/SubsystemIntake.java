@@ -44,6 +44,22 @@ public class SubsystemIntake extends SubsystemBase {
   }
 
   /**
+   * Prints dashboard indicators indicating whether the subsystem is ready for a match.
+   * Indicators are to be used for pre-match only. They do not provide an accurite indication
+   * of the state of a subsystem in mid match.
+   * @return true if the system is ready for a match, false otherwise.
+   */
+  public boolean getSystemIsGo() {
+    boolean eaterConnected = eater.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+    boolean slapperConnected = slapper.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+
+    SmartDashboard.putBoolean("Eater Connected", eaterConnected);
+    SmartDashboard.putBoolean("Slapper Connected", slapperConnected);
+
+    return eaterConnected && slapperConnected;
+  }
+
+  /**
    * Sets the percent output of the eater motor
    * @param percent desired percent output
    */

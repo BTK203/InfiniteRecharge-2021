@@ -91,6 +91,16 @@ public class SubsystemReceiver extends SubsystemBase {
   }
 
   /**
+   * Prints dashboard indicators indicating whether the subsystem is ready for a match.
+   * Indicators are to be used for pre-match only. They do not provide an accurite indication
+   * of the state of a subsystem in mid match.
+   * @return true if the system is ready for a match, false otherwise.
+   */
+  public boolean getSystemIsGo() {
+    return getSecondsSinceUpdate() < 0.5;
+  }
+
+  /**
    * Retrieves the last known pixel coordinates of the target
    * @return [0] = X-coordinate (in pixels from left)
    *         [1] = Y-coordinate (in pixels from bottom)

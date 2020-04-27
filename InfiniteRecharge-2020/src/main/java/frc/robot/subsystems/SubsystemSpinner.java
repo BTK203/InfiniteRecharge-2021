@@ -46,9 +46,9 @@ public class SubsystemSpinner extends SubsystemBase {
   public void periodic() {
     detectedColor = sensor.getColor();
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("RED", detectedColor.red * 255.0);
-    SmartDashboard.putNumber("BLUE", detectedColor.blue * 255.0);
-    SmartDashboard.putNumber("GREEN", detectedColor.green * 255.0);
+    SmartDashboard.putNumber("RED", detectedColor.red);
+    SmartDashboard.putNumber("BLUE", detectedColor.blue);
+    SmartDashboard.putNumber("GREEN", detectedColor.green);
 
     SmartDashboard.putBoolean("Found Red", isRed(detectedColor));
     SmartDashboard.putBoolean("Found Green", isGreen(detectedColor));
@@ -56,6 +56,18 @@ public class SubsystemSpinner extends SubsystemBase {
     SmartDashboard.putBoolean("Found Yellow", isYellow(detectedColor));
 
     SmartDashboard.putNumber("Spinner Amps", spinner.getStatorCurrent());
+  }
+
+  /**
+   * Prints dashboard indicators indicating whether the subsystem is ready for a match.
+   * Indicators are to be used for pre-match only. They do not provide an accurite indication
+   * of the state of a subsystem in mid match.
+   * @return true if the system is ready for a match, false otherwise.
+   */
+  public boolean getSystemIsGo() {
+    boolean spinnerConnected = spinner.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+    SmartDashboard.putBoolean("Spinner Connected", spinnerConnected);
+    return spinnerConnected;
   }
 
   /**
@@ -125,7 +137,7 @@ public class SubsystemSpinner extends SubsystemBase {
    * @return true if position control was completed, false otherwise.
    */
   public boolean spinColor(char colorToFind) {
-    startSpinner(Util.getAndSetDouble("Spin Inhibitor", Constants.SPINNER_SPEED));
+    startSpinner(Util.getAndSetDouble("Spin Inhibitor", 1));
 
     switch(colorToFind){
       case 'R':

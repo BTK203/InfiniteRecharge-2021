@@ -10,6 +10,7 @@ package frc.robot.auto;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.CyborgCommandDriveDistance;
+import frc.robot.commands.CyborgCommandSmartDriveDistance;
 import frc.robot.commands.CyborgCommandZeroTurret;
 import frc.robot.subsystems.SubsystemDrive;
 import frc.robot.subsystems.SubsystemTurret;
@@ -28,7 +29,8 @@ public class InitAuto implements IAuto {
     public InitAuto(SubsystemDrive drivetrain, SubsystemTurret turret) {
         this.zeroDriveEncoders = new InstantCommand(() -> drivetrain.zeroEncoders(), drivetrain);
         this.zeroTurret = new CyborgCommandZeroTurret(turret);
-        this.driveOffLine = new CyborgCommandDriveDistance(drivetrain, Util.getAndSetDouble("Initiation Drive", -20), Util.getAndSetDouble("Drive Auto Inhibitor", 0.75));
+        //TODO: decide whether or not init drive preference should be changed to constant, as well as drive auto inhibitor
+        this.driveOffLine = new CyborgCommandSmartDriveDistance(drivetrain, Util.getAndSetDouble("Initiation Drive", -36), Util.getAndSetDouble("Drive Auto Inhibitor", 0.75));
     }
 
     public Command getCommand() {

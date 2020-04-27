@@ -31,6 +31,9 @@ public class SubsystemTurret extends SubsystemBase {
     totalYawTicks,
     totalPitchTicks;
 
+  private boolean 
+    pitchPositioningDisabled;
+
   /**
    * Creates a new SubsystemTurret.
    */
@@ -40,6 +43,8 @@ public class SubsystemTurret extends SubsystemBase {
 
     totalYawTicks = Constants.DEFAULT_TURRET_YAW_TICKS;
     totalPitchTicks = Constants.DEFAULT_TURRET_PITCH_TICKS;
+
+    pitchPositioningDisabled = false;
 
     configureMotors();
   }
@@ -76,6 +81,22 @@ public class SubsystemTurret extends SubsystemBase {
     if(getPitchLowerLimit()) {
       turretPitch.getSensorCollection().setQuadraturePosition(0, 0);
     }    
+  }
+
+  /**
+   * Prints dashboard indicators indicating whether the subsystem is ready for a match.
+   * Indicators are to be used for pre-match only. They do not provide an accurite indication
+   * of the state of a subsystem in mid match.
+   * @return true if the system is ready for a match, false otherwise.
+   */
+  public boolean getSystemIsGo() {
+    boolean yawConnected = turretYaw.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+    boolean pitchConnected = turretPitch.getBusVoltage() > Constants.SPARK_MINIMUM_VOLTAGE;
+
+    SmartDashboard.putBoolean("Yaw Connected", yawConnected);
+    SmartDashboard.putBoolean("Pitch Connected", pitchConnected);
+
+    return yawConnected && pitchConnected;
   }
 
   /**
@@ -155,10 +176,12 @@ public class SubsystemTurret extends SubsystemBase {
    * @param position target pitch position in ticks.
    */
   public void setPitchPosition(double position) {
-    turretPitch.set(ControlMode.Position, position);
+    if(!pitchPositioningDisabled) {
+      turretPitch.set(ControlMode.Position, position);
 
-    SmartDashboard.putNumber("Pitch PID Target", position);
-    SmartDashboard.putNumber("Pitch PID Error", turretPitch.getSensorCollection().getQuadraturePosition() - position);
+      SmartDashboard.putNumber("Pitch PID Target", position);
+      SmartDashboard.putNumber("Pitch PID Error", turretPitch.getSensorCollection().getQuadraturePosition() - position);
+    }
   }
 
   /**
@@ -174,7 +197,11 @@ public class SubsystemTurret extends SubsystemBase {
    * @param percent percent output
    */
   public void setPitchPercentOutput(double percent) {
-    turretPitch.set(ControlMode.PercentOutput, percent);
+      turretPitch.set(ControlMode.PercentOutput, percent);
+  }
+
+  public void setPitchPositioningDisabled(boolean disabled) {
+    pitchPositioningDisabled = disabled;
   }
   
   /**
