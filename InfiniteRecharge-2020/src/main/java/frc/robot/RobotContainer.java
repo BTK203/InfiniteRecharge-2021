@@ -219,8 +219,12 @@ public class RobotContainer {
       new ButtonCommandGroupRunIntakeFeeder(SUB_INTAKE, SUB_FEEDER, SUB_TURRET, OPERATOR)
     );
 
-    SemiManualCommandRunWinch semiManualWinchCommand = new SemiManualCommandRunWinch(SUB_CLIMB, OPERATOR);
-    SUB_CLIMB.setDefaultCommand(semiManualWinchCommand);
+    // SemiManualCommandRunWinch semiManualWinchCommand = new SemiManualCommandRunWinch(SUB_CLIMB, OPERATOR);
+    // SUB_CLIMB.setDefaultCommand(semiManualWinchCommand);
+
+    SUB_CLIMB.setDefaultCommand(
+      new RunCommand(() -> SUB_CLIMB.driveTimByJoystick(OPERATOR), SUB_CLIMB)
+    );
 
     //toggle commands
     JoystickButton toggleFlywheel = new JoystickButton(OPERATOR, Xbox.START);
@@ -246,7 +250,7 @@ public class RobotContainer {
     SmartDashboard.putData("Test Scissor PID", new CyborgCommandTestScissorPositition(SUB_CLIMB, OPERATOR));
     SmartDashboard.putData("Zero Turret", new CyborgCommandZeroTurret(SUB_TURRET));
     SmartDashboard.putData("Set Turret Position", new CyborgCommandSetTurretPosition(SUB_TURRET, 500000, 0));
-    SmartDashboard.putData("Drive Distance", new CyborgCommandDriveDistance(SUB_DRIVE, 24, 0.75));
+    SmartDashboard.putData("Drive Distance", new CyborgCommandDriveDistance(SUB_DRIVE, -132, 0.75));
     SmartDashboard.putData("Zero Yaw", new InstantCommand(() -> SUB_TURRET.setCurrentYawEncoderPosition(0), SUB_TURRET));
     SmartDashboard.putData("Zero Drivetrain Encoders", new InstantCommand(() -> SUB_DRIVE.zeroEncoders()));
     SmartDashboard.putData("Apply Camera Settings", new InstantCommand(() -> CAMERA_HUB.configureCameras()));
@@ -257,7 +261,7 @@ public class RobotContainer {
     SmartDashboard.putData("Toggle Winch", climberManualDrive);
     SmartDashboard.putData("Drive Flywheel RPM", driveFlywheelRPM);
     SmartDashboard.putData("Align Turret", alignTurret);
-    SmartDashboard.putData("Run  Winch", semiManualWinchCommand);
+    // SmartDashboard.putData("Run  Winch", semiManualWinchCommand);
   }
   
   private void configureAutoChooser() {

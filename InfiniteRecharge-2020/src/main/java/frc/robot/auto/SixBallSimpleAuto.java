@@ -62,24 +62,24 @@ public class SixBallSimpleAuto implements IAuto {
         this.positionTurret = new CyborgCommandSetTurretPosition(turret, yawTarget, pitchTarget);
         
         //align
-        this.alignTurret = new CyborgCommandAlignTurret(turret, kiwilight, true);
-        this.shootTwoBalls = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, turret, 2, 15000, false);
+        this.alignTurret = new CyborgCommandAlignTurret(turret, kiwilight, false);
+        this.shootTwoBalls = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, turret, 1, 15000, false);
         
         double trenchDistance = (double) Constants.AUTO_SHALLOW_TRENCH_DISTANCE;
-        this.driveBack = new CyborgCommandSmartDriveDistance(drivetrain, trenchDistance, 0.4);
+        this.driveBack = new CyborgCommandDriveDistance(drivetrain, trenchDistance, 0.4);
         this.collectBalls = new ConstantCommandDriveIntake(intake, feeder);
         this.wait = new CyborgCommandWait(Constants.TRENCH_AUTO_WAIT_TIME);
-        this.driveForward = new CyborgCommandSmartDriveDistance(drivetrain, trenchDistance * -1, 0.75);
+        this.driveForward = new CyborgCommandDriveDistance(drivetrain, trenchDistance * -1, 0.75);
 
         //shoot balls
         this.alignAgain = new CyborgCommandAlignTurret(turret, kiwilight, true);
-        this.shootPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, turret, 1000, 15000, false);
+        this.shootPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, turret, 1, 15000, false);
     }
 
     public Command getCommand() {
-        Command initAndShoot = init.andThen(positionTurret, alignTurret, shootTwoBalls);
+        Command initAndShoot = init.andThen(positionTurret, alignTurret.raceWith(shootTwoBalls));
         Command driveAndCollect = (driveBack.andThen(wait, driveForward)).raceWith(collectBalls);
-        return initAndShoot.andThen(driveAndCollect, alignAgain, shootPayload);
+        return initAndShoot.andThen(driveAndCollect, alignAgain.raceWith(shootPayload));
     }
 
     public boolean requiresFlywheel() {

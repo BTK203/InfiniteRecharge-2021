@@ -640,7 +640,7 @@
             "content": {
               "_type": "Boolean Box",
               "_source0": "network_table:///SmartDashboard/All Systems Go",
-              "_title": "SmartDashboard/All Systems Go",
+              "_title": "All Systems Go",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
             }

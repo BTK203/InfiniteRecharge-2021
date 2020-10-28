@@ -99,6 +99,23 @@ public class SubsystemClimb extends SubsystemBase {
     moveWinchByController(controller);
   }
 
+
+  public void driveTimByJoystick(Joystick controller) {
+    double up = Xbox.LT(controller);
+    double down = Xbox.RT(controller);
+
+    if(up > down) {
+      scissors.setIdleMode(IdleMode.kBrake);
+    }
+
+    if(up < down) {
+      scissors.setIdleMode(IdleMode.kCoast);
+    }
+
+    scissors.set(up);
+    winch.set(down);
+  }
+
   /**
    * Configures braking modes and inverts on the motors.
    */

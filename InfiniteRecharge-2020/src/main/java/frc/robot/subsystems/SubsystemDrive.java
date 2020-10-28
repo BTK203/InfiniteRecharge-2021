@@ -46,6 +46,7 @@ public class SubsystemDrive extends SubsystemBase {
     setRamps();
     setFollowers();
     setAmpLimits();
+    setInverts();
   }
 
   /**

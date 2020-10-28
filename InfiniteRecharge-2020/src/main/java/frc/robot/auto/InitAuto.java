@@ -30,7 +30,7 @@ public class InitAuto implements IAuto {
         this.zeroDriveEncoders = new InstantCommand(() -> drivetrain.zeroEncoders(), drivetrain);
         this.zeroTurret = new CyborgCommandZeroTurret(turret);
         //TODO: decide whether or not init drive preference should be changed to constant, as well as drive auto inhibitor
-        this.driveOffLine = new CyborgCommandSmartDriveDistance(drivetrain, Util.getAndSetDouble("Initiation Drive", -36), Util.getAndSetDouble("Drive Auto Inhibitor", 0.75));
+        this.driveOffLine = new CyborgCommandDriveDistance(drivetrain, Util.getAndSetDouble("Initiation Drive", -36), Util.getAndSetDouble("Drive Auto Inhibitor", 0.75));
     }
 
     public Command getCommand() {

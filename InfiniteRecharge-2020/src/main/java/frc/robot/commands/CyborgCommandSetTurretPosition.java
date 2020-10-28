@@ -55,7 +55,8 @@ public class CyborgCommandSetTurretPosition extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
+  public void execute() { 
+    turret.setPitchPositioningDisabled(false);
     turret.setYawPosition(yawPosition);
     turret.setPitchPosition(pitchPosition);
   }

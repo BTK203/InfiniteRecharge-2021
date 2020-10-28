@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -44,6 +45,9 @@ public class CyborgCommandDriveDistance extends CommandBase {
 
     SmartDashboard.putNumber("Drive Target Left", leftDestination);
     SmartDashboard.putNumber("Drive Target Right", rightDestination);
+
+    DriverStation.reportWarning("Drive Target Left: " + Double.valueOf(leftDestination).toString(), false);
+    DriverStation.reportWarning("Drive Target Right: " + Double.valueOf(rightDestination).toString(), false);
 
     double p = Util.getAndSetDouble("Drivetrain kP", 0);
     double i = Util.getAndSetDouble("Drivetrain kI", 0);
