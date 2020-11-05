@@ -85,7 +85,7 @@ public class CyborgCommandShootPayload extends CommandBase {
     boolean flywheelStable = currentFlywheelRPM >= Constants.FLYWHEEL_STABLE_RPM;
 
     //decide whether or not to drive the feeder
-    if(flywheelStable && kiwilightStable()) {
+    if(flywheelStable) { // && kiwilightStable() ? 
       intake.driveSlapper(Util.getAndSetDouble("Slap Speed", 0.5));
       feeder.driveBeater(Util.getAndSetDouble("Beat Speed", 1));
       feeder.driveFeeder(Util.getAndSetDouble("Feed Speed", 1));
@@ -112,7 +112,7 @@ public class CyborgCommandShootPayload extends CommandBase {
     }
 
     SmartDashboard.putBoolean("Auto Flywheel Stable", flywheelStable);
-    SmartDashboard.putBoolean("KiwiLight Aligned", kiwilightStable());
+    // SmartDashboard.putBoolean("KiwiLight Aligned", kiwilightStable());
     SmartDashboard.putNumber("Auto Balls Shot", ballsShot);
   }
 

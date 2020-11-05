@@ -40,6 +40,7 @@ public class CyborgCommandAlignTurret extends CommandBase {
     this.kiwilight = kiwilight;
     this.operator = RobotContainer.getOperator();
     this.endable = endable;
+
     addRequirements(this.turret);
   }
 
@@ -72,7 +73,9 @@ public class CyborgCommandAlignTurret extends CommandBase {
 
     SmartDashboard.putBoolean("Aligning", true);
     targetPreviouslySeen = false;
-    lastAlignedTime = Long.MAX_VALUE;
+    
+    this.alignedTime = 0;
+    this.lastAlignedTime = System.currentTimeMillis();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -138,6 +141,7 @@ public class CyborgCommandAlignTurret extends CommandBase {
       new CyborgCommandRumble(operator, 500, RumbleType.kLeftRumble).schedule();
     }
 
+    SmartDashboard.putBoolean("KIWILIGHT STABLE", stable());
     if(stable()) {
       long timeSinceLastFrame = System.currentTimeMillis() - lastAlignedTime;
       alignedTime += timeSinceLastFrame;
@@ -145,6 +149,8 @@ public class CyborgCommandAlignTurret extends CommandBase {
     } else {
       alignedTime = 0;
     }
+
+    SmartDashboard.putNumber("KiwiLight Aligned Time", alignedTime);
     
     targetPreviouslySeen = kiwilight.targetSpotted();
   }
@@ -163,7 +169,7 @@ public class CyborgCommandAlignTurret extends CommandBase {
   public boolean isFinished() {
     if(endable) {
       boolean stableForTime = alignedTime > 250;
-      return stable() && stableForTime;
+      return stableForTime;
     } else {
       return false;
     }
