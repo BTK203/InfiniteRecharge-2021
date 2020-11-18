@@ -37,6 +37,8 @@ public class CyborgCommandDriveDistance extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    DriverStation.reportWarning("CyborgCommandDriveDistance enters", false);
+
     //figure out how many rotations to turn
     double rotations = distance * Constants.DRIVE_ROTATIONS_PER_INCH; 
 

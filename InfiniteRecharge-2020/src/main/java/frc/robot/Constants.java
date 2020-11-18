@@ -153,8 +153,8 @@ public final class Constants {
         DEFAULT_TURRET_YAW_TICKS = 1615628,
         DEFAULT_TURRET_PITCH_TICKS = 1000,
         FLYWHEEL_STABLE_RPM = 5600,
-        TURRET_YAW_ALLOWABLE_ERROR = 100000,
-        TURRET_PITCH_ALLOWABLE_ERROR = 25,
+        TURRET_YAW_ALLOWABLE_ERROR = 50000,
+        TURRET_PITCH_ALLOWABLE_ERROR = 20,
         DRIVE_AMP_LIMIT = 60,
         SPARK_MINIMUM_VOLTAGE = 8, //used to check if motor controllers are connected
         TALON_MINIMUM_AMPERAGE = 1;
@@ -172,7 +172,8 @@ public final class Constants {
      */
     public static final int
         DISTANCE_INIT_LINE_TO_ALLIANCE_WALL = 120,
-        KIWILIGHT_STABLE_DEGREES = 3, //degrees
+        KIWILIGHT_STABLE_DEGREES = 1, //degrees
+        KIWILIGHT_STABLE_TIME = 0,
         TURRET_APPROX_TARGET_TICKS_CLOSE = -624258,
         TURRET_TARGET_TICKS_PER_INCH = -1399, //ticks to turn per inch away from wall
         AUTO_INIT_PITCH_TARGET = -694,
@@ -181,9 +182,16 @@ public final class Constants {
         TRENCH_AUTO_WAIT_TIME = 500;
 
     /**
+     * Temporary auto
+     */
+    public static final int
+        KIWILIGHT_SOFT_ALIGN_DEGREES = 12;
+
+    /**
      * More auto values but doubles
      */
     public static final double 
-        DRIVE_ROTATIONS_PER_INCH = 0.45;
+        DRIVE_ROTATIONS_PER_INCH = 0.45,
+        DRIVE_AUTO_INHIBITOR = 1;
 
 }

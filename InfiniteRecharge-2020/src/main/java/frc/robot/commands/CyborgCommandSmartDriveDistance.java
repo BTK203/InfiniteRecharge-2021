@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -48,6 +49,7 @@ public class CyborgCommandSmartDriveDistance extends CommandBase {
   @Override
   public void initialize() {
     //set up vars
+    DriverStation.reportWarning("CyborgCommandSmartDriveDistance enters", false);
     this.lastLeftPosition = drivetrain.getLeftPosition();
     this.lastRightPosition = drivetrain.getRightPosition();
 

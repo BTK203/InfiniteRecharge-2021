@@ -7,6 +7,7 @@
 
 package frc.robot.auto;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -22,4 +23,5 @@ public interface IAuto {
      * Returns true if the current auto requires the flywheel to spin up, false otherwise.
      */
     public boolean requiresFlywheel();
+
 }

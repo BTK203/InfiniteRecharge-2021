@@ -50,7 +50,7 @@ public class BareMinimumAuto implements IAuto {
         this.alignTurret = new CyborgCommandAlignTurret(turret, kiwilight, true);
         
         //shoot preloaded power cells
-        this.shootPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, turret, 1, 15000, false);
+        this.shootPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, turret, 3, 15000, false);
     }
 
     public Command getCommand() {

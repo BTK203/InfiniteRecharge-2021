@@ -9,11 +9,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.SubsystemReceiver;
 import frc.robot.subsystems.SubsystemTurret;
 import frc.robot.util.Util;
 
 public class CyborgCommandSetTurretPosition extends CommandBase {
   private SubsystemTurret turret;
+  private SubsystemReceiver kiwilight; //only to be used if cancelable is true
+  private boolean cancelable;
 
   private int
     yawPosition,
@@ -22,11 +25,17 @@ public class CyborgCommandSetTurretPosition extends CommandBase {
   /**
    * Creates a new CyborgCommandSetTurretPosition.
    */
-  public CyborgCommandSetTurretPosition(SubsystemTurret turret, int yawTarget, int pitchTarget) {
+  public CyborgCommandSetTurretPosition(SubsystemTurret turret, int yawTarget, int pitchTarget, boolean cancelable, SubsystemReceiver kiwilight) {
     this.turret = turret;
     this.yawPosition = yawTarget;
     this.pitchPosition = pitchTarget;
+    this.kiwilight = kiwilight;
+    this.cancelable = cancelable;
     addRequirements(this.turret);
+  }
+
+  public CyborgCommandSetTurretPosition(SubsystemTurret turret, int yawTarget, int pitchTarget) {
+    this(turret, yawTarget, pitchTarget, false, null);
   }
 
   // Called when the command is initially scheduled.
@@ -76,6 +85,15 @@ public class CyborgCommandSetTurretPosition extends CommandBase {
 
     boolean yawStable = yawError <= Constants.TURRET_YAW_ALLOWABLE_ERROR;
     boolean pitchStable = pitchError <= Constants.TURRET_PITCH_ALLOWABLE_ERROR;
+
+    if(cancelable && kiwilight != null) {
+      if(
+        kiwilight.getHorizontalAngleToTarget() < Constants.KIWILIGHT_SOFT_ALIGN_DEGREES &&
+        kiwilight.getVerticalAngleToTarget() < Constants.KIWILIGHT_SOFT_ALIGN_DEGREES
+      ) {
+        return true;
+      }
+    }
 
     return yawStable && pitchStable;
   }

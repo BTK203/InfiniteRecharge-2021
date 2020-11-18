@@ -82,7 +82,8 @@ public class CyborgCommandShootPayload extends CommandBase {
   @Override
   public void execute() {
     double currentFlywheelRPM = this.flywheel.getVelocity();
-    boolean flywheelStable = currentFlywheelRPM >= Constants.FLYWHEEL_STABLE_RPM;
+    // boolean flywheelStable = currentFlywheelRPM >= Constants.FLYWHEEL_STABLE_RPM;
+    boolean flywheelStable = currentFlywheelRPM >= Util.getAndSetDouble("FW Velocity Target", 6000) - 250;
 
     //decide whether or not to drive the feeder
     if(flywheelStable) { // && kiwilightStable() ? 
@@ -91,12 +92,12 @@ public class CyborgCommandShootPayload extends CommandBase {
       feeder.driveFeeder(Util.getAndSetDouble("Feed Speed", 1));
       lastFrameStable = true;
       turret.setPitchPositioningDisabled(true);
-    } else {
-      intake.driveSlapper(0);
-      feeder.driveBeater(0);
-      feeder.driveFeeder(0);
-      turret.setPitchPositioningDisabled(false);
-    }
+    } //else {
+    //   intake.driveSlapper(0);
+    //   feeder.driveBeater(0);
+    //   feeder.driveFeeder(0);
+    //   turret.setPitchPositioningDisabled(false);
+    // }
 
     if(lastFrameStable && !flywheelStable) { //bro, rpm was stable last time, so we just shot a ball
       if(timeSinceLastShot >= Util.getAndSetDouble("Ball Shot Timeout", 100)) {
@@ -144,8 +145,9 @@ public class CyborgCommandShootPayload extends CommandBase {
     return false;
   }
 
-  private boolean kiwilightStable() {
-    boolean horizontalStable = kiwilight.getHorizontalAngleToTarget() <= Constants.KIWILIGHT_STABLE_DEGREES;
-    return horizontalStable;
-  }
+  //TODO: Figure out whether to delete
+  // private boolean kiwilightStable() {
+  //   boolean horizontalStable = kiwilight.getHorizontalAngleToTarget() <= Constants.KIWILIGHT_STABLE_DEGREES;
+  //   return horizontalStable;
+  // }
 }

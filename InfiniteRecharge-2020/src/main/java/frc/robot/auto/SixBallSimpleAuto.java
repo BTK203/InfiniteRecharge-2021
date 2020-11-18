@@ -63,17 +63,23 @@ public class SixBallSimpleAuto implements IAuto {
         //position turret to get target in vision view
         int yawTarget = Auto.getYawTicksToTarget(Util.getAndSetDouble("Auto Start Offset", 0));
         int pitchTarget = Constants.AUTO_INIT_PITCH_TARGET;
-        this.positionTurret = new CyborgCommandSetTurretPosition(turret, yawTarget, pitchTarget);
+        this.positionTurret = new CyborgCommandSetTurretPosition(turret, yawTarget, pitchTarget, true, kiwilight);
         
         //align
         this.alignTurret = new CyborgCommandAlignTurret(turret, kiwilight, true);
         this.shootTwoBalls = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, turret, 2, 15000, false);
         
         double trenchDistance = (double) Constants.AUTO_SHALLOW_TRENCH_DISTANCE;
-        this.driveBack = new CyborgCommandDriveDistance(drivetrain, trenchDistance, 0.4);
+        //init drive commands. Use CyborgCommandSmartDriveDistance if NavX is connected
+        if(drivetrain.getNavXConnected() && Util.getAndSetBoolean("Use SmartDistance", true)) {
+            this.driveBack = new CyborgCommandSmartDriveDistance(drivetrain, trenchDistance, 1);
+            this.driveForward = new CyborgCommandSmartDriveDistance(drivetrain, trenchDistance * -1, 1);
+        } else {
+            this.driveBack = new CyborgCommandDriveDistance(drivetrain, trenchDistance, 1);
+            this.driveForward = new CyborgCommandDriveDistance(drivetrain, trenchDistance * -1, 1);
+        }
         this.collectBalls = new ConstantCommandDriveIntake(intake, feeder);
         this.wait = new CyborgCommandWait(Constants.TRENCH_AUTO_WAIT_TIME);
-        this.driveForward = new CyborgCommandDriveDistance(drivetrain, trenchDistance * -1, 0.75);
 
         //shoot balls
         this.alignAgain = new CyborgCommandAlignTurret(turret, kiwilight, true);

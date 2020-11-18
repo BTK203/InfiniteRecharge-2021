@@ -39,6 +39,17 @@ public class Util {
 	}
 
 	/**
+	 * Gets boolean value from Prefs, or sets it to backup if it doesn't exist
+	 * @param key The name of the bool to grab
+	 * @param backup The backup value to use if the bool doesn't exist
+	 * @return The value of the boolean "Key"
+	 */
+	public static boolean getAndSetBoolean(String key, boolean backup) {
+		if(!pref.containsKey(key)) pref.putBoolean(key, backup);
+		return pref.getBoolean(key, backup);
+	}
+
+	/**
      * Really stupid but needed to round a double to n places
      * @param value  original value
      * @param places how many values after decimal point
