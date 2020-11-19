@@ -83,21 +83,29 @@ public class CyborgCommandShootPayload extends CommandBase {
   public void execute() {
     double currentFlywheelRPM = this.flywheel.getVelocity();
     // boolean flywheelStable = currentFlywheelRPM >= Constants.FLYWHEEL_STABLE_RPM;
-    boolean flywheelStable = currentFlywheelRPM >= Util.getAndSetDouble("FW Velocity Target", 6000) - 250;
+
+    double fwStableRPM = Util.getAndSetDouble("FW Velocity Target", 6000) - 250;
+    if(Constants.AUTO_OVERREV_TURRET) {
+      fwStableRPM += Constants.AUTO_OVERREV_EXTRA_RPM;
+    }
+
+    boolean flywheelStable = currentFlywheelRPM >= fwStableRPM;
+
+    DriverStation.reportWarning("flywheel stable: " + (flywheelStable ? "Yes" : "No") + " | current Flywheel RPM: " + Double.valueOf(currentFlywheelRPM).toString() + " | FW stable RPM: " + Double.valueOf(fwStableRPM).toString(), false);
 
     //decide whether or not to drive the feeder
-    if(flywheelStable) { // && kiwilightStable() ? 
+    if(flywheelStable) { 
       intake.driveSlapper(Util.getAndSetDouble("Slap Speed", 0.5));
       feeder.driveBeater(Util.getAndSetDouble("Beat Speed", 1));
       feeder.driveFeeder(Util.getAndSetDouble("Feed Speed", 1));
       lastFrameStable = true;
       turret.setPitchPositioningDisabled(true);
-    } //else {
-    //   intake.driveSlapper(0);
-    //   feeder.driveBeater(0);
-    //   feeder.driveFeeder(0);
-    //   turret.setPitchPositioningDisabled(false);
-    // }
+    } else if(!Constants.AUTO_OVERREV_TURRET) {
+      intake.driveSlapper(0);
+      feeder.driveBeater(0);
+      feeder.driveFeeder(0);
+      turret.setPitchPositioningDisabled(false);
+    }
 
     if(lastFrameStable && !flywheelStable) { //bro, rpm was stable last time, so we just shot a ball
       if(timeSinceLastShot >= Util.getAndSetDouble("Ball Shot Timeout", 100)) {
@@ -144,10 +152,4 @@ public class CyborgCommandShootPayload extends CommandBase {
 
     return false;
   }
-
-  //TODO: Figure out whether to delete
-  // private boolean kiwilightStable() {
-  //   boolean horizontalStable = kiwilight.getHorizontalAngleToTarget() <= Constants.KIWILIGHT_STABLE_DEGREES;
-  //   return horizontalStable;
-  // }
 }

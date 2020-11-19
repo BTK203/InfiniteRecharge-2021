@@ -154,7 +154,7 @@ public final class Constants {
         DEFAULT_TURRET_PITCH_TICKS = 1000,
         FLYWHEEL_STABLE_RPM = 5600,
         TURRET_YAW_ALLOWABLE_ERROR = 50000,
-        TURRET_PITCH_ALLOWABLE_ERROR = 20,
+        TURRET_PITCH_ALLOWABLE_ERROR = 30,
         DRIVE_AMP_LIMIT = 60,
         SPARK_MINIMUM_VOLTAGE = 8, //used to check if motor controllers are connected
         TALON_MINIMUM_AMPERAGE = 1;
@@ -179,7 +179,8 @@ public final class Constants {
         AUTO_INIT_PITCH_TARGET = -694,
         AUTO_DEEP_TRENCH_DISTANCE = -150,
         AUTO_SHALLOW_TRENCH_DISTANCE = -154,
-        TRENCH_AUTO_WAIT_TIME = 500;
+        TRENCH_AUTO_WAIT_TIME = 500,
+        AUTO_OVERREV_EXTRA_RPM = 500;
 
     /**
      * Temporary auto
@@ -193,5 +194,11 @@ public final class Constants {
     public static final double 
         DRIVE_ROTATIONS_PER_INCH = 0.45,
         DRIVE_AUTO_INHIBITOR = 1;
+
+    /**
+     * More auto values but booleans
+     */
+    public static final boolean
+        AUTO_OVERREV_TURRET = true; //if set to true, flywheel speed will be increased by 500 RPM and feeder will not stop to regain FW velocity.
 
 }

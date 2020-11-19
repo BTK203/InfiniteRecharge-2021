@@ -72,11 +72,11 @@ public class SixBallSimpleAuto implements IAuto {
         double trenchDistance = (double) Constants.AUTO_SHALLOW_TRENCH_DISTANCE;
         //init drive commands. Use CyborgCommandSmartDriveDistance if NavX is connected
         if(drivetrain.getNavXConnected() && Util.getAndSetBoolean("Use SmartDistance", true)) {
-            this.driveBack = new CyborgCommandSmartDriveDistance(drivetrain, trenchDistance, 1);
-            this.driveForward = new CyborgCommandSmartDriveDistance(drivetrain, trenchDistance * -1, 1);
+            this.driveBack = new CyborgCommandSmartDriveDistance(drivetrain, trenchDistance, Constants.DRIVE_AUTO_INHIBITOR);
+            this.driveForward = new CyborgCommandSmartDriveDistance(drivetrain, trenchDistance * -1, Constants.DRIVE_AUTO_INHIBITOR);
         } else {
-            this.driveBack = new CyborgCommandDriveDistance(drivetrain, trenchDistance, 1);
-            this.driveForward = new CyborgCommandDriveDistance(drivetrain, trenchDistance * -1, 1);
+            this.driveBack = new CyborgCommandDriveDistance(drivetrain, trenchDistance, Constants.DRIVE_AUTO_INHIBITOR);
+            this.driveForward = new CyborgCommandDriveDistance(drivetrain, trenchDistance * -1, Constants.DRIVE_AUTO_INHIBITOR);
         }
         this.collectBalls = new ConstantCommandDriveIntake(intake, feeder);
         this.wait = new CyborgCommandWait(Constants.TRENCH_AUTO_WAIT_TIME);

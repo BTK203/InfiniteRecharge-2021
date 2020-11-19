@@ -16,12 +16,16 @@ import frc.robot.util.Util;
 
 public class CyborgCommandFlywheelVelocity extends CommandBase {
   private SubsystemFlywheel flywheel;
+  private boolean rpmOverridden;
+  private double overrideRPM;
 
   /**
    * Creates a new CyborgCommandFlywheelVelocity.
    */
   public CyborgCommandFlywheelVelocity(SubsystemFlywheel flywheel) {
     this.flywheel = flywheel;
+    this.rpmOverridden = false;
+    this.overrideRPM = 0;
     addRequirements(this.flywheel);
     SmartDashboard.putBoolean("Drive FW Velocity", false);
   }
@@ -48,6 +52,10 @@ public class CyborgCommandFlywheelVelocity extends CommandBase {
   @Override
   public void execute() {
     double speed = Util.getAndSetDouble("FW Velocity Target", 3000) / Constants.FLYWHEEL_GEAR_RATIO;
+    if(rpmOverridden) {
+      speed = overrideRPM;
+    }
+    
     flywheel.setVelocity(speed);
   }
 
@@ -67,5 +75,22 @@ public class CyborgCommandFlywheelVelocity extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  /**
+   * Set whether or not this command should override the target RPM set in Preferences.
+   * @param rpm The RPM to override to.
+   */
+  public void overrideRPM(double rpm) {
+    this.rpmOverridden = true;
+    this.overrideRPM = rpm / Constants.FLYWHEEL_GEAR_RATIO;
+  }
+
+  /**
+   * Marks that the flywheel RPM should no longer be overridden and instead use the value from Prefs.
+   */
+  public void stopOverriding() {
+    this.rpmOverridden = false;
+    this.overrideRPM = 0;
   }
 }

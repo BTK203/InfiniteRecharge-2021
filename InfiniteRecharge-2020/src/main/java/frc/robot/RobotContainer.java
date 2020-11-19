@@ -45,6 +45,7 @@ import frc.robot.subsystems.SubsystemIntake;
 import frc.robot.subsystems.SubsystemReceiver;
 import frc.robot.subsystems.SubsystemSpinner;
 import frc.robot.subsystems.SubsystemTurret;
+import frc.robot.util.Util;
 import frc.robot.util.Xbox;
 
 /**
@@ -129,6 +130,10 @@ public class RobotContainer {
 
     //start flywheel if necessary
     if(currentAuto.requiresFlywheel()) {
+      if(Constants.AUTO_OVERREV_TURRET) {
+        driveFlywheelRPM.overrideRPM(Util.getAndSetDouble("FW Velocity Target", 6000) + (double) Constants.AUTO_OVERREV_EXTRA_RPM);
+      }
+
       driveFlywheelRPM.schedule();
     }
   }

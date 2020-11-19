@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemReceiver;
@@ -91,6 +92,7 @@ public class CyborgCommandSetTurretPosition extends CommandBase {
         kiwilight.getHorizontalAngleToTarget() < Constants.KIWILIGHT_SOFT_ALIGN_DEGREES &&
         kiwilight.getVerticalAngleToTarget() < Constants.KIWILIGHT_SOFT_ALIGN_DEGREES
       ) {
+        DriverStation.reportWarning("SetTurretPosition overridden", false);
         return true;
       }
     }
