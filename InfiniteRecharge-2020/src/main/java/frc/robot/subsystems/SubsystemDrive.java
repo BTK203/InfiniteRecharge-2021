@@ -16,6 +16,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -121,6 +123,48 @@ public class SubsystemDrive extends SubsystemBase {
     leftSlave.set(driveLeft);
     rightMaster.set(driveRight);
     rightSlave.set(driveRight);
+  }
+
+  public void driveTankTrue(Joystick left, Joystick right) {
+    setInverts();
+
+    double rawLeftDrive = left.getY() * -1;
+    double rawRightDrive = right.getY() * -1;
+
+    //apply deadzone since the attack joysticks are sensitive
+    double deadzone = Util.getAndSetDouble("Logitech Attack Deadzone", 0.025);
+    if(Math.abs(rawLeftDrive) < deadzone) {
+      rawLeftDrive = 0;
+    }
+
+    if(Math.abs(rawRightDrive) < deadzone) {
+      rawRightDrive = 0;
+    }
+
+    //apply exponential sensitivity
+    int sensitivity = (int) Util.getAndSetDouble("True Tank Sensitivity", 3);
+    double leftDrive = Math.pow(rawLeftDrive, sensitivity);
+    double rightDrive = Math.pow(rawRightDrive, sensitivity);
+
+    //make sure that direction holds true (because even powers cannot be negative)
+    if(sensitivity % 2 == 0) {
+      if(rawLeftDrive < 0 && leftDrive > 0) { //left drive needs to be negated
+        leftDrive *= -1;
+      }
+
+      if(rawRightDrive < 0 && rightDrive > 0) { //right drive needs to be negated
+        rightDrive *= -1;
+      }
+    }
+
+    double inhibitor = Util.getAndSetDouble("Drive Inhibitor", 1);
+    leftDrive *= inhibitor;
+    rightDrive *= inhibitor;
+
+    leftMaster.set(leftDrive);
+    leftSlave.set(leftDrive);
+    rightMaster.set(rightDrive);
+    rightSlave.set(rightDrive);
   }
 
   /**

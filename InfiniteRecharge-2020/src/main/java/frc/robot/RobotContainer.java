@@ -34,9 +34,11 @@ import frc.robot.commands.CyborgCommandShootPayload;
 import frc.robot.commands.CyborgCommandSmartDriveDistance;
 import frc.robot.commands.CyborgCommandTestScissorPositition;
 import frc.robot.commands.CyborgCommandZeroTurret;
+import frc.robot.commands.ManualCommandDrive;
 import frc.robot.commands.SemiManualCommandRunWinch;
 import frc.robot.commands.ToggleCommandDriveClimber;
 import frc.robot.enumeration.AutoMode;
+import frc.robot.enumeration.DriveScheme;
 import frc.robot.subsystems.SubsystemClimb;
 import frc.robot.subsystems.SubsystemDrive;
 import frc.robot.subsystems.SubsystemFeeder;
@@ -71,9 +73,10 @@ public class RobotContainer {
   /**
    * Controllers
    */
-  private static final Joystick
+  private final Joystick
     DRIVER   = new Joystick(0),
-    OPERATOR = new Joystick(1);
+    OPERATOR = new Joystick(1),
+    DRIVER2  = new Joystick(2);
 
   /**
    * Important Commands
@@ -84,6 +87,7 @@ public class RobotContainer {
    * Dashboard Items
    */
   private SendableChooser<AutoMode> autoChooser;
+  private SendableChooser<DriveScheme> driveChooser;
 
   /**
    * Auto
@@ -97,7 +101,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-    configureAutoChooser();
+    configureChoosers();
   }
 
   /**
@@ -151,12 +155,34 @@ public class RobotContainer {
     }
   }
 
-  public static Joystick getDriver() {
+  /**
+   * Returns the first driver joystick. May be an Xbox controller, but also
+   * could be Logitech attack 3. 
+   * @return 1st (right) drive joystick
+   */
+  public Joystick getDriver() {
     return DRIVER;
   }
 
-  public static Joystick getOperator() {
+  /**
+   * Returns the operator joystick. Could be Xbox, might be Logitech atk3.
+   * @return Operator Joystick.
+   */
+  public Joystick getOperator() {
     return OPERATOR;
+  }
+
+  /**
+   * Returns the second Driver joystick, only used for true tank drive.
+   * Will NOT always be defined as sometimes it will not be plugged in.
+   * @return 2nd (left) drive joystick
+   */
+  public Joystick getDriver2() {
+    return DRIVER2;
+  }
+
+  public DriveScheme getDriveScheme() {
+    return driveChooser.getSelected();
   }
 
   /**
@@ -198,9 +224,9 @@ public class RobotContainer {
      * DRIVER controls
      */
     //manual commands
-    SUB_DRIVE.setDefaultCommand(
-      new RunCommand(() -> SUB_DRIVE.DriveTankByController(DRIVER), SUB_DRIVE)
-    );
+    SUB_DRIVE.setDefaultCommand(new ManualCommandDrive(SUB_DRIVE));
+
+
 
     SUB_SPINNER.setDefaultCommand(
       new RunCommand(() -> SUB_SPINNER.driveByController(DRIVER), SUB_SPINNER)
@@ -223,13 +249,6 @@ public class RobotContainer {
 
     SUB_INTAKE.setDefaultCommand(
       new ButtonCommandGroupRunIntakeFeeder(SUB_INTAKE, SUB_FEEDER, SUB_TURRET, OPERATOR)
-    );
-
-    // SemiManualCommandRunWinch semiManualWinchCommand = new SemiManualCommandRunWinch(SUB_CLIMB, OPERATOR);
-    // SUB_CLIMB.setDefaultCommand(semiManualWinchCommand);
-
-    SUB_CLIMB.setDefaultCommand(
-      new RunCommand(() -> SUB_CLIMB.driveTimByJoystick(OPERATOR), SUB_CLIMB)
     );
 
     //toggle commands
@@ -267,10 +286,9 @@ public class RobotContainer {
 
     SmartDashboard.putData("Toggle Winch", climberManualDrive);
     SmartDashboard.putData("Drive Flywheel RPM", driveFlywheelRPM);
-    // SmartDashboard.putData("Run  Winch", semiManualWinchCommand);
   }
   
-  private void configureAutoChooser() {
+  private void configureChoosers() {
     //declare the different autos we will choose from
     autoChooser = new SendableChooser<AutoMode>();
     autoChooser.setDefaultOption("Bare Minimum Auto", AutoMode.THE_BARE_MINIMUM);
@@ -278,5 +296,10 @@ public class RobotContainer {
     autoChooser.addOption("Simple Six Ball", AutoMode.SIX_BALL_SIMPLE);
     autoChooser.addOption("Eight Ball", AutoMode.EIGHT_BALL_TRENCH);
     SmartDashboard.putData("Auto Mode", autoChooser);
+
+    driveChooser = new SendableChooser<DriveScheme>();
+    driveChooser.setDefaultOption("Rocket League", DriveScheme.RL);
+    driveChooser.addOption("True Tank", DriveScheme.TRUE_TANK);
+    SmartDashboard.putData("Drive Scheme", driveChooser);
   }
 }

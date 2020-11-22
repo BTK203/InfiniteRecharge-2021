@@ -379,19 +379,6 @@
               }
             }
           },
-          "0,7": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Run Winch",
-              "_title": "Climber Dual Action",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
           "0,4": {
             "size": [
               3,
@@ -646,6 +633,30 @@
               "_type": "Boolean Box",
               "_source0": "network_table:///SmartDashboard/All Systems Go",
               "_title": "All Systems Go",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "5,6": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Drive Scheme",
+              "_title": "Drive Scheme"
+            }
+          },
+          "0,7": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/CLIMBER ACTIVE",
+              "_title": "CLIMBER ACTIVE",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
             }
@@ -1091,7 +1102,7 @@
   "windowGeometry": {
     "x": -1928.0,
     "y": -8.0,
-    "width": 1936.0,
-    "height": 1056.0
+    "width": 1940.0,
+    "height": 1066.0
   }
 }

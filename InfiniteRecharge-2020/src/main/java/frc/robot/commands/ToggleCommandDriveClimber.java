@@ -9,8 +9,10 @@ package frc.robot.commands;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SubsystemClimb;
 import frc.robot.subsystems.SubsystemTurret;
@@ -36,6 +38,7 @@ public class ToggleCommandDriveClimber extends CommandBase {
     new CyborgCommandRumble(controller, 1000, RumbleType.kLeftRumble).schedule();
     new CyborgCommandRumble(controller, 1000, RumbleType.kRightRumble).schedule();
     climber.setScissorBraking(IdleMode.kBrake);
+    SmartDashboard.putBoolean("CLIMBER ACTIVE", true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -48,6 +51,7 @@ public class ToggleCommandDriveClimber extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    SmartDashboard.putBoolean("CLIMBER ACTIVE", false);
     climber.setScissorsPercentOutput(0);
     climber.setWinchPercentOutput(0);
   }

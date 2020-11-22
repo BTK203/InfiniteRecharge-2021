@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.SubsystemReceiver;
 import frc.robot.subsystems.SubsystemTurret;
@@ -20,7 +21,6 @@ import frc.robot.util.Util;
 public class CyborgCommandAlignTurret extends CommandBase {
   private SubsystemTurret turret;
   private SubsystemReceiver kiwilight;
-  private Joystick operator;
   private boolean targetPreviouslySeen;
   private boolean
     endable,
@@ -37,7 +37,6 @@ public class CyborgCommandAlignTurret extends CommandBase {
   public CyborgCommandAlignTurret(SubsystemTurret turret, SubsystemReceiver kiwilight, boolean endable) {
     this.turret = turret;
     this.kiwilight = kiwilight;
-    this.operator = RobotContainer.getOperator();
     this.endable = endable;
 
     addRequirements(this.turret);
@@ -80,6 +79,8 @@ public class CyborgCommandAlignTurret extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    Joystick operator = Robot.getRobotContainer().getOperator(); //in case no target
+
     double horizontalAngle = kiwilight.getHorizontalAngleToTarget() * -1;
     horizontalAngle *= Util.getAndSetDouble("Vision multiplier", 1);
 
