@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -96,12 +97,21 @@ public class RobotContainer {
   private Command autoCommand;
 
   /**
+   * Misc.
+   */
+  private boolean controllersGood;
+
+  /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
     configureChoosers();
+
+    currentAuto = new InitAuto(SUB_DRIVE, SUB_TURRET);
+    autoCommand = currentAuto.getCommand();
+    controllersGood = false;
   }
 
   /**
@@ -185,6 +195,44 @@ public class RobotContainer {
     return driveChooser.getSelected();
   }
 
+  public void updateDriveSchemeIndicators() {
+    DriverStation ds = DriverStation.getInstance();
+
+    //report names of devices
+    SmartDashboard.putString("Device 1", ds.getJoystickName(0));
+    SmartDashboard.putString("Device 2", ds.getJoystickName(1));
+    SmartDashboard.putString("Device 3", ds.getJoystickName(2));
+
+    switch(getDriveScheme()) {
+      case RL: {
+          SmartDashboard.putString("Drive Scheme Layout",
+            "Device 1: Driver (xbox)  |  Device 2: Operator (xbox)"
+          );
+
+          //check to see if actual controller layout is good
+          controllersGood = ds.getJoystickIsXbox(0) && ds.getJoystickIsXbox(1);
+        }
+        break;
+      case TRUE_TANK: {
+          SmartDashboard.putString("Drive Scheme Layout",
+            "Device 1: Driver Right (Logitech Attack)  |  Device 2: Operator (xbox)  |  Device 3: Driver Left (Logitech Attack)"
+          );
+
+          //check to see if layout is good
+          controllersGood = !ds.getJoystickIsXbox(0) && ds.getJoystickIsXbox(1) && !ds.getJoystickIsXbox(2);
+        }
+        break;
+    }
+
+    String controllerWarning = (
+      controllersGood?
+      "Safe to enable." :
+      "ENABLE AT YOUR OWN RISK"
+    );
+    SmartDashboard.putString("Controller Warning", controllerWarning);
+    SmartDashboard.putBoolean("Controllers", controllersGood);
+  }
+
   /**
    * Prints dashboard indicators indicating whether the robot subsystems are ready for a match.
    * Indicators are to be used for pre-match only. They do not provide an accurite indication
@@ -208,7 +256,8 @@ public class RobotContainer {
       intakeIsGo &&
       kiwilightIsGo &&
       spinnerIsGo &&
-      turretIsGo;
+      turretIsGo &&
+      controllersGood;
     
     SmartDashboard.putBoolean("All Systems Go", allSystemsGo);
   }

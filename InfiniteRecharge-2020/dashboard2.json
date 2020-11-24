@@ -637,17 +637,6 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "5,6": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/Drive Scheme",
-              "_title": "Drive Scheme"
-            }
-          },
           "0,7": {
             "size": [
               3,
@@ -696,65 +685,6 @@
               "_title": "/Preferences/Auto Start Offset"
             }
           },
-          "15,3": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Auto Yaw Target",
-              "_title": "/SmartDashboard/Auto Yaw Target"
-            }
-          },
-          "13,6": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Yaw PID Error",
-              "_title": "/SmartDashboard/Yaw PID Error"
-            }
-          },
-          "15,6": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Pitch PID Error",
-              "_title": "/SmartDashboard/Pitch PID Error"
-            }
-          },
-          "4,4": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Auto Flywheel Stable",
-              "_title": "/SmartDashboard/Auto Flywheel Stable",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "15,7": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/KiwiLight Aligned",
-              "_title": "/SmartDashboard/KiwiLight Aligned",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
           "5,0": {
             "size": [
               2,
@@ -799,17 +729,6 @@
               "_title": "/Preferences/Init Auto Payload"
             }
           },
-          "14,4": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Auto Balls Shot",
-              "_title": "/SmartDashboard/Auto Balls Shot"
-            }
-          },
           "13,0": {
             "size": [
               2,
@@ -821,41 +740,83 @@
               "_title": "Preferences/Trench Distance"
             }
           },
-          "14,5": {
+          "0,2": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Drive Scheme",
+              "_title": "SmartDashboard/Drive Scheme"
+            }
+          },
+          "3,2": {
+            "size": [
+              10,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Drive Scheme Layout",
+              "_title": "SmartDashboard/Drive Scheme Layout"
+            }
+          },
+          "3,3": {
             "size": [
               3,
               1
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/RPi Data",
-              "_title": "SmartDashboard/RPi Data"
+              "_source0": "network_table:///SmartDashboard/Device 1",
+              "_title": "SmartDashboard/Device 1"
             }
           },
-          "4,2": {
+          "6,3": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Device 2",
+              "_title": "SmartDashboard/Device 2"
+            }
+          },
+          "9,3": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Device 3",
+              "_title": "SmartDashboard/Device 3"
+            }
+          },
+          "13,2": {
             "size": [
               2,
               1
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Pitch Aligned",
-              "_title": "/SmartDashboard/Pitch Aligned",
+              "_source0": "network_table:///SmartDashboard/Controllers",
+              "_title": "SmartDashboard/Controllers",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "4,3": {
+          "12,3": {
             "size": [
-              2,
+              3,
               1
             ],
             "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Yaw Aligned",
-              "_title": "/SmartDashboard/Yaw Aligned",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Controller Warning",
+              "_title": "SmartDashboard/Controller Warning"
             }
           }
         }
@@ -874,7 +835,7 @@
           "14,0": {
             "size": [
               2,
-              5
+              4
             ],
             "content": {
               "_type": "Boolean Box",
@@ -1094,6 +1055,19 @@
                 }
               }
             }
+          },
+          "14,4": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Controllers",
+              "_title": "Controllers",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
           }
         }
       }
@@ -1102,7 +1076,7 @@
   "windowGeometry": {
     "x": -1928.0,
     "y": -8.0,
-    "width": 1940.0,
-    "height": 1066.0
+    "width": 1944.0,
+    "height": 1076.0
   }
 }
