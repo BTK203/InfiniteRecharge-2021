@@ -112,7 +112,7 @@ public final class Constants {
      */
     public static final boolean
         BEATER_INVERT = false,
-        FEEDER_INVERT = false;
+        FEEDER_INVERT = true;
 
     /**
      * Braking Values

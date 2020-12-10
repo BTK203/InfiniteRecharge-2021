@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 
 /** if our code is colonial America, this class is Rhode Island */
@@ -61,5 +62,9 @@ public class Util {
         val = Math.round(val);
         val /= Math.pow(10, places);
         return val;
-    }
+	}
+	
+	public static boolean controllerExists(int index) {
+		return DriverStation.getInstance().getJoystickName(index) != "";
+	}
 }

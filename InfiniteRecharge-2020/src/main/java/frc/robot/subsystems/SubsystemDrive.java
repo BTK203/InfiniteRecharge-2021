@@ -156,7 +156,7 @@ public class SubsystemDrive extends SubsystemBase {
         rightDrive *= -1;
       }
     }
-
+    
     double inhibitor = Util.getAndSetDouble("Drive Inhibitor", 1);
     leftDrive *= inhibitor;
     rightDrive *= inhibitor;

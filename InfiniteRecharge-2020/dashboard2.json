@@ -109,6 +109,39 @@
               "_title": "Preferences",
               "Miscellaneous/Show search box": true
             }
+          },
+          "3,1": {
+            "size": [
+              4,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Desired Pitch Position",
+              "_title": "SmartDashboard/Desired Pitch Position"
+            }
+          },
+          "3,2": {
+            "size": [
+              4,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Pitch Position",
+              "_title": "SmartDashboard/Pitch Position"
+            }
+          },
+          "3,3": {
+            "size": [
+              4,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Pitch Out",
+              "_title": "SmartDashboard/Pitch Out"
+            }
           }
         }
       }
@@ -490,14 +523,14 @@
                 "0,1": {
                   "_type": "Boolean Box",
                   "_source0": "network_table:///SmartDashboard/Pitch Forward Limit",
-                  "_title": "Forward Limit",
+                  "_title": "Lower Limit",
                   "Colors/Color when true": "#7CFC00FF",
                   "Colors/Color when false": "#8B0000FF"
                 },
                 "2,1": {
                   "_type": "Boolean Box",
                   "_source0": "network_table:///SmartDashboard/Pitch Backward Limit",
-                  "_title": "Backward Limit",
+                  "_title": "Upper Limit",
                   "Colors/Color when true": "#7CFC00FF",
                   "Colors/Color when false": "#8B0000FF"
                 }
@@ -1076,7 +1109,7 @@
   "windowGeometry": {
     "x": -1928.0,
     "y": -8.0,
-    "width": 1944.0,
-    "height": 1076.0
+    "width": 1936.0,
+    "height": 1056.0
   }
 }

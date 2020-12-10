@@ -7,10 +7,12 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.SubsystemDrive;
+import frc.robot.util.Util;
 
 public class ManualCommandDrive extends CommandBase {
   private SubsystemDrive drivetrain;
@@ -32,16 +34,23 @@ public class ManualCommandDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Joystick driver = Robot.getRobotContainer().getDriver();
-    Joystick driver2 = Robot.getRobotContainer().getDriver2();
+    // check to see if controllers are good before potentially making the robot destroy the lives of the entire team
+    if (Robot.getRobotContainer().controllersGood() || Util.getAndSetBoolean("Override Drive Lock", false)) {
+      Joystick driver = Robot.getRobotContainer().getDriver();
+      Joystick driver2 = Robot.getRobotContainer().getDriver2();
 
-    switch(Robot.getRobotContainer().getDriveScheme()) {
+      switch (Robot.getRobotContainer().getDriveScheme()) {
       case RL:
         drivetrain.DriveTankByController(driver);
         break;
       case TRUE_TANK:
         drivetrain.driveTankTrue(driver, driver2);
         break;
+      }
+    } else { //the controllers are not good, lock the drivetrain
+      drivetrain.setLeftPercentOutput(0);
+      drivetrain.setRightPercentOutput(0);
+      DriverStation.reportError("DRIVETRAIN LOCKED, CHECK DASHBOARD CONFIG TAB", false);
     }
   }
 

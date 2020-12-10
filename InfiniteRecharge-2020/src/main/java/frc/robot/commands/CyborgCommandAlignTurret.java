@@ -114,7 +114,7 @@ public class CyborgCommandAlignTurret extends CommandBase {
         //equation: f(x) = 0.006851x^2 - 2.654x - 447.8 | where: x is the distance kiwilight reports and f returns the pitch position.
         double ax2 = 0.006851 * Math.pow(targetDistance, 2);
         double bx  = -2.654 * targetDistance;
-        double c   = -475.8;
+        double c   = -225;
 
         newPitchPosition = ax2 + bx + c;
         newPitchPosition += Util.getAndSetDouble("Align Degree Boost", 50);

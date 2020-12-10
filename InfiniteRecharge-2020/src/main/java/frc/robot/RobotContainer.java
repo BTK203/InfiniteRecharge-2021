@@ -33,6 +33,7 @@ import frc.robot.commands.CyborgCommandFlywheelVelocity;
 import frc.robot.commands.CyborgCommandSetTurretPosition;
 import frc.robot.commands.CyborgCommandShootPayload;
 import frc.robot.commands.CyborgCommandSmartDriveDistance;
+import frc.robot.commands.CyborgCommandSmartMoveTurret;
 import frc.robot.commands.CyborgCommandTestScissorPositition;
 import frc.robot.commands.CyborgCommandZeroTurret;
 import frc.robot.commands.ManualCommandDrive;
@@ -210,7 +211,8 @@ public class RobotContainer {
           );
 
           //check to see if actual controller layout is good
-          controllersGood = ds.getJoystickIsXbox(0) && ds.getJoystickIsXbox(1);
+          boolean controllersExist = Util.controllerExists(0) && Util.controllerExists(1);
+          controllersGood = ds.getJoystickIsXbox(0) && ds.getJoystickIsXbox(1) && controllersExist;
         }
         break;
       case TRUE_TANK: {
@@ -219,7 +221,8 @@ public class RobotContainer {
           );
 
           //check to see if layout is good
-          controllersGood = !ds.getJoystickIsXbox(0) && ds.getJoystickIsXbox(1) && !ds.getJoystickIsXbox(2);
+          boolean controllersExist = Util.controllerExists(0) && Util.controllerExists(1) && Util.controllerExists(2);
+          controllersGood = !ds.getJoystickIsXbox(0) && ds.getJoystickIsXbox(1) && !ds.getJoystickIsXbox(2) && controllersExist;
         }
         break;
     }
@@ -234,19 +237,27 @@ public class RobotContainer {
   }
 
   /**
+   * Returns true if the controller configuration is correct, false otherwise
+   */
+  public boolean controllersGood() {
+    return controllersGood;
+  }
+
+  /**
    * Prints dashboard indicators indicating whether the robot subsystems are ready for a match.
    * Indicators are to be used for pre-match only. They do not provide an accurite indication
    * of the state of a subsystem in mid match.
    */
   public void printAllSystemsGo() {
-    boolean climbIsGo     = SUB_CLIMB.getSystemIsGo();
-    boolean driveIsGo     = SUB_DRIVE.getSystemIsGo();
-    boolean feederIsGo    = SUB_FEEDER.getSystemIsGo();
-    boolean flywheelIsGo  = SUB_FLYWHEEL.getSystemIsGo();
-    boolean intakeIsGo    = SUB_INTAKE.getSystemIsGo();
-    boolean kiwilightIsGo = SUB_RECEIVER.getSystemIsGo();
-    boolean spinnerIsGo   = SUB_SPINNER.getSystemIsGo();
-    boolean turretIsGo    = SUB_TURRET.getSystemIsGo();
+    boolean 
+      climbIsGo     = SUB_CLIMB.getSystemIsGo(),
+      driveIsGo     = SUB_DRIVE.getSystemIsGo(),
+      feederIsGo    = SUB_FEEDER.getSystemIsGo(),
+      flywheelIsGo  = SUB_FLYWHEEL.getSystemIsGo(),
+      intakeIsGo    = SUB_INTAKE.getSystemIsGo(),
+      kiwilightIsGo = SUB_RECEIVER.getSystemIsGo(),
+      spinnerIsGo   = SUB_SPINNER.getSystemIsGo(),
+      turretIsGo    = SUB_TURRET.getSystemIsGo();
 
     boolean allSystemsGo = 
       climbIsGo &&
@@ -292,9 +303,11 @@ public class RobotContainer {
      * OPERATOR controls
      */
     //manual commands
-    SUB_TURRET.setDefaultCommand(
-      new RunCommand(() -> SUB_TURRET.moveTurret(OPERATOR), SUB_TURRET)
-    );
+    // SUB_TURRET.setDefaultCommand(
+    //   new RunCommand(() -> SUB_TURRET.moveTurret(OPERATOR), SUB_TURRET)
+    // );
+
+    SUB_TURRET.setDefaultCommand(new CyborgCommandSmartMoveTurret(SUB_TURRET));
 
     SUB_INTAKE.setDefaultCommand(
       new ButtonCommandGroupRunIntakeFeeder(SUB_INTAKE, SUB_FEEDER, SUB_TURRET, OPERATOR)
