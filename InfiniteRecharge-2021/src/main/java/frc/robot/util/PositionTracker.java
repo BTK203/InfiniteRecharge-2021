@@ -5,6 +5,7 @@
 package frc.robot.util;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.SubsystemDrive;
 
 /** Add your docs here. */
@@ -41,7 +42,7 @@ public class PositionTracker {
                     //track and report time elapsed during update.
                     long currentTime = System.currentTimeMillis();
                     long iterationTime = currentTime - lastLoopTime;
-                    DriverStation.reportWarning("PositionTracker iteration time: " + Long.valueOf(iterationTime).toString(), false);
+                    SmartDashboard.putNumber("PositionTracker Iteration Time (ms)", (int) iterationTime);
                     lastLoopTime = currentTime;
                 }
             }
@@ -81,6 +82,8 @@ public class PositionTracker {
 
         this.x += driveX;
         this.y += driveY;
+
+        this.heading = rotation;
     }
 
     /**
@@ -98,6 +101,9 @@ public class PositionTracker {
 
         //update using new values
         update(netDistanceTravelled, currentHeading);
+
+        lastLeftDistance = currentLeftDistance;
+        lastRightDistance = currentRightDistance;
     }
 
     public Point2D getPositionAndHeading() {

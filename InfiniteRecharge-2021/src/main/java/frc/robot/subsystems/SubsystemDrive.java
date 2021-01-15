@@ -7,8 +7,6 @@
 
 package frc.robot.subsystems;
 
-
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -207,6 +205,10 @@ public class SubsystemDrive extends SubsystemBase {
   public void zeroEncoders() {
     leftMaster.getEncoder().setPosition(0);
     rightMaster.getEncoder().setPosition(0);
+  }
+
+  public void zeroGyro() {
+    navX.zeroYaw();
   }
 
   /**
