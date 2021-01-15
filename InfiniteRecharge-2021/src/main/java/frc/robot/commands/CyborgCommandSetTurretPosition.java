@@ -53,7 +53,7 @@ public class CyborgCommandSetTurretPosition extends CommandBase {
     turret.setYawPIDF(yawkP, yawkI, yawkD, yawkF, yawhighOutLimit, (int) yawIZone);
 
     //pitch pid
-    double pitchkP = Util.getAndSetDouble("Pitch Position kP", 0);
+    double pitchkP = Util.getAndSetDouble("Pitch Position kP", 12);
     double pitchkI = Util.getAndSetDouble("Pitch Position kI", 0);
     double pitchIZone = Util.getAndSetDouble("Pitch Position IZone", 75);
     double pitchkD = Util.getAndSetDouble("Pitch Position kD", 0);

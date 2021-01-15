@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -49,6 +50,8 @@ import frc.robot.subsystems.SubsystemSpinner;
 import frc.robot.subsystems.SubsystemTurret;
 import frc.robot.util.Util;
 import frc.robot.util.Xbox;
+import frc.robot.util.PositionTracker;
+import frc.robot.util.Point2D;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -69,6 +72,11 @@ public class RobotContainer {
   private final SubsystemClimb     SUB_CLIMB    = new SubsystemClimb();
   private final SubsystemReceiver  SUB_RECEIVER = new SubsystemReceiver();
   // private final CameraHub          CAMERA_HUB   = new CameraHub();
+
+  /**
+   * Utilities
+   */
+  private final PositionTracker POSITION_TRACKER = new PositionTracker(SUB_DRIVE);
 
   /**
    * Controllers
@@ -111,6 +119,10 @@ public class RobotContainer {
     currentAuto = new InitAuto(SUB_DRIVE, SUB_TURRET);
     autoCommand = currentAuto.getCommand();
     controllersGood = false;
+  }
+
+  public Point2D getRobotPositionAndHeading() {
+    return POSITION_TRACKER.getPositionAndHeading();
   }
 
   /**
@@ -160,7 +172,7 @@ public class RobotContainer {
         autoCommand.cancel();
       }
     } else {
-      DriverStation.reportError("NO AUTO STARTED, THEREFORE NONE CANCELLED.", false);
+      DriverStation.reportError("NO AUTO STARTED, THEREFORE NONE CANCELED.", false);
     }
   }
 
@@ -232,6 +244,10 @@ public class RobotContainer {
     );
     SmartDashboard.putString("Controller Warning", controllerWarning);
     SmartDashboard.putBoolean("Controllers", controllersGood);
+  }
+
+  public void updatePositionIndicator() {
+    SmartDashboard.putString("Robot Position", getRobotPositionAndHeading().toString());
   }
 
   /**
@@ -333,7 +349,6 @@ public class RobotContainer {
     SmartDashboard.putData("Drive Distance", new CyborgCommandDriveDistance(SUB_DRIVE, -132, 0.75));
     SmartDashboard.putData("Zero Yaw", new InstantCommand(() -> SUB_TURRET.setCurrentYawEncoderPosition(0), SUB_TURRET));
     SmartDashboard.putData("Zero Drivetrain Encoders", new InstantCommand(() -> SUB_DRIVE.zeroEncoders()));
-    // SmartDashboard.putData("Apply Camera Settings", new InstantCommand(() -> CAMERA_HUB.configureCameras()));
     SmartDashboard.putData("Drive Just Masters", new RunCommand(() -> SUB_DRIVE.driveJustMasters(DRIVER), SUB_DRIVE));
     SmartDashboard.putData("Drive Just Slaves", new RunCommand(() -> SUB_DRIVE.driveJustSlaves(DRIVER), SUB_DRIVE));
     SmartDashboard.putData("Drive Straight", new CyborgCommandSmartDriveDistance(SUB_DRIVE, 60, 0.6));
@@ -352,9 +367,13 @@ public class RobotContainer {
     autoChooser.addOption("Eight Ball", AutoMode.EIGHT_BALL_TRENCH);
     SmartDashboard.putData("Auto Mode", autoChooser);
 
+    //declare the different drive schemes available
     driveChooser = new SendableChooser<DriveScheme>();
     driveChooser.setDefaultOption("Rocket League", DriveScheme.RL);
     driveChooser.addOption("True Tank", DriveScheme.TRUE_TANK);
     SmartDashboard.putData("Drive Scheme", driveChooser);
+
+    //set drivetrain lock override to false for safety
+    Preferences.getInstance().putBoolean("Override Drive Lock", false);
   }
 }
