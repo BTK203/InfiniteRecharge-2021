@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     robotContainer.printAllSystemsGo();
     robotContainer.updateDriveSchemeIndicators();
-    // robotContainer.updatePositionIndicator();
+    robotContainer.updatePositionIndicator();
   }
 
   /**

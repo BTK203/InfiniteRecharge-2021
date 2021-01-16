@@ -162,7 +162,8 @@ public final class Constants {
     public static final double 
         FLYWHEEL_GEAR_RATIO = 1.6071,
         DRIVETRAIN_ALLOWABLE_ERROR = 1,
-        CLIMBER_WINCH_ALLOWABLE_ERROR = 0.5;
+        CLIMBER_WINCH_ALLOWABLE_ERROR = 0.5,
+        PATH_RECORDER_DISTANCE_INTERVAL = 0.25;
 
     public static final boolean
         DRIVE_CAMERA_AUTOMATIC_EXPOSURE = false;
@@ -192,7 +193,7 @@ public final class Constants {
      * More auto values but doubles
      */
     public static final double 
-        DRIVE_ROTATIONS_PER_INCH = 0.45,
+        DRIVE_ROTATIONS_PER_INCH = 0.472,
         DRIVE_AUTO_INHIBITOR = 1;
 
     /**

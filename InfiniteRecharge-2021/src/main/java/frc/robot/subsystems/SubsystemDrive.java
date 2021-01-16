@@ -24,10 +24,15 @@ import frc.robot.util.Util;
 import frc.robot.util.Xbox;
 
 public class SubsystemDrive extends SubsystemBase {
-  private static CANSparkMax leftMaster;
-  private static CANSparkMax leftSlave;
-  private static CANSparkMax rightMaster;
-  private static CANSparkMax rightSlave;
+  private static CANSparkMax 
+    leftMaster,
+    leftSlave,
+    rightMaster,
+    rightSlave;
+
+  private static double
+    leftPosition,
+    rightPosition;
 
   private AHRS navX;
 
@@ -65,6 +70,9 @@ public class SubsystemDrive extends SubsystemBase {
     SmartDashboard.putNumber("Left Amps", leftMaster.getOutputCurrent());
 
     SmartDashboard.putBoolean("NavX Connected", getNavXConnected());
+
+    leftPosition = leftMaster.getEncoder().getPosition();
+    rightPosition = rightMaster.getEncoder().getPosition();
   }
 
   /**
@@ -215,14 +223,14 @@ public class SubsystemDrive extends SubsystemBase {
    * Returns the current position (rotations) of the left motors.
    */
   public double getLeftPosition() {
-    return leftMaster.getEncoder().getPosition();
+    return leftPosition;
   }
 
   /**
    * Returns the current position (rotations) of the right motor.
    */
   public double getRightPosition() {
-    return rightMaster.getEncoder().getPosition();
+    return rightPosition;
   }
 
   /**

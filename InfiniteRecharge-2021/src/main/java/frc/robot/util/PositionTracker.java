@@ -6,6 +6,7 @@ package frc.robot.util;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemDrive;
 
 /** Add your docs here. */
@@ -74,11 +75,18 @@ public class PositionTracker {
      * @param rotation The current rotation of the robot.
      */
     public void update(double driveDistance, double rotation) {
+        rotation = (rotation < 0 ? 0 : (rotation > 360 ? 360 : rotation));
         double averageHeading = (rotation + this.heading) / 2;
 
         //break vector into components
-        double driveX = driveDistance * Math.cos(averageHeading);
-        double driveY = driveDistance * Math.sin(averageHeading);
+        double driveX = driveDistance * Math.cos(Math.toRadians(averageHeading));
+        double driveY = driveDistance * Math.sin(Math.toRadians(averageHeading));
+
+        driveX /= Constants.DRIVE_ROTATIONS_PER_INCH;
+        driveY /= Constants.DRIVE_ROTATIONS_PER_INCH;
+
+        SmartDashboard.putNumber("PT DriveX", driveX);
+        SmartDashboard.putNumber("PT DriveY", driveY);
 
         this.x += driveX;
         this.y += driveY;

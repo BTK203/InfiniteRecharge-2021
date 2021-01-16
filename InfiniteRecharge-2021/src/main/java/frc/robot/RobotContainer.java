@@ -29,7 +29,9 @@ import frc.robot.commands.CyborgCommandAlignTurret;
 import frc.robot.commands.CyborgCommandCalibrateTurretPitch;
 import frc.robot.commands.CyborgCommandCalibrateTurretYaw;
 import frc.robot.commands.CyborgCommandDriveDistance;
+import frc.robot.commands.CyborgCommandEmulatePath;
 import frc.robot.commands.CyborgCommandFlywheelVelocity;
+import frc.robot.commands.CyborgCommandRecordPath;
 import frc.robot.commands.CyborgCommandSetTurretPosition;
 import frc.robot.commands.CyborgCommandShootPayload;
 import frc.robot.commands.CyborgCommandSmartDriveDistance;
@@ -121,9 +123,9 @@ public class RobotContainer {
     controllersGood = false;
   }
 
-  // public Point2D getRobotPositionAndHeading() {
-  //   return POSITION_TRACKER.getPositionAndHeading();
-  // }
+  public Point2D getRobotPositionAndHeading() {
+    return POSITION_TRACKER.getPositionAndHeading();
+  }
 
   /**
    * Schedules the autonomous command.
@@ -179,7 +181,7 @@ public class RobotContainer {
   private void zeroAllDrivetrain() {
     SUB_DRIVE.zeroEncoders();
     SUB_DRIVE.zeroGyro();
-    // POSITION_TRACKER.setPositionAndHeading(0, 0, 0);
+    POSITION_TRACKER.setPositionAndHeading(0, 0, 0);
   }
 
   /**
@@ -252,9 +254,9 @@ public class RobotContainer {
     SmartDashboard.putBoolean("Controllers", controllersGood);
   }
 
-  // public void updatePositionIndicator() {
-  //   SmartDashboard.putString("Robot Position", getRobotPositionAndHeading().toString());
-  // }
+  public void updatePositionIndicator() {
+    SmartDashboard.putString("Robot Position", getRobotPositionAndHeading().toString());
+  }
 
   /**
    * Returns true if the controller configuration is correct, false otherwise
@@ -355,14 +357,15 @@ public class RobotContainer {
     SmartDashboard.putData("Drive Distance", new CyborgCommandDriveDistance(SUB_DRIVE, -132, 0.75));
     SmartDashboard.putData("Zero Yaw", new InstantCommand(() -> SUB_TURRET.setCurrentYawEncoderPosition(0), SUB_TURRET));
     SmartDashboard.putData("Zero Drivetrain Encoders", new InstantCommand(() -> SUB_DRIVE.zeroEncoders()));
-    // SmartDashboard.putData("Zero All Drivetrain", new InstantCommand(() -> zeroAllDrivetrain()));
+    SmartDashboard.putData("Zero All Drivetrain", new InstantCommand(() -> zeroAllDrivetrain()));
     SmartDashboard.putData("Drive Just Masters", new RunCommand(() -> SUB_DRIVE.driveJustMasters(DRIVER), SUB_DRIVE));
     SmartDashboard.putData("Drive Just Slaves", new RunCommand(() -> SUB_DRIVE.driveJustSlaves(DRIVER), SUB_DRIVE));
     SmartDashboard.putData("Drive Straight", new CyborgCommandSmartDriveDistance(SUB_DRIVE, 60, 0.6));
     SmartDashboard.putData("Shoot Payload", new CyborgCommandShootPayload(SUB_INTAKE, SUB_FEEDER, SUB_FLYWHEEL, SUB_RECEIVER, SUB_TURRET, 3, 15000, false));
-
     SmartDashboard.putData("Toggle Winch", climberManualDrive);
     SmartDashboard.putData("Drive Flywheel RPM", driveFlywheelRPM);
+    SmartDashboard.putData("Record Path", new CyborgCommandRecordPath(POSITION_TRACKER));
+    SmartDashboard.putData("Emulate Path", new CyborgCommandEmulatePath());
   }
   
   private void configureChoosers() {
