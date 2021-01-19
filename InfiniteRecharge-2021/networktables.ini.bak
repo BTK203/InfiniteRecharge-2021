@@ -1,0 +1,6 @@
+[NetworkTables Storage 3.0]
+string "/Preferences/.type"="RobotPreferences"
+double "/Preferences/Drive Ramp"=0.25
+double "/Preferences/Initiation Drive"=-36
+boolean "/Preferences/Override Drive Lock"=false
+double "/Preferences/Pitch High Output"=1

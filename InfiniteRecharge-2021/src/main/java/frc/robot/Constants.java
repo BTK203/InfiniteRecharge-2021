@@ -194,7 +194,8 @@ public final class Constants {
      */
     public static final double 
         DRIVE_ROTATIONS_PER_INCH = 0.472,
-        DRIVE_AUTO_INHIBITOR = 1;
+        DRIVE_AUTO_INHIBITOR = 1,
+        EMULATE_PATH_MAX_POINT_DISTANCE = 1;
 
     /**
      * More auto values but booleans

@@ -48,7 +48,7 @@ public class ManualCommandDrive extends CommandBase {
         break;
       }
     } else { //the controllers are not good, lock the drivetrain
-      drivetrain.setLeftPercentOutput(0);
+      drivetrain.setLeftPercentOutput(0); 
       drivetrain.setRightPercentOutput(0);
       DriverStation.reportError("DRIVETRAIN LOCKED, CHECK DASHBOARD CONFIG TAB", false);
     }

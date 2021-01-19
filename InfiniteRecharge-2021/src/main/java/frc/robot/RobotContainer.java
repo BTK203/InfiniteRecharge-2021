@@ -229,8 +229,8 @@ public class RobotContainer {
           );
 
           //check to see if actual controller layout is good
-          boolean controllersExist = Util.controllerExists(0) && Util.controllerExists(1);
-          controllersGood = ds.getJoystickIsXbox(0) && ds.getJoystickIsXbox(1) && controllersExist;
+          boolean controllersExist = Util.controllerExists(0);
+          controllersGood = ds.getJoystickIsXbox(0) && controllersExist;
         }
         break;
       case TRUE_TANK: {

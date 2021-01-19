@@ -43,6 +43,18 @@ public class Point2D {
     public String toString() {
         double roundedX = Util.roundTo(this.getX(), 2);
         double roundedY = Util.roundTo(this.getY(), 2);
-        return "(" + Double.valueOf(roundedX).toString() + ", " + Double.valueOf(roundedY).toString() + "): " + Double.valueOf(heading).toString();
+        return Double.valueOf(roundedX).toString() + "," + Double.valueOf(roundedY).toString() + "," + Double.valueOf(heading).toString();
+    }
+
+    /**
+     * Returns a Point2D from a given String input
+     * - Expected Format: (x-coord, y-coord):heading
+     */
+    public static Point2D fromString(String input) {
+        String[] parts = input.split(",");
+        double x = Double.valueOf(parts[0]).doubleValue();
+        double y = Double.valueOf(parts[1]).doubleValue();
+        double heading = Double.valueOf(parts[2]).doubleValue();
+        return new Point2D(x, y, heading);
     }
 }
