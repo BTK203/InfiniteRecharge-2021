@@ -4,14 +4,9 @@
 
 package frc.robot.commands;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -30,7 +25,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
   @Override
   public void initialize() {
     try {
-      //String fileContents = Files.readString(Path.of("C:\\Users\\foximus3695\\Documents\\FRC\\test"));
+      // String fileContents = Files.readString(Path.of("D:\\_Users\\Brach\\projects\\Test\\FRC\\out.txt")); //TODO: DELETE
       String fileContents = Files.readString(Path.of("/home/lvuser/points.txt"));
       DriverStation.reportWarning("file contents: " + fileContents, false);
 
@@ -42,6 +37,19 @@ public class CyborgCommandEmulatePath extends CommandBase {
       }
 
       destinationPointIndex = 0;
+
+      //tmp, delete when we know file parsing is good
+      String confirmString = "";
+      for(int i=0; i<points.length; i++) {
+        confirmString += points[i].toString() + "\n";
+      }
+
+      boolean good = confirmString.equals(fileContents);
+      if(good) {
+        DriverStation.reportError("YAY", false);
+      } else {
+        DriverStation.reportError("NAH", false);
+      }
     } catch (IOException ex) {
       DriverStation.reportError("IO EXCEPTION", true);
     }

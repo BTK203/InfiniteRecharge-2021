@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.SubsystemDrive;
@@ -47,9 +48,12 @@ public class ManualCommandDrive extends CommandBase {
         drivetrain.driveTankTrue(driver, driver2);
         break;
       }
+
+      SmartDashboard.putBoolean("Drivetrain Active", true);
     } else { //the controllers are not good, lock the drivetrain
       drivetrain.setLeftPercentOutput(0); 
       drivetrain.setRightPercentOutput(0);
+      SmartDashboard.putBoolean("Drivetrain Active", false);
       DriverStation.reportError("DRIVETRAIN LOCKED, CHECK DASHBOARD CONFIG TAB", false);
     }
   }

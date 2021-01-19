@@ -17,7 +17,7 @@ public class CyborgCommandRecordPath extends CommandBase {
 
   /** Creates a new CyborgCommandRecordPath. */
   public CyborgCommandRecordPath(PositionTracker tracker) {
-    // this.recorder = new PathRecorder("C:\\Users\\foximus3695\\Documents\\FRC\\test\\points.txt");
+    // this.recorder = new PathRecorder("D:\\_Users\\Brach\\projects\\Test\\FRC\\out.txt"); //TODO: DELETE
     this.recorder = new PathRecorder("/home/lvuser/points.txt");
     this.tracker = tracker;
   }
