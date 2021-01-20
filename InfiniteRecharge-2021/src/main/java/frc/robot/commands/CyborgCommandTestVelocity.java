@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemDrive;
@@ -12,19 +11,17 @@ import frc.robot.util.Util;
 
 public class CyborgCommandTestVelocity extends CommandBase {
   private SubsystemDrive drivetrain;
-  private PIDController controller;
   private double
-    distance;
-
-  private double
-    distanceDriven,
+    targetDistance,
+    currentDistance,
     lastLeftPosition,
     lastRightPosition;
 
   /** Creates a new CyborgCommandTestVelocity. */
   public CyborgCommandTestVelocity(SubsystemDrive drivetrain, double distance) {
     this.drivetrain = drivetrain;
-    this.distance = distance;
+    this.targetDistance = distance;
+
     addRequirements(drivetrain);
   }
 
@@ -33,15 +30,17 @@ public class CyborgCommandTestVelocity extends CommandBase {
   public void initialize() {
     //grab pid constants
     double 
-      kP = Util.getAndSetDouble("Drive Velocity kP", 0),
-      kI = Util.getAndSetDouble("Drive Velocity kI", 0),
-      kD = Util.getAndSetDouble("Drive Velocity kD", 0);
-    
-    this.controller = new PIDController(kP, kI, kD);
-    
-    this.controller.setSetpoint(0); //set to 0 for now, setpoint will be set in execute()
+      kP           = Util.getAndSetDouble("Drive Velocity kP", 0),
+      kI           = Util.getAndSetDouble("Drive Velocity kI", 0),
+      kD           = Util.getAndSetDouble("Drive Velocity kD", 0),
+      kF           = Util.getAndSetDouble("Drive Velocity kF", 0),
+      izone        = Util.getAndSetDouble("Drive Velocity IZone", 0),
+      outLimitLow  = Util.getAndSetDouble("Drive Velocity Out Limit Low", -1),
+      outLimitHigh = Util.getAndSetDouble("Drive Velocity Out Limit High", 1);
 
-    this.distanceDriven = 0;
+    drivetrain.setPIDConstants(kP, kI, kD, kF, izone, outLimitLow, outLimitHigh);
+
+    this.currentDistance = 0;
     this.lastLeftPosition = drivetrain.getLeftPosition();
     this.lastRightPosition = drivetrain.getRightPosition();
   }
@@ -49,19 +48,27 @@ public class CyborgCommandTestVelocity extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double currentVelocitySetpoint = Util.getAndSetDouble("Drive Velocity Setpoint", 12);
-    currentVelocitySetpoint *= Constants.DRIVE_ROTATIONS_PER_INCH;
+    double velocitySetpoint = Util.getAndSetDouble("Drive Velocity Setpoint", 12);
+    //convert velocitySetpoint from inches / second to revs / min
 
-    controller.setSetpoint(currentVelocitySetpoint);
+    velocitySetpoint *= Constants.DRIVE_ROTATIONS_PER_INCH; //convert to rotations per second
+    velocitySetpoint *= 60; //convert to rotations per minute
 
-    double averageVelocity = (drivetrain.getLeftVelocity() + drivetrain.getRightVelocity()) / 2;
-    averageVelocity *= Constants.DRIVE_ROTATIONS_PER_INCH;
-    double output = controller.calculate(averageVelocity);
-    double inhibitor = Util.getAndSetDouble("Drive Inhibitor", 1);
-    output = (output > inhibitor ? inhibitor : (output < -1 * inhibitor ? -1 * inhibitor : output)); // ensure that inhibitor < output < -inhibitor
+    drivetrain.setLeftVelocity(velocitySetpoint);
+    drivetrain.setRightVelocity(velocitySetpoint);
 
-    drivetrain.setLeftPercentOutput(output);
-    drivetrain.setRightPercentOutput(output);
+    //update the distance we have driven
+    double newLeftPosition = drivetrain.getLeftPosition();
+    double newRightPosition = drivetrain.getRightPosition();
+    double leftChange = newLeftPosition - lastLeftPosition;
+    double rightChange = newRightPosition - lastRightPosition;
+
+    //average those to get the distance travelled since last call
+    this.currentDistance += (leftChange + rightChange) / 2;
+
+    //set history
+    lastLeftPosition = newLeftPosition;
+    lastRightPosition = newRightPosition;
   }
 
   // Called once the command ends or is interrupted.
@@ -74,6 +81,6 @@ public class CyborgCommandTestVelocity extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return this.distanceDriven >= distance;
+    return this.currentDistance >= targetDistance;
   }
 }

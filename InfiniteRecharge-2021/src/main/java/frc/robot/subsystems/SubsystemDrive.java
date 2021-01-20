@@ -208,6 +208,22 @@ public class SubsystemDrive extends SubsystemBase {
   }
 
   /**
+   * Sets the target velocity of the right motors.
+   * @param leftVelocity The velocity to set the motors to.
+   */
+  public void setLeftVelocity(double leftVelocity) {
+    leftMaster.getPIDController().setReference(leftVelocity, ControlType.kVelocity);
+  }
+
+  /**
+   * Sets the target velocity of the left motors.
+   * @param rightVelocity The velocity to set the motors to.
+   */
+  public void setRightVelocity(double rightVelocity) {
+    rightMaster.getPIDController().setReference(rightVelocity, ControlType.kVelocity);
+  }
+
+  /**
    * Sets the encoder counts of the motors to 0.
    */
   public void zeroEncoders() {
@@ -256,20 +272,24 @@ public class SubsystemDrive extends SubsystemBase {
    * @param iZone Proximity to target at which I takes effect
    * @param outLimit maximum percent output of the motors.
    */
-  public void setPIDConstants(double kP, double kI, double kD, double kF, double iZone, double outLimit) {
+  public void setPIDConstants(double kP, double kI, double kD, double kF, double iZone, double outLimitLow, double outLimitHigh) {
     leftMaster.getPIDController().setP(kP);
     leftMaster.getPIDController().setI(kI);
     leftMaster.getPIDController().setD(kD);
     leftMaster.getPIDController().setFF(kF);
     leftMaster.getPIDController().setIZone(iZone);
-    leftMaster.getPIDController().setOutputRange(outLimit * -1, outLimit);
+    leftMaster.getPIDController().setOutputRange(outLimitLow, outLimitHigh);
 
     rightMaster.getPIDController().setP(kP);
     rightMaster.getPIDController().setI(kI);
     rightMaster.getPIDController().setD(kD);
     rightMaster.getPIDController().setFF(kF);
     rightMaster.getPIDController().setIZone(iZone);
-    rightMaster.getPIDController().setOutputRange(outLimit * -1, outLimit);
+    rightMaster.getPIDController().setOutputRange(outLimitLow, outLimitHigh);
+  }
+
+  public void setPIDConstants(double kP, double kI, double kD, double kF, double iZone, double outLimit) {
+    setPIDConstants(kP, kI, kD, kF, iZone, outLimit * -1, outLimit);
   }
 
   public double getGyroAngle() {
