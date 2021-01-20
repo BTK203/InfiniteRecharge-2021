@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,12 +29,15 @@ import frc.robot.commands.CyborgCommandAlignTurret;
 import frc.robot.commands.CyborgCommandCalibrateTurretPitch;
 import frc.robot.commands.CyborgCommandCalibrateTurretYaw;
 import frc.robot.commands.CyborgCommandDriveDistance;
+import frc.robot.commands.CyborgCommandEmulatePath;
 import frc.robot.commands.CyborgCommandFlywheelVelocity;
+import frc.robot.commands.CyborgCommandRecordPath;
 import frc.robot.commands.CyborgCommandSetTurretPosition;
 import frc.robot.commands.CyborgCommandShootPayload;
 import frc.robot.commands.CyborgCommandSmartDriveDistance;
 import frc.robot.commands.CyborgCommandSmartMoveTurret;
 import frc.robot.commands.CyborgCommandTestScissorPositition;
+import frc.robot.commands.CyborgCommandTestVelocity;
 import frc.robot.commands.CyborgCommandZeroTurret;
 import frc.robot.commands.ManualCommandDrive;
 import frc.robot.commands.ToggleCommandDriveClimber;
@@ -49,6 +53,8 @@ import frc.robot.subsystems.SubsystemSpinner;
 import frc.robot.subsystems.SubsystemTurret;
 import frc.robot.util.Util;
 import frc.robot.util.Xbox;
+import frc.robot.util.PositionTracker;
+import frc.robot.util.Point2D;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -69,6 +75,11 @@ public class RobotContainer {
   private final SubsystemClimb     SUB_CLIMB    = new SubsystemClimb();
   private final SubsystemReceiver  SUB_RECEIVER = new SubsystemReceiver();
   // private final CameraHub          CAMERA_HUB   = new CameraHub();
+
+  /**
+   * Utilities
+   */
+  private final PositionTracker POSITION_TRACKER = new PositionTracker(SUB_DRIVE);
 
   /**
    * Controllers
@@ -111,6 +122,10 @@ public class RobotContainer {
     currentAuto = new InitAuto(SUB_DRIVE, SUB_TURRET);
     autoCommand = currentAuto.getCommand();
     controllersGood = false;
+  }
+
+  public Point2D getRobotPositionAndHeading() {
+    return POSITION_TRACKER.getPositionAndHeading();
   }
 
   /**
@@ -160,8 +175,14 @@ public class RobotContainer {
         autoCommand.cancel();
       }
     } else {
-      DriverStation.reportError("NO AUTO STARTED, THEREFORE NONE CANCELLED.", false);
+      DriverStation.reportError("NO AUTO STARTED, THEREFORE NONE CANCELED.", false);
     }
+  }
+
+  private void zeroAllDrivetrain() {
+    SUB_DRIVE.zeroEncoders();
+    SUB_DRIVE.zeroGyro();
+    POSITION_TRACKER.setPositionAndHeading(0, 0, 0);
   }
 
   /**
@@ -209,8 +230,8 @@ public class RobotContainer {
           );
 
           //check to see if actual controller layout is good
-          boolean controllersExist = Util.controllerExists(0) && Util.controllerExists(1);
-          controllersGood = ds.getJoystickIsXbox(0) && ds.getJoystickIsXbox(1) && controllersExist;
+          boolean controllersExist = Util.controllerExists(0);
+          controllersGood = ds.getJoystickIsXbox(0) && controllersExist;
         }
         break;
       case TRUE_TANK: {
@@ -232,6 +253,10 @@ public class RobotContainer {
     );
     SmartDashboard.putString("Controller Warning", controllerWarning);
     SmartDashboard.putBoolean("Controllers", controllersGood);
+  }
+
+  public void updatePositionIndicator() {
+    SmartDashboard.putString("Robot Position", getRobotPositionAndHeading().toString());
   }
 
   /**
@@ -331,16 +356,19 @@ public class RobotContainer {
     SmartDashboard.putData("Zero Turret", new CyborgCommandZeroTurret(SUB_TURRET));
     SmartDashboard.putData("Set Turret Position", new CyborgCommandSetTurretPosition(SUB_TURRET, 500000, 0));
     SmartDashboard.putData("Drive Distance", new CyborgCommandDriveDistance(SUB_DRIVE, -132, 0.75));
+    SmartDashboard.putData("Drive Distance Smart", new CyborgCommandSmartDriveDistance(SUB_DRIVE, 156, 1));
+    SmartDashboard.putData("Test Drive Velocity", new CyborgCommandTestVelocity(SUB_DRIVE, 156));
     SmartDashboard.putData("Zero Yaw", new InstantCommand(() -> SUB_TURRET.setCurrentYawEncoderPosition(0), SUB_TURRET));
     SmartDashboard.putData("Zero Drivetrain Encoders", new InstantCommand(() -> SUB_DRIVE.zeroEncoders()));
-    // SmartDashboard.putData("Apply Camera Settings", new InstantCommand(() -> CAMERA_HUB.configureCameras()));
+    SmartDashboard.putData("Zero All Drivetrain", new InstantCommand(() -> zeroAllDrivetrain()));
     SmartDashboard.putData("Drive Just Masters", new RunCommand(() -> SUB_DRIVE.driveJustMasters(DRIVER), SUB_DRIVE));
     SmartDashboard.putData("Drive Just Slaves", new RunCommand(() -> SUB_DRIVE.driveJustSlaves(DRIVER), SUB_DRIVE));
     SmartDashboard.putData("Drive Straight", new CyborgCommandSmartDriveDistance(SUB_DRIVE, 60, 0.6));
     SmartDashboard.putData("Shoot Payload", new CyborgCommandShootPayload(SUB_INTAKE, SUB_FEEDER, SUB_FLYWHEEL, SUB_RECEIVER, SUB_TURRET, 3, 15000, false));
-
     SmartDashboard.putData("Toggle Winch", climberManualDrive);
     SmartDashboard.putData("Drive Flywheel RPM", driveFlywheelRPM);
+    SmartDashboard.putData("Record Path", new CyborgCommandRecordPath(POSITION_TRACKER));
+    SmartDashboard.putData("Emulate Path", new CyborgCommandEmulatePath());
   }
   
   private void configureChoosers() {
@@ -352,9 +380,13 @@ public class RobotContainer {
     autoChooser.addOption("Eight Ball", AutoMode.EIGHT_BALL_TRENCH);
     SmartDashboard.putData("Auto Mode", autoChooser);
 
+    //declare the different drive schemes available
     driveChooser = new SendableChooser<DriveScheme>();
     driveChooser.setDefaultOption("Rocket League", DriveScheme.RL);
     driveChooser.addOption("True Tank", DriveScheme.TRUE_TANK);
     SmartDashboard.putData("Drive Scheme", driveChooser);
+
+    //set drivetrain lock override to false for safety
+    Preferences.getInstance().putBoolean("Override Drive Lock", false);
   }
 }

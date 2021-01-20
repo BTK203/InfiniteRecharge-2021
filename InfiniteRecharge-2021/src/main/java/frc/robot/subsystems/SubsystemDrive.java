@@ -7,8 +7,6 @@
 
 package frc.robot.subsystems;
 
-
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -26,10 +24,15 @@ import frc.robot.util.Util;
 import frc.robot.util.Xbox;
 
 public class SubsystemDrive extends SubsystemBase {
-  private static CANSparkMax leftMaster;
-  private static CANSparkMax leftSlave;
-  private static CANSparkMax rightMaster;
-  private static CANSparkMax rightSlave;
+  private static CANSparkMax 
+    leftMaster,
+    leftSlave,
+    rightMaster,
+    rightSlave;
+
+  private static double
+    leftPosition,
+    rightPosition;
 
   private AHRS navX;
 
@@ -67,6 +70,9 @@ public class SubsystemDrive extends SubsystemBase {
     SmartDashboard.putNumber("Left Amps", leftMaster.getOutputCurrent());
 
     SmartDashboard.putBoolean("NavX Connected", getNavXConnected());
+
+    leftPosition = leftMaster.getEncoder().getPosition();
+    rightPosition = rightMaster.getEncoder().getPosition();
   }
 
   /**
@@ -202,6 +208,22 @@ public class SubsystemDrive extends SubsystemBase {
   }
 
   /**
+   * Sets the target velocity of the right motors.
+   * @param leftVelocity The velocity to set the motors to.
+   */
+  public void setLeftVelocity(double leftVelocity) {
+    leftMaster.getPIDController().setReference(leftVelocity, ControlType.kVelocity);
+  }
+
+  /**
+   * Sets the target velocity of the left motors.
+   * @param rightVelocity The velocity to set the motors to.
+   */
+  public void setRightVelocity(double rightVelocity) {
+    rightMaster.getPIDController().setReference(rightVelocity, ControlType.kVelocity);
+  }
+
+  /**
    * Sets the encoder counts of the motors to 0.
    */
   public void zeroEncoders() {
@@ -209,18 +231,36 @@ public class SubsystemDrive extends SubsystemBase {
     rightMaster.getEncoder().setPosition(0);
   }
 
+  public void zeroGyro() {
+    navX.zeroYaw();
+  }
+
   /**
    * Returns the current position (rotations) of the left motors.
    */
   public double getLeftPosition() {
-    return leftMaster.getEncoder().getPosition();
+    return leftPosition;
   }
 
   /**
    * Returns the current position (rotations) of the right motor.
    */
   public double getRightPosition() {
-    return rightMaster.getEncoder().getPosition();
+    return rightPosition;
+  }
+
+  /**
+   * Returns the current velocity (RPM) of the left motor.
+   */
+  public double getLeftVelocity() {
+    return leftMaster.getEncoder().getVelocity();
+  }
+
+  /**
+   * Returns the current velocity (RPM) of the right motor.
+   */
+  public double getRightVelocity() {
+    return rightMaster.getEncoder().getVelocity();
   }
 
   /**
@@ -232,20 +272,24 @@ public class SubsystemDrive extends SubsystemBase {
    * @param iZone Proximity to target at which I takes effect
    * @param outLimit maximum percent output of the motors.
    */
-  public void setPIDConstants(double kP, double kI, double kD, double kF, double iZone, double outLimit) {
+  public void setPIDConstants(double kP, double kI, double kD, double kF, double iZone, double outLimitLow, double outLimitHigh) {
     leftMaster.getPIDController().setP(kP);
     leftMaster.getPIDController().setI(kI);
     leftMaster.getPIDController().setD(kD);
     leftMaster.getPIDController().setFF(kF);
     leftMaster.getPIDController().setIZone(iZone);
-    leftMaster.getPIDController().setOutputRange(outLimit * -1, outLimit);
+    leftMaster.getPIDController().setOutputRange(outLimitLow, outLimitHigh);
 
     rightMaster.getPIDController().setP(kP);
     rightMaster.getPIDController().setI(kI);
     rightMaster.getPIDController().setD(kD);
     rightMaster.getPIDController().setFF(kF);
     rightMaster.getPIDController().setIZone(iZone);
-    rightMaster.getPIDController().setOutputRange(outLimit * -1, outLimit);
+    rightMaster.getPIDController().setOutputRange(outLimitLow, outLimitHigh);
+  }
+
+  public void setPIDConstants(double kP, double kI, double kD, double kF, double iZone, double outLimit) {
+    setPIDConstants(kP, kI, kD, kF, iZone, outLimit * -1, outLimit);
   }
 
   public double getGyroAngle() {
