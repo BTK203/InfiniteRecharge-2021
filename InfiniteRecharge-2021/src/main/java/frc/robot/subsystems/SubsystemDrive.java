@@ -234,6 +234,20 @@ public class SubsystemDrive extends SubsystemBase {
   }
 
   /**
+   * Returns the current velocity (RPM) of the left motor.
+   */
+  public double getLeftVelocity() {
+    return leftMaster.getEncoder().getVelocity();
+  }
+
+  /**
+   * Returns the current velocity (RPM) of the right motor.
+   */
+  public double getRightVelocity() {
+    return rightMaster.getEncoder().getVelocity();
+  }
+
+  /**
    * Sets the PID constants of all motors.
    * @param kP new P gain
    * @param kI new I gain

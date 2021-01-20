@@ -65,6 +65,8 @@ public class CyborgCommandEmulatePath extends CommandBase {
     }
 
     Point2D destinationPoint = points[destinationPointIndex];
+
+    int speed = 12;
   }
 
   // Called once the command ends or is interrupted.

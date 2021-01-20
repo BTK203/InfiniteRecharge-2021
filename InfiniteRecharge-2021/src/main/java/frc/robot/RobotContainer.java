@@ -37,6 +37,7 @@ import frc.robot.commands.CyborgCommandShootPayload;
 import frc.robot.commands.CyborgCommandSmartDriveDistance;
 import frc.robot.commands.CyborgCommandSmartMoveTurret;
 import frc.robot.commands.CyborgCommandTestScissorPositition;
+import frc.robot.commands.CyborgCommandTestVelocity;
 import frc.robot.commands.CyborgCommandZeroTurret;
 import frc.robot.commands.ManualCommandDrive;
 import frc.robot.commands.ToggleCommandDriveClimber;
@@ -355,6 +356,8 @@ public class RobotContainer {
     SmartDashboard.putData("Zero Turret", new CyborgCommandZeroTurret(SUB_TURRET));
     SmartDashboard.putData("Set Turret Position", new CyborgCommandSetTurretPosition(SUB_TURRET, 500000, 0));
     SmartDashboard.putData("Drive Distance", new CyborgCommandDriveDistance(SUB_DRIVE, -132, 0.75));
+    SmartDashboard.putData("Drive Distance Smart", new CyborgCommandSmartDriveDistance(SUB_DRIVE, 156, 1));
+    SmartDashboard.putData("Test Drive Velocity", new CyborgCommandTestVelocity(SUB_DRIVE, 156));
     SmartDashboard.putData("Zero Yaw", new InstantCommand(() -> SUB_TURRET.setCurrentYawEncoderPosition(0), SUB_TURRET));
     SmartDashboard.putData("Zero Drivetrain Encoders", new InstantCommand(() -> SUB_DRIVE.zeroEncoders()));
     SmartDashboard.putData("Zero All Drivetrain", new InstantCommand(() -> zeroAllDrivetrain()));
