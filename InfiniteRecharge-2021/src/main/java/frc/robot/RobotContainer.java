@@ -358,6 +358,7 @@ public class RobotContainer {
     SmartDashboard.putData("Drive Distance", new CyborgCommandDriveDistance(SUB_DRIVE, -132, 0.75));
     SmartDashboard.putData("Drive Distance Smart", new CyborgCommandSmartDriveDistance(SUB_DRIVE, 156, 1));
     SmartDashboard.putData("Test Drive Velocity", new CyborgCommandTestVelocity(SUB_DRIVE, 156));
+    SmartDashboard.putData("Reset Fastest Speed", new InstantCommand(() -> SUB_DRIVE.resetFastestSpeed()));
     SmartDashboard.putData("Zero Yaw", new InstantCommand(() -> SUB_TURRET.setCurrentYawEncoderPosition(0), SUB_TURRET));
     SmartDashboard.putData("Zero Drivetrain Encoders", new InstantCommand(() -> SUB_DRIVE.zeroEncoders()));
     SmartDashboard.putData("Zero All Drivetrain", new InstantCommand(() -> zeroAllDrivetrain()));

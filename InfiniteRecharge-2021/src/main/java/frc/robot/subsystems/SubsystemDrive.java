@@ -15,7 +15,6 @@ import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,7 +31,10 @@ public class SubsystemDrive extends SubsystemBase {
 
   private static double
     leftPosition,
-    rightPosition;
+    rightPosition,
+    leftVelocity,
+    rightVelocity,
+    fastestSpeed;
 
   private AHRS navX;
 
@@ -59,9 +61,26 @@ public class SubsystemDrive extends SubsystemBase {
    */
   @Override
   public void periodic() {
+    leftPosition = leftMaster.getEncoder().getPosition();
+    rightPosition = rightMaster.getEncoder().getPosition();
+    leftVelocity = leftMaster.getEncoder().getVelocity();
+    rightVelocity = rightMaster.getEncoder().getVelocity();
+    double velocity = ((leftVelocity + rightVelocity) / 2);
+    SmartDashboard.putNumber("Raw Drive Velocity", velocity);
+    velocity /= Constants.DRIVE_ROTATIONS_PER_INCH; //convert to inches per minute
+    velocity /= 60; //convert to inches per second
+
+    double speed = Math.abs(velocity);
+    if(speed > fastestSpeed) {
+      fastestSpeed = speed;
+      SmartDashboard.putNumber("Fastest Speed", fastestSpeed);
+    }
+
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Right Position", rightMaster.getEncoder().getPosition());
-    SmartDashboard.putNumber("Left Position", leftMaster.getEncoder().getPosition());
+    SmartDashboard.putNumber("Right Position", rightPosition);
+    SmartDashboard.putNumber("Left Position", leftPosition);
+
+    SmartDashboard.putNumber("Drivetrain Velocity", velocity);
 
     SmartDashboard.putNumber("Right Output", rightMaster.getAppliedOutput());
     SmartDashboard.putNumber("Left Output", leftMaster.getAppliedOutput());
@@ -71,8 +90,8 @@ public class SubsystemDrive extends SubsystemBase {
 
     SmartDashboard.putBoolean("NavX Connected", getNavXConnected());
 
-    leftPosition = leftMaster.getEncoder().getPosition();
-    rightPosition = rightMaster.getEncoder().getPosition();
+    //read out velocity
+
   }
 
   /**
@@ -253,14 +272,14 @@ public class SubsystemDrive extends SubsystemBase {
    * Returns the current velocity (RPM) of the left motor.
    */
   public double getLeftVelocity() {
-    return leftMaster.getEncoder().getVelocity();
+    return leftVelocity;
   }
 
   /**
    * Returns the current velocity (RPM) of the right motor.
    */
   public double getRightVelocity() {
-    return rightMaster.getEncoder().getVelocity();
+    return rightVelocity;
   }
 
   /**
@@ -294,6 +313,11 @@ public class SubsystemDrive extends SubsystemBase {
 
   public double getGyroAngle() {
     return navX.getAngle();
+  }
+
+  public void resetFastestSpeed() {
+    fastestSpeed = 0;
+    SmartDashboard.putNumber("Fastest Speed", 0);
   }
 
   /**

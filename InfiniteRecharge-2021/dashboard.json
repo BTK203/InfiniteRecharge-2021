@@ -13,7 +13,7 @@
           "9,0": {
             "size": [
               3,
-              8
+              2
             ],
             "content": {
               "_type": "List Layout",
@@ -105,6 +105,28 @@
               "_title": "/SmartDashboard/Record Path"
             }
           },
+          "2,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Test Velocity Distance Travelled",
+              "_title": "SmartDashboard/Test Velocity Distance Travelled"
+            }
+          },
+          "4,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Drivetrain Velocity",
+              "_title": "SmartDashboard/Drivetrain Velocity"
+            }
+          },
           "12,0": {
             "size": [
               5,
@@ -115,6 +137,72 @@
               "_source0": "network_table:///Preferences",
               "_title": "Preferences",
               "Miscellaneous/Show search box": true
+            }
+          },
+          "4,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Raw Drive Velocity",
+              "_title": "SmartDashboard/Raw Drive Velocity"
+            }
+          },
+          "7,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Test Drive Velocity",
+              "_title": "SmartDashboard/Test Drive Velocity"
+            }
+          },
+          "2,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Right Output",
+              "_title": "SmartDashboard/Right Output"
+            }
+          },
+          "7,3": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Reset Fastest Speed",
+              "_title": "SmartDashboard/Reset Fastest Speed"
+            }
+          },
+          "4,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Fastest Speed",
+              "_title": "SmartDashboard/Fastest Speed"
+            }
+          },
+          "2,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Left Amps",
+              "_title": "SmartDashboard/Left Amps"
             }
           }
         }
@@ -911,7 +999,7 @@
     }
   ],
   "windowGeometry": {
-    "x": -8.0,
+    "x": -1928.0,
     "y": -8.0,
     "width": 1936.0,
     "height": 1056.0
