@@ -34,6 +34,7 @@ public class SubsystemDrive extends SubsystemBase {
     rightPosition,
     leftVelocity,
     rightVelocity,
+    netVelocity,
     fastestSpeed;
 
   private AHRS navX;
@@ -65,12 +66,12 @@ public class SubsystemDrive extends SubsystemBase {
     rightPosition = rightMaster.getEncoder().getPosition();
     leftVelocity = leftMaster.getEncoder().getVelocity();
     rightVelocity = rightMaster.getEncoder().getVelocity();
-    double velocity = ((leftVelocity + rightVelocity) / 2);
-    SmartDashboard.putNumber("Raw Drive Velocity", velocity);
-    velocity /= Constants.DRIVE_ROTATIONS_PER_INCH; //convert to inches per minute
-    velocity /= 60; //convert to inches per second
+    netVelocity = ((leftVelocity + rightVelocity) / 2);
+    SmartDashboard.putNumber("Raw Drive Velocity", netVelocity);
+    netVelocity /= Constants.DRIVE_ROTATIONS_PER_INCH; //convert to inches per minute
+    netVelocity /= 60; //convert to inches per second
 
-    double speed = Math.abs(velocity);
+    double speed = Math.abs(netVelocity);
     if(speed > fastestSpeed) {
       fastestSpeed = speed;
       SmartDashboard.putNumber("Fastest Speed", fastestSpeed);
@@ -80,7 +81,7 @@ public class SubsystemDrive extends SubsystemBase {
     SmartDashboard.putNumber("Right Position", rightPosition);
     SmartDashboard.putNumber("Left Position", leftPosition);
 
-    SmartDashboard.putNumber("Drivetrain Velocity", velocity);
+    SmartDashboard.putNumber("Drivetrain Velocity", netVelocity);
 
     SmartDashboard.putNumber("Right Output", rightMaster.getAppliedOutput());
     SmartDashboard.putNumber("Left Output", leftMaster.getAppliedOutput());
@@ -280,6 +281,13 @@ public class SubsystemDrive extends SubsystemBase {
    */
   public double getRightVelocity() {
     return rightVelocity;
+  }
+
+  /**
+   * Returns the current velocity, in inches per second, of the robot.
+   */
+  public double getOverallVelocity() {
+    return netVelocity;
   }
 
   /**
