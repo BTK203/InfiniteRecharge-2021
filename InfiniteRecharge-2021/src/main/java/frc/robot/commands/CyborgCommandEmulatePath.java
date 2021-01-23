@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -48,6 +50,8 @@ public class CyborgCommandEmulatePath extends CommandBase {
       destinationPointIndex = 0;
     } catch (IOException ex) {
       DriverStation.reportError("IO EXCEPTION", true);
+    } catch (NumberFormatException ex) {
+      DriverStation.reportError("NUMBER FORMAT EXCEPTION", true);
     }
 
     //update the PID Constants for heading.
@@ -58,11 +62,13 @@ public class CyborgCommandEmulatePath extends CommandBase {
       kF           = Util.getAndSetDouble("Drive Velocity kF", 0),
       izone        = Util.getAndSetDouble("Drive Velocity IZone", 0),
       outLimitLow  = Util.getAndSetDouble("Drive Velocity Out Limit Low", -1),
-      outLimitHigh = Util.getAndSetDouble("Drive Velocity Out Limit High", 1),
-      velocitySetpoint = Util.getAndSetDouble("Drive Velocity Setpoint", 12);
+      outLimitHigh = Util.getAndSetDouble("Drive Velocity Out Limit High", 1);
+
+    // //drivetrain closed loop ramp
+    drivetrain.setPIDRamp(Util.getAndSetDouble("Drive PID Ramp", 0.5));
     
     drivetrain.setPIDConstants(kP, kI, kD, kF, izone, outLimitLow, outLimitHigh);
-    courseAdjuster.setVelocity(velocitySetpoint);
+    courseAdjuster.setVelocity(0);
 
     //update the PID Constansts for velocity.
     double
@@ -72,6 +78,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     courseAdjuster.setHeadingPID(headingkP, headingkI, headingkD);
     courseAdjuster.setHeading(drivetrain.getGyroAngle());
+    courseAdjuster.init();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -89,7 +96,16 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     //TEMPORARY TESTING:
     courseAdjuster.setHeading(90);
-    courseAdjuster.setVelocity(60);
+    
+    double targetVelocity = 60;
+    // if(Robot.getRobotContainer().getRobotPositionAndHeading().getX() > 60) {
+    //   targetVelocity = 80;
+    // }
+    // if(Robot.getRobotContainer().getRobotPositionAndHeading().getX() > 120) {
+    //   targetVelocity = 40;
+    // }
+
+    courseAdjuster.setVelocity(targetVelocity);
     courseAdjuster.update();
   }
 

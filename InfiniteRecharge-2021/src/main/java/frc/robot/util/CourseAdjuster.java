@@ -5,6 +5,7 @@
 package frc.robot.util;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemDrive;
 
@@ -14,15 +15,10 @@ import frc.robot.subsystems.SubsystemDrive;
 public class CourseAdjuster {
     private SubsystemDrive drivetrain;
     private PIDController headingController;
-    private long
-        elapsedTime,
-        lastExecute;
-
     private double
         targetHeading,
-        targetVelocity,
-        velocityRamp;
-
+        targetVelocity;
+        
     /**
      * Creates a new CourseAdjuster
      * @param drivetrain Drivetrain of the robot.
@@ -38,8 +34,6 @@ public class CourseAdjuster {
     public CourseAdjuster(SubsystemDrive drivetrain, double headingkP, double headingkI, double headingkD) {
         this.drivetrain = drivetrain;
         this.headingController = new PIDController(headingkP, headingkI, headingkD);
-        this.elapsedTime = 0;
-        this.lastExecute = 0;
     }
 
     /**
@@ -55,8 +49,6 @@ public class CourseAdjuster {
      */
     public void init() {
         this.headingController.setSetpoint(drivetrain.getGyroAngle()); //set default heading to current heading
-        this.elapsedTime = 0;
-        this.lastExecute = System.currentTimeMillis();
     }
 
     /**
@@ -64,29 +56,20 @@ public class CourseAdjuster {
      * This should be called in the update() method of the command invoking this object.
      */
     public void update() {
-        targetVelocity *= Constants.DRIVE_ROTATIONS_PER_INCH; //convert to rotations per second
-        targetVelocity *= 60; //convert to rotations per minute
-
-        //ramp setpoint so that the start of the command is easier on the robot.
-        long currentTime = System.currentTimeMillis();
-        elapsedTime += (currentTime - lastExecute);
-        double rampMultiplier = elapsedTime / velocityRamp;
-        rampMultiplier = (rampMultiplier > 1 ? 1 : rampMultiplier);
-        targetVelocity *= rampMultiplier;
+        double velocitySetpoint = targetVelocity;
+        SmartDashboard.putNumber("Test Velocity Setpoint", velocitySetpoint);
+        if(velocitySetpoint > 1132) velocitySetpoint += (velocitySetpoint - 40) * 0.4; //1132 RPM ~= 45 in/sec
 
         //correct heading
         headingController.setSetpoint(targetHeading);
         double headingCorrection = headingController.calculate(drivetrain.getGyroAngle());
         double currentVelocity = drivetrain.getOverallVelocity();
         headingCorrection *= (currentVelocity) / 2;
-        double leftVelocity  = targetVelocity - headingCorrection;
-        double rightVelocity = targetVelocity + headingCorrection;
+        double leftVelocity  = velocitySetpoint - headingCorrection;
+        double rightVelocity = velocitySetpoint + headingCorrection;
 
         drivetrain.setLeftVelocity(leftVelocity);
         drivetrain.setRightVelocity(rightVelocity);
-        
-        //set history
-        lastExecute = currentTime;
     }
 
     /**

@@ -78,11 +78,11 @@ public class CyborgCommandTestVelocity extends CommandBase {
 
     //ramp setpoint so that the start of the command is easier on the robot.
     long currentTime = System.currentTimeMillis();
-    elapsedTime += (currentTime - lastExecute);
-    double ramp = Util.getAndSetDouble("Drive Velocity Ramp", 500);
-    double rampMultiplier = elapsedTime / ramp;
-    rampMultiplier = (rampMultiplier > 1 ? 1 : rampMultiplier);
-    velocitySetpoint *= rampMultiplier;
+    // elapsedTime += (currentTime - lastExecute);
+    // double ramp = Util.getAndSetDouble("Drive Velocity Ramp", 500);
+    // double rampMultiplier = elapsedTime / ramp;
+    // rampMultiplier = (rampMultiplier > 1 ? 1 : rampMultiplier);
+    // velocitySetpoint *= rampMultiplier;
 
     //correct heading
     double headingCorrection = headingController.calculate(drivetrain.getGyroAngle());

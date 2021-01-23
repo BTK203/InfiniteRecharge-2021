@@ -319,6 +319,14 @@ public class SubsystemDrive extends SubsystemBase {
     setPIDConstants(kP, kI, kD, kF, iZone, outLimit * -1, outLimit);
   }
 
+  /**
+   * Sets closed loop ramp in ms
+   */
+  public void setPIDRamp(double ramp) {
+    leftMaster.setClosedLoopRampRate(ramp);
+    rightMaster.setClosedLoopRampRate(ramp);
+  }
+
   public double getGyroAngle() {
     return navX.getAngle();
   }
