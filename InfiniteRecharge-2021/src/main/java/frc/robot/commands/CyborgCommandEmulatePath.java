@@ -22,7 +22,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
   private CourseAdjuster courseAdjuster;
   private SubsystemDrive drivetrain;
   private Point2D[] points;
-  private int destinationPointIndex;
+  private int currentPointIndex;
 
   /** Creates a new CyborgCommandEmulatePath. */
   public CyborgCommandEmulatePath(SubsystemDrive drivetrain) {
@@ -47,7 +47,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
         points[i] = Point2D.fromString(pointStrings[i]);
       }
 
-      destinationPointIndex = 0;
+      currentPointIndex = 0;
     } catch (IOException ex) {
       DriverStation.reportError("IO EXCEPTION", true);
     } catch (NumberFormatException ex) {
@@ -66,10 +66,8 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     // //drivetrain closed loop ramp
     drivetrain.setPIDRamp(Util.getAndSetDouble("Drive PID Ramp", 0.5));
-    
     drivetrain.setPIDConstants(kP, kI, kD, kF, izone, outLimitLow, outLimitHigh);
-    courseAdjuster.setVelocity(0);
-
+    
     //update the PID Constansts for velocity.
     double
       headingkP = Util.getAndSetDouble("Drive Heading kP", 0),
@@ -84,29 +82,22 @@ public class CyborgCommandEmulatePath extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // Point2D currentLocation = Robot.getRobotContainer().getRobotPositionAndHeading();
-    // //can we focus on the next point?
-    // if(currentLocation.getDistanceFrom(points[destinationPointIndex]) > Constants.EMULATE_PATH_MAX_POINT_DISTANCE) {
-    //   destinationPointIndex++;
-    // }
+    Point2D currentLocation = Robot.getRobotContainer().getRobotPositionAndHeading();
+    double baseSpeed = Util.getAndSetDouble("Emulation Base Speed", 75);
 
-    // Point2D destinationPoint = points[destinationPointIndex];
+    //resolve the point that the robot is currently at and where we want to aim
+    if(currentPointIndex < points.length - 1) {
+      double distanceToBasePoint = currentLocation.getDistanceFrom(points[currentPointIndex]);
+      double distanceToNextPoint = currentLocation.getDistanceFrom(points[currentPointIndex + 1]);
 
+      if(distanceToNextPoint < distanceToBasePoint) { //robot closer to aim point than current point.
+        currentPointIndex++;
+      }
+    }
 
+    Point2D currentDestination = points[currentPointIndex + 1];
 
-    //TEMPORARY TESTING:
-    courseAdjuster.setHeading(90);
-    
-    double targetVelocity = 60;
-    // if(Robot.getRobotContainer().getRobotPositionAndHeading().getX() > 60) {
-    //   targetVelocity = 80;
-    // }
-    // if(Robot.getRobotContainer().getRobotPositionAndHeading().getX() > 120) {
-    //   targetVelocity = 40;
-    // }
-
-    courseAdjuster.setVelocity(targetVelocity);
-    courseAdjuster.update();
+    //to be continued...
   }
 
   // Called once the command ends or is interrupted.
@@ -120,5 +111,24 @@ public class CyborgCommandEmulatePath extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  /**
+   * Returns an "n" long array of points, starting at start.
+   * @param baseArray The array to create a sub-array from.
+   * @param start     The index to start the sub-array from.
+   * @param n         The length of the sub-array.
+   * @return An "n" long array of Point2D objects. May be shorter if forbidden indices exist (start + n > length).
+   */
+  private Point2D[] getNextNPoints(Point2D[] baseArray, int start, int n) {
+    int end = start + n;
+    end = (end > baseArray.length ? baseArray.length : end);
+
+    Point2D[] points = new Point2D[end - start];
+    for(int i=start; i<end; i++) {
+      points[i - start] = baseArray[i];
+    }
+
+    return points;
   }
 }

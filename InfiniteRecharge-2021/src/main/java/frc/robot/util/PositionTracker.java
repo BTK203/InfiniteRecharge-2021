@@ -114,6 +114,9 @@ public class PositionTracker {
         lastRightDistance = currentRightDistance;
     }
 
+    /**
+     * Returns the current position and heading of the robot.
+     */
     public Point2D getPositionAndHeading() {
         return new Point2D(x, y, heading);
     }

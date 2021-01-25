@@ -41,9 +41,9 @@ public class Util {
 
 	/**
 	 * Gets boolean value from Prefs, or sets it to backup if it doesn't exist
-	 * @param key The name of the bool to grab
+	 * @param key    The name of the bool to grab
 	 * @param backup The backup value to use if the bool doesn't exist
-	 * @return The value of the boolean "Key"
+	 * @return       The value of the boolean "Key"
 	 */
 	public static boolean getAndSetBoolean(String key, boolean backup) {
 		if(!pref.containsKey(key)) pref.putBoolean(key, backup);
@@ -64,7 +64,52 @@ public class Util {
         return val;
 	}
 	
+	/**
+	 * Checks if a controller exists.
+	 * @param index The index of the controller (same you would use to define the Joystick)
+	 * @return      True if the controller exists, false otherwise.
+	 */
 	public static boolean controllerExists(int index) {
 		return DriverStation.getInstance().getJoystickName(index) != "";
+	}
+
+	public static double closestToZero(double[] set) {
+		double least = Double.MAX_VALUE;
+		for(int i=0; i<set.length; i++) {
+			if(Math.abs(set[i]) < Math.abs(least)) {
+				least = set[i];
+			}
+		}
+
+		return least;
+	}
+
+	/**
+	 * Gets the angle that the robot needs to turn through to acheive a heading.
+	 * @param angle   The angle of the robot
+	 * @param heading The desired heading to be acheived.
+	 * @return        The angle that the robot needs to turn to have its desired heading.
+	 */
+	public static double getAngleToHeading(double angle, double heading) {
+		double angle1 = heading - angle;         //angle to heading without crossing 0
+		double angle2 = angle1 - 360;
+		double angle3 = angle1 + 360;
+
+		return closestToZero(new double[] {angle1, angle2, angle3});
+	}
+
+	/**
+	 * Tests the equality of two values, then prints and returns the result.
+	 * Print string will be displayed on RioLog as an error reading: "Assertion [assertionID] SUCCEEDED/FAILED."
+	 * @param assertionName The informational name of the assertion. Will be used in the printout.
+	 * @param item1       The first item to test.
+	 * @param item2       The second item to test.
+	 * @return            True if item1 equals item2. False otherwise.
+	 */
+	public static boolean assertEquals(String assertionName, Object item1, Object item2) {
+		boolean success = item1.equals(item2);
+		String message = "Assertion " + assertionName + " " + (success ? "SUCCEEDED" : "FAILED") + "." + " Item 1: " + item1.toString() + " | Item 2: " + item2.toString();
+		DriverStation.reportError(message, false);
+		return success;
 	}
 }

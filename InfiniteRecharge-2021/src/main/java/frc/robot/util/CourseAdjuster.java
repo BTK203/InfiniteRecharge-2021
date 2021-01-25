@@ -5,7 +5,6 @@
 package frc.robot.util;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemDrive;
 
@@ -17,7 +16,9 @@ public class CourseAdjuster {
     private PIDController headingController;
     private double
         targetHeading,
-        targetVelocity;
+        headingCorrectionInhibitor,
+        leftVelocity,
+        rightVelocity;
         
     /**
      * Creates a new CourseAdjuster
@@ -34,6 +35,7 @@ public class CourseAdjuster {
     public CourseAdjuster(SubsystemDrive drivetrain, double headingkP, double headingkI, double headingkD) {
         this.drivetrain = drivetrain;
         this.headingController = new PIDController(headingkP, headingkI, headingkD);
+        this.headingCorrectionInhibitor = 1;
     }
 
     /**
@@ -48,7 +50,11 @@ public class CourseAdjuster {
      * This should be called in the initialize() method of the command invoking this object.
      */
     public void init() {
-        this.headingController.setSetpoint(drivetrain.getGyroAngle()); //set default heading to current heading
+        this.headingController.setSetpoint(0); //set default heading to current heading
+        targetHeading = drivetrain.getGyroAngle();
+
+        leftVelocity = 0;
+        rightVelocity = 0;
     }
 
     /**
@@ -56,17 +62,17 @@ public class CourseAdjuster {
      * This should be called in the update() method of the command invoking this object.
      */
     public void update() {
-        double velocitySetpoint = targetVelocity;
-        SmartDashboard.putNumber("Test Velocity Setpoint", velocitySetpoint);
-        if(velocitySetpoint > 1132) velocitySetpoint += (velocitySetpoint - 40) * 0.4; //1132 RPM ~= 45 in/sec
+        double leftVelocitySetpoint = curveVelocity(leftVelocity);
+        double rightVelocitySetpoint = curveVelocity(rightVelocity);
 
         //correct heading
-        headingController.setSetpoint(targetHeading);
-        double headingCorrection = headingController.calculate(drivetrain.getGyroAngle());
+        double angleToHeading = Util.getAngleToHeading(drivetrain.getGyroAngle(), targetHeading);
+        double headingCorrection = headingController.calculate(angleToHeading); //just a reminder here that headingController's setpoint is 0
         double currentVelocity = drivetrain.getOverallVelocity();
         headingCorrection *= (currentVelocity) / 2;
-        double leftVelocity  = velocitySetpoint - headingCorrection;
-        double rightVelocity = velocitySetpoint + headingCorrection;
+        headingCorrection *= headingCorrectionInhibitor;
+        double leftVelocity  = leftVelocitySetpoint - headingCorrection;
+        double rightVelocity = rightVelocitySetpoint + headingCorrection;
 
         drivetrain.setLeftVelocity(leftVelocity);
         drivetrain.setRightVelocity(rightVelocity);
@@ -80,12 +86,25 @@ public class CourseAdjuster {
     }
 
     /**
-     * Sets the velocity of the robot.
+     * Sets the inhibitor for heading correction.
+     * @param correctionInhibitor The value of the new inhibitor. A value of less than 1 will make heading correction less effective. A value of greater than 1 will make it more effective.
      */
-    public void setVelocity(double velocity) {
-        double newVelocity = velocity * Constants.DRIVE_ROTATIONS_PER_INCH; //convert to rotations per second
-        newVelocity *= 60; //convert to rotations per minute
-        this.targetVelocity = newVelocity;
+    public void setHeadingCorrectionInhibitor(double correctionInhibitor) {
+        this.headingCorrectionInhibitor = correctionInhibitor;
+    }
+
+    /**
+     * Sets the left wheel velocity of the robot.
+     */
+    public void setBaseLeftVelocity(double velocity) {
+        this.leftVelocity = IPStoRPM(velocity);
+    }
+
+    /**
+     * Sets the right wheel velocity of the robot.
+     */
+    public void setBaseRightVelocity(double velocity) {
+        this.rightVelocity = IPStoRPM(velocity);
     }
 
     /**
@@ -98,5 +117,26 @@ public class CourseAdjuster {
         headingController.setP(kP);
         headingController.setI(kI);
         headingController.setD(kD);
+    }
+
+    /**
+     * Converts a velocity in inches/sec to RPM.
+     * @param ips A velocity in inches/sec
+     * @return A velocity in RPM that corresponds to the velocity in ips.
+     */
+    private double IPStoRPM(double ips) {
+        double newVelocity = ips * Constants.DRIVE_ROTATIONS_PER_INCH; //convert to rotations per second
+        newVelocity *= 60; //convert to rotations per minute
+        return newVelocity;
+    }
+
+    /**
+     * This odd method is here so that the robot can achieve almost any velocity using only one set of PID constants.
+     * It works by increasing the target velocity so that the PID is forced to work harder than it would work otherwise.
+     * @param velocitySetpoint The original velocity setpoint in RPM
+     * @return The curved velocity setpoint in RPM
+     */
+    private double curveVelocity(double velocitySetpoint) {
+        return (velocitySetpoint > 1132 ? velocitySetpoint += (velocitySetpoint - 40) * 0.4 : velocitySetpoint); //1132 RPM ~= 45 in/sec
     }
 }
