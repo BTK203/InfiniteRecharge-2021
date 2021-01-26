@@ -163,7 +163,8 @@ public final class Constants {
         FLYWHEEL_GEAR_RATIO = 1.6071,
         DRIVETRAIN_ALLOWABLE_ERROR = 1,
         CLIMBER_WINCH_ALLOWABLE_ERROR = 0.5,
-        PATH_RECORDER_DISTANCE_INTERVAL = 0.25;
+        PATH_RECORDER_DISTANCE_INTERVAL = 0.25,
+        DRIVETRAIN_WHEEL_BASE_WIDTH = 0; //TODO: FIND ACTUAL
 
     public static final boolean
         DRIVE_CAMERA_AUTOMATIC_EXPOSURE = false;
@@ -181,7 +182,8 @@ public final class Constants {
         AUTO_DEEP_TRENCH_DISTANCE = -150,
         AUTO_SHALLOW_TRENCH_DISTANCE = -154,
         TRENCH_AUTO_WAIT_TIME = 500,
-        AUTO_OVERREV_EXTRA_RPM = 500;
+        AUTO_OVERREV_EXTRA_RPM = 500,
+        EMULATE_IMMEDIATE_PATH_SIZE = 5;
 
     /**
      * Temporary auto

@@ -15,7 +15,7 @@ public class CourseAdjuster {
     private SubsystemDrive drivetrain;
     private PIDController headingController;
     private double
-        targetHeading,
+        targetTurn,
         headingCorrectionInhibitor,
         leftVelocity,
         rightVelocity;
@@ -34,7 +34,7 @@ public class CourseAdjuster {
      */
     public CourseAdjuster(SubsystemDrive drivetrain, double headingkP, double headingkI, double headingkD) {
         this.drivetrain = drivetrain;
-        this.headingController = new PIDController(headingkP, headingkI, headingkD);
+        this.headingController = new PIDController(headingkP, headingkI, headingkD); //setpoint for this is set to 0 in the init() method.
         this.headingCorrectionInhibitor = 1;
     }
 
@@ -51,7 +51,7 @@ public class CourseAdjuster {
      */
     public void init() {
         this.headingController.setSetpoint(0); //set default heading to current heading
-        targetHeading = drivetrain.getGyroAngle();
+        targetTurn = 0;
 
         leftVelocity = 0;
         rightVelocity = 0;
@@ -66,7 +66,7 @@ public class CourseAdjuster {
         double rightVelocitySetpoint = curveVelocity(rightVelocity);
 
         //correct heading
-        double angleToHeading = Util.getAngleToHeading(drivetrain.getGyroAngle(), targetHeading);
+        double angleToHeading = Util.getAngleToHeading(drivetrain.getGyroAngle(), targetTurn);
         double headingCorrection = headingController.calculate(angleToHeading); //just a reminder here that headingController's setpoint is 0
         double currentVelocity = drivetrain.getOverallVelocity();
         headingCorrection *= (currentVelocity) / 2;
@@ -81,8 +81,8 @@ public class CourseAdjuster {
     /**
      * Sets the target heading of the robot.
      */
-    public void setHeading(double heading) {
-        targetHeading = heading;
+    public void setTurn(double heading) {
+        targetTurn = heading;
     }
 
     /**

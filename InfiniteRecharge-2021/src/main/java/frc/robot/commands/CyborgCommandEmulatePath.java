@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -72,10 +70,12 @@ public class CyborgCommandEmulatePath extends CommandBase {
     double
       headingkP = Util.getAndSetDouble("Drive Heading kP", 0),
       headingkI = Util.getAndSetDouble("Drive Heading kI", 0),
-      headingkD = Util.getAndSetDouble("Drive Heading kD", 0);
+      headingkD = Util.getAndSetDouble("Drive Heading kD", 0),
+      headingInhibitor = Util.getAndSetDouble("Course Heading Correction Inhibitor", 0.25);
 
     courseAdjuster.setHeadingPID(headingkP, headingkI, headingkD);
-    courseAdjuster.setHeading(drivetrain.getGyroAngle());
+    courseAdjuster.setHeadingCorrectionInhibitor(headingInhibitor);
+    courseAdjuster.setTurn(0);
     courseAdjuster.init();
   }
 
@@ -96,8 +96,31 @@ public class CyborgCommandEmulatePath extends CommandBase {
     }
 
     Point2D currentDestination = points[currentPointIndex + 1];
+    
+    //figure out heading needed to be on top of currentDestination
+    double headingToCurrentDestination = currentLocation.getHeadingTo(currentDestination);
+    double requiredTurn = currentLocation.getHeading() - headingToCurrentDestination;
+    courseAdjuster.setTurn(requiredTurn);
 
-    //to be continued...
+    //figure out the average turn for the next points ahead to help smooth the path.
+    Point2D[] immediatePath = getNextNPoints(points, currentPointIndex, Constants.EMULATE_IMMEDIATE_PATH_SIZE);
+    double immediateDistance = getDistanceOfPath(immediatePath); //unit: in
+    double immediateTurn = Util.getAngleToHeading(immediatePath[0].getHeading(), immediatePath[immediatePath.length - 1].getHeading()); //unit: degrees
+    immediateTurn = Math.toRadians(immediateTurn); //we need radians for arc length
+
+    //use immediateDistance and immediateTurn to calculate the left and right base velocities of the wheels.
+    //TODO: ADD ACTUAL WHEEL BASE TO CONSTANTS
+    double radius            = immediateDistance / immediateTurn; //unit: in
+    double leftDisplacement  = immediateTurn * (radius + (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
+    double rightDisplacement = immediateTurn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2));
+
+    //convert displacments to velocities
+    double timeInterval  = immediateDistance / baseSpeed; // unit: sec
+    double leftVelocity  = leftDisplacement / timeInterval; //unit: in/sec
+    double rightVelocity = rightDisplacement / timeInterval;
+
+    courseAdjuster.setBaseLeftVelocity(leftVelocity);
+    courseAdjuster.setBaseRightVelocity(rightVelocity);
   }
 
   // Called once the command ends or is interrupted.
@@ -110,7 +133,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return currentPointIndex >= points.length - 1; //command will finish when the last point is acheived.
   }
 
   /**
@@ -130,5 +153,14 @@ public class CyborgCommandEmulatePath extends CommandBase {
     }
 
     return points;
+  }
+
+  private double getDistanceOfPath(Point2D[] path) {
+    double distance = 0;
+    for(int i=0; i<path.length - 1; i++) {
+      distance += path[i].getDistanceFrom(path[i + 1]);
+    }
+
+    return distance;
   }
 }
