@@ -147,21 +147,9 @@
               "Visuals/Counter clockwise": false
             }
           },
-          "12,0": {
+          "7,6": {
             "size": [
-              5,
-              8
-            ],
-            "content": {
-              "_type": "Robot Preferences",
-              "_source0": "network_table:///Preferences",
-              "_title": "/Preferences",
-              "Miscellaneous/Show search box": true
-            }
-          },
-          "1,1": {
-            "size": [
-              3,
+              2,
               1
             ],
             "content": {
@@ -170,22 +158,48 @@
               "_title": "/SmartDashboard/Robot Position"
             }
           },
-          "0,3": {
+          "12,0": {
+            "size": [
+              5,
+              8
+            ],
+            "content": {
+              "_type": "Robot Preferences",
+              "_source0": "network_table:///Preferences",
+              "_title": "Preferences",
+              "Miscellaneous/Show search box": true
+            }
+          },
+          "0,0": {
             "size": [
               7,
-              5
+              3
             ],
             "content": {
               "_type": "Graph",
-              "_source0": "network_table:///SmartDashboard/Drivetrain Velocity",
-              "_title": "SmartDashboard/Drivetrain Velocity",
+              "_source0": "network_table:///SmartDashboard/Emulate Left Velocity",
+              "_title": "SmartDashboard/Emulate Left Velocity",
               "Graph/Visible time": 30.0,
-              "Graph/X-axis auto scrolling": true,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "ul",
-              "Visible data/SmartDashboard/Drivetrain Velocity": true
+              "Visible data/SmartDashboard/Emulate Left Velocity": true
+            }
+          },
+          "0,3": {
+            "size": [
+              7,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/Emulate Right Velocity",
+              "_title": "SmartDashboard/Emulate Right Velocity",
+              "Graph/Visible time": 30.0,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Visible data/SmartDashboard/Emulate Right Velocity": true
             }
           }
         }
@@ -238,8 +252,7 @@
                   "_title": "Left Out",
                   "Slider Settings/Min": -1.0,
                   "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625,
-                  "Visuals/Display value": true
+                  "Slider Settings/Block increment": 0.0625
                 },
                 "2,0": {
                   "_type": "Number Slider",
@@ -247,8 +260,7 @@
                   "_title": "Right Out",
                   "Slider Settings/Min": -1.0,
                   "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625,
-                  "Visuals/Display value": true
+                  "Slider Settings/Block increment": 0.0625
                 },
                 "0,1": {
                   "_type": "Simple Dial",
@@ -335,8 +347,7 @@
                   "_title": "Scissor Out",
                   "Slider Settings/Min": -1.0,
                   "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625,
-                  "Visuals/Display value": true
+                  "Slider Settings/Block increment": 0.0625
                 },
                 "2,0": {
                   "_type": "Number Slider",
@@ -344,8 +355,7 @@
                   "_title": "Winch Out",
                   "Slider Settings/Min": -1.0,
                   "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625,
-                  "Visuals/Display value": true
+                  "Slider Settings/Block increment": 0.0625
                 },
                 "1,0": {
                   "_type": "Boolean Box",
@@ -467,8 +477,7 @@
                       "_title": "Output",
                       "Slider Settings/Min": -1.0,
                       "Slider Settings/Max": 1.0,
-                      "Slider Settings/Block increment": 0.0625,
-                      "Visuals/Display value": true
+                      "Slider Settings/Block increment": 0.0625
                     }
                   }
                 }
@@ -984,7 +993,7 @@
   "windowGeometry": {
     "x": -1928.0,
     "y": -8.0,
-    "width": 1940.0,
-    "height": 1066.0
+    "width": 1944.0,
+    "height": 1076.0
   }
 }

@@ -50,6 +50,7 @@ public class PathRecorder {
         try {
             if(point.getDistanceFrom(lastPoint) >= Constants.PATH_RECORDER_DISTANCE_INTERVAL) {
                 buffer.append(point.toString() + "\n");
+                lastPoint = point;
             }
 
             //decide if we should flush

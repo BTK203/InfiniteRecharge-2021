@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -108,19 +109,34 @@ public class CyborgCommandEmulatePath extends CommandBase {
     double immediateTurn = Util.getAngleToHeading(immediatePath[0].getHeading(), immediatePath[immediatePath.length - 1].getHeading()); //unit: degrees
     immediateTurn = Math.toRadians(immediateTurn); //we need radians for arc length
 
-    //use immediateDistance and immediateTurn to calculate the left and right base velocities of the wheels.
-    //TODO: ADD ACTUAL WHEEL BASE TO CONSTANTS
-    double radius            = immediateDistance / immediateTurn; //unit: in
-    double leftDisplacement  = immediateTurn * (radius + (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
-    double rightDisplacement = immediateTurn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2));
+    if(immediateTurn != 0) {
 
-    //convert displacments to velocities
-    double timeInterval  = immediateDistance / baseSpeed; // unit: sec
-    double leftVelocity  = leftDisplacement / timeInterval; //unit: in/sec
-    double rightVelocity = rightDisplacement / timeInterval;
+      //use immediateDistance and immediateTurn to calculate the left and right base velocities of the wheels.
+      double radius            = immediateDistance / immediateTurn; //unit: in
+      double leftDisplacement  = immediateTurn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
+      double rightDisplacement = immediateTurn * (radius + (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2));
 
-    courseAdjuster.setBaseLeftVelocity(leftVelocity);
-    courseAdjuster.setBaseRightVelocity(rightVelocity);
+      //convert displacments to velocities
+      double timeInterval  = immediateDistance / baseSpeed; // unit: sec
+      double leftVelocity  = leftDisplacement / timeInterval; //unit: in/sec
+      double rightVelocity = rightDisplacement / timeInterval;
+
+      SmartDashboard.putNumber("Emulate Time Interval", timeInterval);
+      SmartDashboard.putNumber("Emulate Immediate Distance", immediateDistance);
+      SmartDashboard.putNumber("Emulate Base Speed", baseSpeed);
+      SmartDashboard.putNumber("Emulate Right Displacment", rightDisplacement);
+      SmartDashboard.putNumber("Emulate Immediate Turn", immediateTurn);
+      SmartDashboard.putNumber("Emulate Left Velocity", leftVelocity);
+      SmartDashboard.putNumber("Emulate Right Velocity", rightVelocity);
+
+      courseAdjuster.setBaseLeftVelocity(leftVelocity);
+      courseAdjuster.setBaseRightVelocity(rightVelocity);
+    } else {
+      courseAdjuster.setBaseLeftVelocity(baseSpeed);
+      courseAdjuster.setBaseRightVelocity(baseSpeed);
+    }
+
+    courseAdjuster.update();
   }
 
   // Called once the command ends or is interrupted.
@@ -160,6 +176,9 @@ public class CyborgCommandEmulatePath extends CommandBase {
     for(int i=0; i<path.length - 1; i++) {
       distance += path[i].getDistanceFrom(path[i + 1]);
     }
+
+    SmartDashboard.putNumber("Emulate Mini Path length", path.length);
+    SmartDashboard.putNumber("Emulate Path Distance", distance);
 
     return distance;
   }

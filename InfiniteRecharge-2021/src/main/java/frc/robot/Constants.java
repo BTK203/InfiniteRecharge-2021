@@ -164,7 +164,7 @@ public final class Constants {
         DRIVETRAIN_ALLOWABLE_ERROR = 1,
         CLIMBER_WINCH_ALLOWABLE_ERROR = 0.5,
         PATH_RECORDER_DISTANCE_INTERVAL = 0.25,
-        DRIVETRAIN_WHEEL_BASE_WIDTH = 0; //TODO: FIND ACTUAL
+        DRIVETRAIN_WHEEL_BASE_WIDTH = 20;
 
     public static final boolean
         DRIVE_CAMERA_AUTOMATIC_EXPOSURE = false;
