@@ -111,13 +111,17 @@ public class CyborgCommandAlignTurret extends CommandBase {
       double newPitchPosition = turret.getPitchPosition();
       if(targetDistance > 5) {
         //use the cool parabola equation to calculate the pitch position
-        //equation: f(x) = 0.006851x^2 - 2.654x - 447.8 | where: x is the distance kiwilight reports and f returns the pitch position.
-        double ax2 = 0.006851 * Math.pow(targetDistance, 2);
-        double bx  = -2.654 * targetDistance;
-        double c   = -225;
+        //old equation: f(x) = 0.006851x^2 - 2.654x - 447.8 | where: x is the distance kiwilight reports and f returns the pitch position.
+        //new equation: f(x) = 0.008631x^2 - 2.562x - 320.3
+        double ax2 = 0.008631 * Math.pow(targetDistance, 2);
+        double bx  = -2.562 * targetDistance;
+        double c   = -320.3;
 
         newPitchPosition = ax2 + bx + c;
-        newPitchPosition += Util.getAndSetDouble("Align Degree Boost", 50);
+        // newPitchPosition += Util.getAndSetDouble("Align Degree Boost", 50);
+
+        SmartDashboard.putNumber("Align Pitch Position", newPitchPosition);
+        SmartDashboard.putNumber("Target Distance", targetDistance);
 
         SmartDashboard.putNumber("Pitch Error", turret.getPitchPosition() - newPitchPosition);
       } else {

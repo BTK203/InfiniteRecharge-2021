@@ -63,7 +63,7 @@ public class SixBallSimpleAuto implements IAuto {
         //position turret to get target in vision view
         int yawTarget = Auto.getYawTicksToTarget(Util.getAndSetDouble("Auto Start Offset", 0));
         int pitchTarget = Constants.AUTO_INIT_PITCH_TARGET;
-        this.positionTurret = new CyborgCommandSetTurretPosition(turret, yawTarget, pitchTarget, true, kiwilight);
+        this.positionTurret = new CyborgCommandSetTurretPosition(turret, yawTarget, pitchTarget, true, kiwilight, false);
         
         //align
         this.alignTurret = new CyborgCommandAlignTurret(turret, kiwilight, true);

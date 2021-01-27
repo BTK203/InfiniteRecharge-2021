@@ -7,6 +7,8 @@
 
 package frc.robot.commands;
 
+import java.sql.Driver;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -17,7 +19,9 @@ import frc.robot.util.Util;
 public class CyborgCommandSetTurretPosition extends CommandBase {
   private SubsystemTurret turret;
   private SubsystemReceiver kiwilight; //only to be used if cancelable is true
-  private boolean cancelable;
+  private boolean 
+    cancelable,
+    setPitchWithPrefs;
 
   private int
     yawPosition,
@@ -26,17 +30,18 @@ public class CyborgCommandSetTurretPosition extends CommandBase {
   /**
    * Creates a new CyborgCommandSetTurretPosition.
    */
-  public CyborgCommandSetTurretPosition(SubsystemTurret turret, int yawTarget, int pitchTarget, boolean cancelable, SubsystemReceiver kiwilight) {
+  public CyborgCommandSetTurretPosition(SubsystemTurret turret, int yawTarget, int pitchTarget, boolean cancelable, SubsystemReceiver kiwilight, boolean setPitchWithPrefs) {
     this.turret = turret;
-    this.yawPosition = yawTarget;
+    this.yawPosition = (setPitchWithPrefs ? (int) turret.getYawPosition() : yawTarget);
     this.pitchPosition = pitchTarget;
     this.kiwilight = kiwilight;
     this.cancelable = cancelable;
+    this.setPitchWithPrefs = setPitchWithPrefs;
     addRequirements(this.turret);
   }
 
   public CyborgCommandSetTurretPosition(SubsystemTurret turret, int yawTarget, int pitchTarget) {
-    this(turret, yawTarget, pitchTarget, false, null);
+    this(turret, yawTarget, pitchTarget, false, null, false);
   }
 
   // Called when the command is initially scheduled.
@@ -50,7 +55,11 @@ public class CyborgCommandSetTurretPosition extends CommandBase {
     double yawkF = Util.getAndSetDouble("Yaw Position KF", 0);
     double yawhighOutLimit = Util.getAndSetDouble("Yaw High Output", 1);
 
-    turret.setYawPIDF(yawkP, yawkI, yawkD, yawkF, yawhighOutLimit, (int) yawIZone);
+    if(setPitchWithPrefs) {
+      turret.setYawPIDF(0, 0, 0, 0, Util.getAndSetDouble("Yaw High Output", 1), 0);
+    } else {
+      turret.setYawPIDF(yawkP, yawkI, yawkD, yawkF, yawhighOutLimit, (int) yawIZone);
+    }
 
     //pitch pid
     double pitchkP = Util.getAndSetDouble("Pitch Position kP", 12);
@@ -61,13 +70,22 @@ public class CyborgCommandSetTurretPosition extends CommandBase {
     double pitchhighOutLimit = Util.getAndSetDouble("Pitch High Output", 1);
 
     turret.setPitchPIDF(pitchkP, pitchkI, pitchkD, pitchkF, pitchhighOutLimit, (int) pitchIZone);
+
+    if(setPitchWithPrefs) {
+      pitchPosition = (int) Util.getAndSetDouble("Target Pitch Pos", 0);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() { 
     turret.setPitchPositioningDisabled(false);
-    turret.setYawPosition(yawPosition);
+    if(setPitchWithPrefs) {
+      DriverStation.reportError("The yaw shouldn't be moving right now", false);
+      turret.setYawPosition(turret.getYawPosition());
+    } else {
+      turret.setYawPosition(yawPosition);
+    }
     turret.setPitchPosition(pitchPosition);
   }
 
@@ -81,6 +99,10 @@ public class CyborgCommandSetTurretPosition extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if(setPitchWithPrefs) {
+      return false;
+    }
+
     double yawError = Math.abs(Math.abs(turret.getYawPosition()) - yawPosition);
     double pitchError = Math.abs(pitchPosition - turret.getPitchPosition());
 

@@ -13,7 +13,7 @@
           "9,0": {
             "size": [
               3,
-              2
+              8
             ],
             "content": {
               "_type": "List Layout",
@@ -79,6 +79,11 @@
                   "_type": "Command",
                   "_source0": "network_table:///SmartDashboard/Shoot Payload",
                   "_title": "SmartDashboard/Shoot Payload"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Zero All Drivetrain",
+                  "_title": "/SmartDashboard/Zero All Drivetrain"
                 }
               ]
             }
@@ -105,51 +110,6 @@
               "_title": "/SmartDashboard/Record Path"
             }
           },
-          "2,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Test Velocity Distance Travelled",
-              "_title": "SmartDashboard/Test Velocity Distance Travelled"
-            }
-          },
-          "4,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Drivetrain Velocity",
-              "_title": "SmartDashboard/Drivetrain Velocity"
-            }
-          },
-          "12,0": {
-            "size": [
-              5,
-              8
-            ],
-            "content": {
-              "_type": "Robot Preferences",
-              "_source0": "network_table:///Preferences",
-              "_title": "Preferences",
-              "Miscellaneous/Show search box": true
-            }
-          },
-          "4,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Raw Drive Velocity",
-              "_title": "SmartDashboard/Raw Drive Velocity"
-            }
-          },
           "7,2": {
             "size": [
               2,
@@ -159,17 +119,6 @@
               "_type": "Command",
               "_source0": "network_table:///SmartDashboard/Test Drive Velocity",
               "_title": "SmartDashboard/Test Drive Velocity"
-            }
-          },
-          "2,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Right Output",
-              "_title": "SmartDashboard/Right Output"
             }
           },
           "7,3": {
@@ -183,26 +132,60 @@
               "_title": "SmartDashboard/Reset Fastest Speed"
             }
           },
-          "4,2": {
+          "7,4": {
             "size": [
               2,
-              1
+              2
             ],
             "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Fastest Speed",
-              "_title": "SmartDashboard/Fastest Speed"
+              "_type": "Gyro",
+              "_source0": "network_table:///LiveWindow/Ungrouped/navX-Sensor",
+              "_title": "/LiveWindow/Ungrouped/navX-Sensor",
+              "Visuals/Major tick spacing": 45.0,
+              "Visuals/Starting angle": 180.0,
+              "Visuals/Show tick mark ring": true,
+              "Visuals/Counter clockwise": false
             }
           },
-          "2,2": {
+          "12,0": {
             "size": [
-              2,
+              5,
+              8
+            ],
+            "content": {
+              "_type": "Robot Preferences",
+              "_source0": "network_table:///Preferences",
+              "_title": "/Preferences",
+              "Miscellaneous/Show search box": true
+            }
+          },
+          "1,1": {
+            "size": [
+              3,
               1
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Left Amps",
-              "_title": "SmartDashboard/Left Amps"
+              "_source0": "network_table:///SmartDashboard/Robot Position",
+              "_title": "/SmartDashboard/Robot Position"
+            }
+          },
+          "0,3": {
+            "size": [
+              7,
+              5
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/Drivetrain Velocity",
+              "_title": "SmartDashboard/Drivetrain Velocity",
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "ul",
+              "Visible data/SmartDashboard/Drivetrain Velocity": true
             }
           }
         }
@@ -1001,7 +984,7 @@
   "windowGeometry": {
     "x": -1928.0,
     "y": -8.0,
-    "width": 1936.0,
-    "height": 1056.0
+    "width": 1940.0,
+    "height": 1066.0
   }
 }
