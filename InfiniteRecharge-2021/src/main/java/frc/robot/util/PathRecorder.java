@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.Robot;
 
 /** Add your docs here. */
 public class PathRecorder {
@@ -25,16 +26,18 @@ public class PathRecorder {
         this.file = file;
         lastPoint = new Point2D(0, 0, 0);
         lastFlushTime = System.currentTimeMillis();
-        openFile();
+        // init();
     }
 
-    public void openFile(){
+    public void init(){
         try {
             writer = new FileWriter(file, false);
             buffer = new BufferedWriter(writer);
         } catch (IOException ex) {
             DriverStation.reportError("IO EXCEPTION", true);
         }
+
+        Robot.getRobotContainer().zeroAllDrivetrain();
     }
 
     public void closeFile() {

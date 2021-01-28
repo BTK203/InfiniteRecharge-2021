@@ -78,6 +78,8 @@ public class CyborgCommandEmulatePath extends CommandBase {
     courseAdjuster.setHeadingCorrectionInhibitor(headingInhibitor);
     courseAdjuster.setTurn(0);
     courseAdjuster.init();
+
+    Robot.getRobotContainer().zeroAllDrivetrain();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -88,20 +90,36 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     //resolve the point that the robot is currently at and where we want to aim
     if(currentPointIndex < points.length - 1) {
-      double distanceToBasePoint = currentLocation.getDistanceFrom(points[currentPointIndex]);
-      double distanceToNextPoint = currentLocation.getDistanceFrom(points[currentPointIndex + 1]);
+      // double distanceToBasePoint = currentLocation.getDistanceFrom(points[currentPointIndex]);
+      // double distanceToNextPoint = currentLocation.getDistanceFrom(points[currentPointIndex + 1]);
 
-      if(distanceToNextPoint < distanceToBasePoint) { //robot closer to aim point than current point.
+      // if(distanceToNextPoint < distanceToBasePoint) { //robot closer to aim point than current point.
+      //   currentPointIndex++;
+      // }
+
+      double headingToBasePoint = currentLocation.getHeadingTo(points[currentPointIndex]);
+      double headingDifference = Math.abs(Util.getAngleToHeading(currentLocation.getHeading(), headingToBasePoint));
+      SmartDashboard.putNumber("Emulate Heading Difference", headingDifference);
+      if(headingDifference >= 90) {
+        SmartDashboard.putBoolean("Emulate Advancing", true);
         currentPointIndex++;
+      } else {
+        SmartDashboard.putBoolean("Emulate Advancing", false);
       }
     }
 
     Point2D currentDestination = points[currentPointIndex + 1];
+
+    SmartDashboard.putString("Emulate Target Point", currentDestination.toString());
     
     //figure out heading needed to be on top of currentDestination
     double headingToCurrentDestination = currentLocation.getHeadingTo(currentDestination);
-    double requiredTurn = currentLocation.getHeading() - headingToCurrentDestination;
+    double requiredTurn = Util.getAngleToHeading(currentLocation.getHeading(), headingToCurrentDestination);
     courseAdjuster.setTurn(requiredTurn);
+
+    SmartDashboard.putNumber("Emulate Heading To Dest", headingToCurrentDestination);
+    SmartDashboard.putNumber("Emulate Current Heading", currentLocation.getHeading());
+    SmartDashboard.putNumber("Emulate required turn", requiredTurn);
 
     //figure out the average turn for the next points ahead to help smooth the path.
     Point2D[] immediatePath = getNextNPoints(points, currentPointIndex, Constants.EMULATE_IMMEDIATE_PATH_SIZE);
@@ -149,7 +167,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return currentPointIndex >= points.length - 1; //command will finish when the last point is acheived.
+    return currentPointIndex >= points.length - 2; //command will finish when the last point is acheived.
   }
 
   /**

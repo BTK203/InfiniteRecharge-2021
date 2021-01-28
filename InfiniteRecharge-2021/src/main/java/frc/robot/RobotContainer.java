@@ -179,10 +179,10 @@ public class RobotContainer {
     }
   }
 
-  private void zeroAllDrivetrain() {
+  public void zeroAllDrivetrain() {
     SUB_DRIVE.zeroEncoders();
     SUB_DRIVE.zeroGyro();
-    POSITION_TRACKER.setPositionAndHeading(0, 0, 0);
+    POSITION_TRACKER.zeroPositionAndHeading();
   }
 
   /**

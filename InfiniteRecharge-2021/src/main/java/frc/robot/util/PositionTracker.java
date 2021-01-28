@@ -19,6 +19,12 @@ public class PositionTracker {
         y,
         heading;
 
+    Thread updater;
+    boolean updatingDisabled;
+
+
+    int zero;
+
     /**
      * Creates a new PositionTracker.
      * @param x The starting X-coordinate of the robot.
@@ -30,15 +36,18 @@ public class PositionTracker {
         this.x = x;
         this.y = y;
         this.heading = heading;
+        this.updatingDisabled = false;
 
         //track robot position in new thread
-        new Thread(
+        this.updater = new Thread(
             () -> {
                 //TODO: decide if we want to keep loop time tracking
                 long lastLoopTime = System.currentTimeMillis();
                 while(true) {
                     //update using drivetrain values.
-                    update();
+                    if(!updatingDisabled) {
+                        update();
+                    }
 
                     //track and report time elapsed during update.
                     long currentTime = System.currentTimeMillis();
@@ -47,7 +56,9 @@ public class PositionTracker {
                     lastLoopTime = currentTime;
                 }
             }
-        ).start();
+        );
+
+        this.updater.start();
     }
 
     /**
@@ -67,6 +78,21 @@ public class PositionTracker {
         this.x = x;
         this.y = y;
         this.heading = heading;
+
+        //set lastLeft and lastRight so that coordinates don't jump
+        lastLeftDistance = drivetrain.getLeftPosition();
+        lastRightDistance = drivetrain.getRightPosition();
+    }
+
+    /**
+     * This is a test
+     */
+    public void zeroPositionAndHeading() {
+        zero = 3;
+    }
+
+    public void setUpdaterDisabled(boolean disabled) {
+        this.updatingDisabled = disabled;
     }
 
     /**
@@ -75,7 +101,7 @@ public class PositionTracker {
      * @param rotation The current rotation of the robot.
      */
     public void update(double driveDistance, double rotation) {
-        rotation = (rotation < 0 ? 0 : (rotation > 360 ? 360 : rotation));
+        rotation %= 360;
         double averageHeading = (rotation + this.heading) / 2;
 
         //break vector into components
@@ -92,6 +118,14 @@ public class PositionTracker {
         this.y += driveY;
 
         this.heading = rotation;
+
+        if(zero > 0) {
+            this.x = 0;
+            this.y = 0;
+            this.heading = 0;
+
+            zero--;
+        }
     }
 
     /**
@@ -112,6 +146,13 @@ public class PositionTracker {
 
         lastLeftDistance = currentLeftDistance;
         lastRightDistance = currentRightDistance;
+
+        if(zero > 0) {
+            lastLeftDistance = drivetrain.getLeftPosition();
+            lastRightDistance = drivetrain.getRightPosition();
+
+            zero--;
+        }
     }
 
     /**
