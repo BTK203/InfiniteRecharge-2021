@@ -163,7 +163,7 @@ public final class Constants {
         FLYWHEEL_GEAR_RATIO = 1.6071,
         DRIVETRAIN_ALLOWABLE_ERROR = 1,
         CLIMBER_WINCH_ALLOWABLE_ERROR = 0.5,
-        PATH_RECORDER_DISTANCE_INTERVAL = 0.25,
+        PATH_RECORDER_DISTANCE_INTERVAL = 4,
         DRIVETRAIN_WHEEL_BASE_WIDTH = 20;
 
     public static final boolean

@@ -147,7 +147,7 @@
               "Visuals/Counter clockwise": false
             }
           },
-          "7,6": {
+          "5,0": {
             "size": [
               2,
               1
@@ -170,36 +170,28 @@
               "Miscellaneous/Show search box": true
             }
           },
-          "0,0": {
+          "3,0": {
             "size": [
-              7,
-              3
+              2,
+              1
             ],
             "content": {
-              "_type": "Graph",
-              "_source0": "network_table:///SmartDashboard/Emulate Left Velocity",
-              "_title": "SmartDashboard/Emulate Left Velocity",
-              "Graph/Visible time": 30.0,
-              "Y-axis/Automatic bounds": true,
-              "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/Emulate Left Velocity": true
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Emulate Target Point",
+              "_title": "/SmartDashboard/Emulate Target Point"
             }
           },
-          "0,3": {
+          "5,1": {
             "size": [
-              7,
-              3
+              2,
+              2
             ],
             "content": {
-              "_type": "Graph",
-              "_source0": "network_table:///SmartDashboard/Emulate Right Velocity",
-              "_title": "SmartDashboard/Emulate Right Velocity",
-              "Graph/Visible time": 30.0,
-              "Y-axis/Automatic bounds": true,
-              "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/Emulate Right Velocity": true
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Emulate Advancing",
+              "_title": "/SmartDashboard/Emulate Advancing",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
             }
           }
         }
@@ -252,7 +244,8 @@
                   "_title": "Left Out",
                   "Slider Settings/Min": -1.0,
                   "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625
+                  "Slider Settings/Block increment": 0.0625,
+                  "Visuals/Display value": true
                 },
                 "2,0": {
                   "_type": "Number Slider",
@@ -260,7 +253,8 @@
                   "_title": "Right Out",
                   "Slider Settings/Min": -1.0,
                   "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625
+                  "Slider Settings/Block increment": 0.0625,
+                  "Visuals/Display value": true
                 },
                 "0,1": {
                   "_type": "Simple Dial",
@@ -347,7 +341,8 @@
                   "_title": "Scissor Out",
                   "Slider Settings/Min": -1.0,
                   "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625
+                  "Slider Settings/Block increment": 0.0625,
+                  "Visuals/Display value": true
                 },
                 "2,0": {
                   "_type": "Number Slider",
@@ -355,7 +350,8 @@
                   "_title": "Winch Out",
                   "Slider Settings/Min": -1.0,
                   "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625
+                  "Slider Settings/Block increment": 0.0625,
+                  "Visuals/Display value": true
                 },
                 "1,0": {
                   "_type": "Boolean Box",
@@ -477,7 +473,8 @@
                       "_title": "Output",
                       "Slider Settings/Min": -1.0,
                       "Slider Settings/Max": 1.0,
-                      "Slider Settings/Block increment": 0.0625
+                      "Slider Settings/Block increment": 0.0625,
+                      "Visuals/Display value": true
                     }
                   }
                 }
@@ -991,9 +988,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -1928.0,
-    "y": -8.0,
-    "width": 1944.0,
-    "height": 1076.0
+    "x": -7.199999809265137,
+    "y": -7.199999809265137,
+    "width": 1550.4000244140625,
+    "height": 878.4000244140625
   }
 }

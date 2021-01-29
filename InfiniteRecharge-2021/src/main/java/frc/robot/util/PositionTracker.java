@@ -20,10 +20,10 @@ public class PositionTracker {
         heading;
 
     Thread updater;
-    boolean updatingDisabled;
 
-
-    int zero;
+    boolean
+        zero,
+        waitForZeroDrive;
 
     /**
      * Creates a new PositionTracker.
@@ -36,7 +36,8 @@ public class PositionTracker {
         this.x = x;
         this.y = y;
         this.heading = heading;
-        this.updatingDisabled = false;
+        this.waitForZeroDrive = false;
+        this.zero = false;
 
         //track robot position in new thread
         this.updater = new Thread(
@@ -45,9 +46,7 @@ public class PositionTracker {
                 long lastLoopTime = System.currentTimeMillis();
                 while(true) {
                     //update using drivetrain values.
-                    if(!updatingDisabled) {
-                        update();
-                    }
+                    update();
 
                     //track and report time elapsed during update.
                     long currentTime = System.currentTimeMillis();
@@ -87,12 +86,13 @@ public class PositionTracker {
     /**
      * This is a test
      */
-    public void zeroPositionAndHeading() {
-        zero = 3;
+    public void zeroPositionAndHeading(boolean waitForZeroDrivetrain) {
+        zero = true;
+        waitForZeroDrive = waitForZeroDrivetrain;
     }
 
-    public void setUpdaterDisabled(boolean disabled) {
-        this.updatingDisabled = disabled;
+    public void zeroPositionAndHeading() {
+        zeroPositionAndHeading(true);
     }
 
     /**
@@ -119,12 +119,10 @@ public class PositionTracker {
 
         this.heading = rotation;
 
-        if(zero > 0) {
+        if(zero) {
             this.x = 0;
             this.y = 0;
             this.heading = 0;
-
-            zero--;
         }
     }
 
@@ -147,11 +145,15 @@ public class PositionTracker {
         lastLeftDistance = currentLeftDistance;
         lastRightDistance = currentRightDistance;
 
-        if(zero > 0) {
-            lastLeftDistance = drivetrain.getLeftPosition();
-            lastRightDistance = drivetrain.getRightPosition();
+        if(zero) {
+            if(waitForZeroDrive && drivetrainAtZero()) {
+                lastLeftDistance = drivetrain.getLeftPosition();
+                lastRightDistance = drivetrain.getRightPosition();
 
-            zero--;
+                zero = false;
+            }
+        } else {
+            waitForZeroDrive = false;
         }
     }
 
@@ -160,5 +162,11 @@ public class PositionTracker {
      */
     public Point2D getPositionAndHeading() {
         return new Point2D(x, y, heading);
+    }
+
+    private boolean drivetrainAtZero() {
+        return 
+            Math.abs(drivetrain.getLeftPosition()) < 0.25 &&
+            Math.abs(drivetrain.getRightPosition()) < 0.25;
     }
 }

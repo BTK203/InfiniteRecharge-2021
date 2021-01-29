@@ -128,7 +128,6 @@ public class CyborgCommandEmulatePath extends CommandBase {
     immediateTurn = Math.toRadians(immediateTurn); //we need radians for arc length
 
     if(immediateTurn != 0) {
-
       //use immediateDistance and immediateTurn to calculate the left and right base velocities of the wheels.
       double radius            = immediateDistance / immediateTurn; //unit: in
       double leftDisplacement  = immediateTurn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
