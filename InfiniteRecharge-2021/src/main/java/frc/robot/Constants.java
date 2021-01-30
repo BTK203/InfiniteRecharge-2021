@@ -163,7 +163,7 @@ public final class Constants {
         FLYWHEEL_GEAR_RATIO = 1.6071,
         DRIVETRAIN_ALLOWABLE_ERROR = 1,
         CLIMBER_WINCH_ALLOWABLE_ERROR = 0.5,
-        PATH_RECORDER_DISTANCE_INTERVAL = 4,
+        PATH_RECORDER_DISTANCE_INTERVAL = 12,
         DRIVETRAIN_WHEEL_BASE_WIDTH = 20;
 
     public static final boolean
@@ -183,7 +183,7 @@ public final class Constants {
         AUTO_SHALLOW_TRENCH_DISTANCE = -154,
         TRENCH_AUTO_WAIT_TIME = 500,
         AUTO_OVERREV_EXTRA_RPM = 500,
-        EMULATE_IMMEDIATE_PATH_SIZE = 5;
+        EMULATE_IMMEDIATE_PATH_SIZE = 1;
 
     /**
      * Temporary auto
@@ -197,7 +197,7 @@ public final class Constants {
     public static final double 
         DRIVE_ROTATIONS_PER_INCH = 0.472,
         DRIVE_AUTO_INHIBITOR = 1,
-        EMULATE_PATH_MAX_POINT_DISTANCE = 1;
+        EMULATE_PATH_MAX_POINT_DISTANCE = 4;
 
     /**
      * More auto values but booleans

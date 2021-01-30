@@ -22,6 +22,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
   private SubsystemDrive drivetrain;
   private Point2D[] points;
   private int currentPointIndex;
+  private double lastHeadingDifference;
 
   /** Creates a new CyborgCommandEmulatePath. */
   public CyborgCommandEmulatePath(SubsystemDrive drivetrain) {
@@ -100,17 +101,22 @@ public class CyborgCommandEmulatePath extends CommandBase {
       double headingToBasePoint = currentLocation.getHeadingTo(points[currentPointIndex]);
       double headingDifference = Math.abs(Util.getAngleToHeading(currentLocation.getHeading(), headingToBasePoint));
       SmartDashboard.putNumber("Emulate Heading Difference", headingDifference);
-      if(headingDifference >= 90) {
+      SmartDashboard.putNumber("Emulate Last Head Diff", lastHeadingDifference);
+      
+      if((headingDifference >= 90 && lastHeadingDifference < 90) || (headingDifference <= 90 && lastHeadingDifference > 90)) {
         SmartDashboard.putBoolean("Emulate Advancing", true);
         currentPointIndex++;
       } else {
         SmartDashboard.putBoolean("Emulate Advancing", false);
       }
+
+      lastHeadingDifference = headingDifference;
     }
 
     Point2D currentDestination = points[currentPointIndex + 1];
 
     SmartDashboard.putString("Emulate Target Point", currentDestination.toString());
+    SmartDashboard.putNumber("Emulate Target Index", currentPointIndex);
     
     //figure out heading needed to be on top of currentDestination
     double headingToCurrentDestination = currentLocation.getHeadingTo(currentDestination);
@@ -126,12 +132,28 @@ public class CyborgCommandEmulatePath extends CommandBase {
     double immediateDistance = getDistanceOfPath(immediatePath); //unit: in
     double immediateTurn = Util.getAngleToHeading(immediatePath[0].getHeading(), immediatePath[immediatePath.length - 1].getHeading()); //unit: degrees
     immediateTurn = Math.toRadians(immediateTurn); //we need radians for arc length
+    
+    double headingToNextPoint = currentLocation.getHeadingTo(points[currentPointIndex + 1]);
+    double headingDifference = Util.getAngleToHeading(currentLocation.getHeading(), headingToNextPoint);
+    SmartDashboard.putNumber("Emulate heading diff", headingDifference);
+    boolean isForwards = Math.abs(headingDifference) < 90;
 
     if(immediateTurn != 0) {
       //use immediateDistance and immediateTurn to calculate the left and right base velocities of the wheels.
-      double radius            = immediateDistance / immediateTurn; //unit: in
-      double leftDisplacement  = immediateTurn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
-      double rightDisplacement = immediateTurn * (radius + (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2));
+      double radius = immediateDistance / immediateTurn; //unit: 
+      
+      double leftDisplacement = 0;
+      double rightDisplacement = 0;
+
+      SmartDashboard.putBoolean("Emulate is Forwards", isForwards);
+
+      if(isForwards) {
+        leftDisplacement  = immediateTurn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
+        rightDisplacement = immediateTurn * (radius + (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2));
+      } else {
+        leftDisplacement  = -1 * immediateTurn * (radius + (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
+        rightDisplacement = -1 * immediateTurn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2));
+      }
 
       //convert displacments to velocities
       double timeInterval  = immediateDistance / baseSpeed; // unit: sec
