@@ -10,6 +10,7 @@ import frc.robot.subsystems.SubsystemDrive;
 
 /**
  * The new 2021 driver. Yee haw.
+ * NOTE as of 1/29/21: this class literally might become obsolete.
  */
 public class CourseAdjuster {
     private SubsystemDrive drivetrain;
