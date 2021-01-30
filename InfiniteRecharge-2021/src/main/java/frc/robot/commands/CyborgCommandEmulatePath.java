@@ -15,6 +15,7 @@ import frc.robot.Robot;
 import frc.robot.subsystems.SubsystemDrive;
 import frc.robot.util.CourseAdjuster;
 import frc.robot.util.Point2D;
+import frc.robot.util.TrajectorySegment;
 import frc.robot.util.Util;
 
 public class CyborgCommandEmulatePath extends CommandBase {
@@ -22,6 +23,11 @@ public class CyborgCommandEmulatePath extends CommandBase {
   private SubsystemDrive drivetrain;
   private Point2D[] points;
   private int currentPointIndex;
+  private TrajectorySegment currentTrajectory;
+  private double
+    currentSegmentTravel,
+    lastRightPosition,
+    lastLeftPosition;
 
   /** Creates a new CyborgCommandEmulatePath. */
   public CyborgCommandEmulatePath(SubsystemDrive drivetrain) {
@@ -34,10 +40,15 @@ public class CyborgCommandEmulatePath extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    currentTrajectory = new TrajectorySegment(0, 0, -1); //distance to -1 so that this segment will always be overwritten on first execute()
+    currentSegmentTravel = 0;
+    lastRightPosition = drivetrain.getRightPosition();
+    lastLeftPosition  = drivetrain.getLeftPosition();
+    currentPointIndex = 0;
+
     try {
       // String fileContents = Files.readString(Path.of("D:\\_Users\\Brach\\projects\\Test\\FRC\\out.txt")); //TODO: DELETE
       String fileContents = Files.readString(Path.of("/home/lvuser/points.txt"));
-      DriverStation.reportWarning("file contents: " + fileContents, false);
 
       //create array of points based on fileContents
       String pointStrings[] = fileContents.split("\n");
@@ -45,12 +56,8 @@ public class CyborgCommandEmulatePath extends CommandBase {
       for(int i=0; i<pointStrings.length; i++) {
         points[i] = Point2D.fromString(pointStrings[i]);
       }
-
-      currentPointIndex = 0;
     } catch (IOException ex) {
       DriverStation.reportError("IO EXCEPTION", true);
-    } catch (NumberFormatException ex) {
-      DriverStation.reportError("NUMBER FORMAT EXCEPTION", true);
     }
 
     //update the PID Constants for heading.
@@ -67,7 +74,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
     drivetrain.setPIDRamp(Util.getAndSetDouble("Drive PID Ramp", 0.5));
     drivetrain.setPIDConstants(kP, kI, kD, kF, izone, outLimitLow, outLimitHigh);
     
-    //update the PID Constansts for velocity.
+    //update the PID Constansts for heading.
     double
       headingkP = Util.getAndSetDouble("Drive Heading kP", 0),
       headingkI = Util.getAndSetDouble("Drive Heading kI", 0),
@@ -85,75 +92,33 @@ public class CyborgCommandEmulatePath extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Point2D currentLocation = Robot.getRobotContainer().getRobotPositionAndHeading();
-    double baseSpeed = Util.getAndSetDouble("Emulation Base Speed", 75);
+    //Determine the distance we have travelled while on the current trajectory.
+    double currentRightPosition = drivetrain.getRightPosition();
+    double currentLeftPosition  = drivetrain.getLeftPosition();
 
-    //resolve the point that the robot is currently at and where we want to aim
-    if(currentPointIndex < points.length - 1) {
-      // double distanceToBasePoint = currentLocation.getDistanceFrom(points[currentPointIndex]);
-      // double distanceToNextPoint = currentLocation.getDistanceFrom(points[currentPointIndex + 1]);
+    double rightDisplacement = currentRightPosition - lastRightPosition;
+    double leftDisplacement  = currentLeftPosition - lastLeftPosition;
+    double netDisplacement   = (rightDisplacement + leftDisplacement) / 2;
 
-      // if(distanceToNextPoint < distanceToBasePoint) { //robot closer to aim point than current point.
-      //   currentPointIndex++;
-      // }
+    currentSegmentTravel += netDisplacement;
 
-      double headingToBasePoint = currentLocation.getHeadingTo(points[currentPointIndex]);
-      double headingDifference = Math.abs(Util.getAngleToHeading(currentLocation.getHeading(), headingToBasePoint));
-      SmartDashboard.putNumber("Emulate Heading Difference", headingDifference);
-      if(headingDifference >= 90) {
-        SmartDashboard.putBoolean("Emulate Advancing", true);
-        currentPointIndex++;
-      } else {
-        SmartDashboard.putBoolean("Emulate Advancing", false);
-      }
+    //set history
+    lastRightPosition = currentRightPosition;
+    lastLeftPosition  = currentLeftPosition;
+
+    //overwrite the current trajectory if necessary.
+    if(currentSegmentTravel > currentTrajectory.getDistance()) {
+      currentPointIndex++;
+      Point2D currentPosition = Robot.getRobotContainer().getRobotPositionAndHeading();
+      Point2D destination = points[currentPointIndex];
+      double baseSpeed = Util.getAndSetDouble("Emulation Base Speed", 75);
+      currentTrajectory = calculateTrajectory(currentPosition, destination, baseSpeed);
+
+      currentSegmentTravel = 0;
     }
 
-    Point2D currentDestination = points[currentPointIndex + 1];
-
-    SmartDashboard.putString("Emulate Target Point", currentDestination.toString());
-    
-    //figure out heading needed to be on top of currentDestination
-    double headingToCurrentDestination = currentLocation.getHeadingTo(currentDestination);
-    double requiredTurn = Util.getAngleToHeading(currentLocation.getHeading(), headingToCurrentDestination);
-    courseAdjuster.setTurn(requiredTurn);
-
-    SmartDashboard.putNumber("Emulate Heading To Dest", headingToCurrentDestination);
-    SmartDashboard.putNumber("Emulate Current Heading", currentLocation.getHeading());
-    SmartDashboard.putNumber("Emulate required turn", requiredTurn);
-
-    //figure out the average turn for the next points ahead to help smooth the path.
-    Point2D[] immediatePath = getNextNPoints(points, currentPointIndex, Constants.EMULATE_IMMEDIATE_PATH_SIZE);
-    double immediateDistance = getDistanceOfPath(immediatePath); //unit: in
-    double immediateTurn = Util.getAngleToHeading(immediatePath[0].getHeading(), immediatePath[immediatePath.length - 1].getHeading()); //unit: degrees
-    immediateTurn = Math.toRadians(immediateTurn); //we need radians for arc length
-
-    if(immediateTurn != 0) {
-      //use immediateDistance and immediateTurn to calculate the left and right base velocities of the wheels.
-      double radius            = immediateDistance / immediateTurn; //unit: in
-      double leftDisplacement  = immediateTurn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
-      double rightDisplacement = immediateTurn * (radius + (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2));
-
-      //convert displacments to velocities
-      double timeInterval  = immediateDistance / baseSpeed; // unit: sec
-      double leftVelocity  = leftDisplacement / timeInterval; //unit: in/sec
-      double rightVelocity = rightDisplacement / timeInterval;
-
-      SmartDashboard.putNumber("Emulate Time Interval", timeInterval);
-      SmartDashboard.putNumber("Emulate Immediate Distance", immediateDistance);
-      SmartDashboard.putNumber("Emulate Base Speed", baseSpeed);
-      SmartDashboard.putNumber("Emulate Right Displacment", rightDisplacement);
-      SmartDashboard.putNumber("Emulate Immediate Turn", immediateTurn);
-      SmartDashboard.putNumber("Emulate Left Velocity", leftVelocity);
-      SmartDashboard.putNumber("Emulate Right Velocity", rightVelocity);
-
-      courseAdjuster.setBaseLeftVelocity(leftVelocity);
-      courseAdjuster.setBaseRightVelocity(rightVelocity);
-    } else {
-      courseAdjuster.setBaseLeftVelocity(baseSpeed);
-      courseAdjuster.setBaseRightVelocity(baseSpeed);
-    }
-
-    courseAdjuster.update();
+    courseAdjuster.setBaseLeftVelocity(currentTrajectory.getLeftVelocity());
+    courseAdjuster.setBaseRightVelocity(currentTrajectory.getRightVelocity());
   }
 
   // Called once the command ends or is interrupted.
@@ -198,5 +163,58 @@ public class CyborgCommandEmulatePath extends CommandBase {
     SmartDashboard.putNumber("Emulate Path Distance", distance);
 
     return distance;
+  }
+
+  /**
+   * Calculates the left and right velocities required for the robot to acheive a destination and heading, and returns
+   * it along with a distance that the robot needs to drive with those velocities.
+   * @param currentPosition The current position and heading of the robot's center.
+   * @param destination The new desination (with heading) of the robot's center.
+   * @return A TrajectorySegment, which contains the left velocty, right velocity, and required distance to acheive the desination.
+   */
+  private TrajectorySegment calculateTrajectory(Point2D currentPosition, Point2D destination, double baseSpeed) {
+    //to calculate the required velocities, first derive the radius of the required arc from the two points.
+    //to derive the radius, we need the distance between the points and the heading to the desination.
+    boolean isForwards = Math.abs(currentPosition.getHeadingTo(destination)) < 90;
+
+    double turn = Util.getAngleToHeading(currentPosition.getHeading(), destination.getHeading());
+    double distanceToDestination = currentPosition.getDistanceFrom(destination); //not what will be returned. This is a birds-eye value. Unit: in
+
+    if(turn == 0) {
+      return new TrajectorySegment(baseSpeed, baseSpeed, distanceToDestination);
+    }
+
+    double headingToDestination  = currentPosition.getHeadingTo(destination);
+
+    double a = 90 - destination.getHeading() - headingToDestination; //this value represents the angle between the line through both points (current and dest.) and the radius. It is named "a" because that description doesn't make a good name.
+    double c = 180 - (2 * a); //represents the angle between the radii of the endpoints of the arc we are making.
+
+    //for the remainder of calcuations, the angles must be in radians.
+    a = Math.toRadians(a);
+    c = Math.toRadians(c);
+
+    //use the Law of Sines to derive the radius of the arc.
+    double radius = (distanceToDestination * Math.sin(a)) / Math.sin(c); //unit: in
+
+    //now use angular kinematics to determine the velocities of both sides of the drivetrain.
+    double arcDistance = radius * c; //unit: in
+
+    double leftDisplacement = 0;
+    double rightDisplacement = 0;
+
+    if(isForwards) {
+      leftDisplacement  = turn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
+      rightDisplacement = turn * (radius + (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2));
+    } else {
+      leftDisplacement  = -1 * turn * (radius + (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
+      rightDisplacement = -1 * turn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2));
+    }
+
+    //convert displacments to velocities
+    double timeInterval  = arcDistance / baseSpeed; // unit: sec
+    double leftVelocity  = leftDisplacement / timeInterval; //unit: in/sec
+    double rightVelocity = rightDisplacement / timeInterval;
+
+    return new TrajectorySegment(leftVelocity, rightVelocity, arcDistance);
   }
 }
