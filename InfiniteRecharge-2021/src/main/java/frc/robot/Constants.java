@@ -151,6 +151,7 @@ public final class Constants {
     public static final int
         TURRET_YAW_DEGREES = 345,
         DEFAULT_TURRET_YAW_TICKS = 1615628,
+        YAW_FACE_FORWARD_DEGREES = 170,
         DEFAULT_TURRET_PITCH_TICKS = 1000,
         FLYWHEEL_STABLE_RPM = 5600,
         TURRET_YAW_ALLOWABLE_ERROR = 50000,

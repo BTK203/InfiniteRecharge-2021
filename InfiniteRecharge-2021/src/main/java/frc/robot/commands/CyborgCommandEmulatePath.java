@@ -36,10 +36,6 @@ public class CyborgCommandEmulatePath extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    currentTrajectory = new TrajectorySegment(0, 0, -1); //distance to -1 so that this segment will always be overwritten on first execute()
-    currentSegmentTravel = 0;
-    lastRightPosition = drivetrain.getRightPosition();
-    lastLeftPosition  = drivetrain.getLeftPosition();
     currentPointIndex = 0;
 
     try {
@@ -115,12 +111,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
       lastHeadingDifference = headingDifference;
     }
 
-    double rightDisplacement = currentRightPosition - lastRightPosition;
-    double leftDisplacement  = currentLeftPosition - lastLeftPosition;
-    double netDisplacement   = (rightDisplacement + leftDisplacement) / 2;
-
-    SmartDashboard.putString("Emulate Target Point", currentDestination.toString());
-    SmartDashboard.putNumber("Emulate Target Index", currentPointIndex);
+    Point2D currentDestination = points[currentPointIndex + 1];
     
     //figure out heading needed to be on top of currentDestination
     double headingToCurrentDestination = currentLocation.getHeadingTo(currentDestination);
@@ -178,9 +169,6 @@ public class CyborgCommandEmulatePath extends CommandBase {
       courseAdjuster.setBaseLeftVelocity(baseSpeed);
       courseAdjuster.setBaseRightVelocity(baseSpeed);
     }
-
-    courseAdjuster.setBaseLeftVelocity(currentTrajectory.getLeftVelocity());
-    courseAdjuster.setBaseRightVelocity(currentTrajectory.getRightVelocity());
   }
 
   // Called once the command ends or is interrupted.

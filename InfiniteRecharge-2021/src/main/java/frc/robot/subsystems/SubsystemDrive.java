@@ -255,6 +255,10 @@ public class SubsystemDrive extends SubsystemBase {
     navX.zeroYaw();
   }
 
+  public void setGyroHeading(double heading) {
+    
+  }
+
   /**
    * Returns the current position (rotations) of the left motors.
    */
