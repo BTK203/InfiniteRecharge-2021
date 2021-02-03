@@ -135,6 +135,16 @@ public final class Constants {
         ON_WHEEL_HEIGHT = 30,
         ABOVE_WHEEL_HEIGHT = 32,
         HIGHEST_HEIGHT = 60;
+
+    /**
+     * Turret Constant Inhibitors and Amp Limits
+     */
+    public static final double
+        TURRET_YAW_ABSOLUTE_MAX_OUTPUT = 0.68;
+
+    public static final int
+        TURRET_YAW_AMP_LIMIT = 100;
+
         
     /*
     * FORMAT: Red_Min, Green_Min, Blue_Min, Red_Max, Green_Max, Blue_Max.
@@ -164,7 +174,7 @@ public final class Constants {
         FLYWHEEL_GEAR_RATIO = 1.6071,
         DRIVETRAIN_ALLOWABLE_ERROR = 1,
         CLIMBER_WINCH_ALLOWABLE_ERROR = 0.5,
-        PATH_RECORDER_DISTANCE_INTERVAL = 4,
+        PATH_RECORDER_DISTANCE_INTERVAL = 6,
         DRIVETRAIN_WHEEL_BASE_WIDTH = 20;
 
     public static final boolean
@@ -184,7 +194,7 @@ public final class Constants {
         AUTO_SHALLOW_TRENCH_DISTANCE = -154,
         TRENCH_AUTO_WAIT_TIME = 500,
         AUTO_OVERREV_EXTRA_RPM = 500,
-        EMULATE_IMMEDIATE_PATH_SIZE = 5;
+        EMULATE_IMMEDIATE_PATH_SIZE = 2;
 
     /**
      * Temporary auto

@@ -110,8 +110,12 @@ public class SubsystemTurret extends SubsystemBase {
     speedx = Xbox.LEFT_X(controller);
     speedy = Xbox.RIGHT_Y(controller);
 
+    speedx *= Constants.TURRET_YAW_ABSOLUTE_MAX_OUTPUT;
+
     speedx = speedx * Util.getAndSetDouble("Turret Spin Inhibitor Yaw", 0.7);
     speedy = speedy * Util.getAndSetDouble("Turret Spin Inhibitor Pitch", 1);
+
+    speedx = (speedx < 0 ? 0 : (speedx > Constants.TURRET_YAW_ABSOLUTE_MAX_OUTPUT ? Constants.TURRET_YAW_ABSOLUTE_MAX_OUTPUT : speedx));
 
     turretYaw.set(ControlMode.PercentOutput, speedx);
     turretPitch.set(ControlMode.PercentOutput, speedy);
@@ -189,7 +193,9 @@ public class SubsystemTurret extends SubsystemBase {
    * @param percent percent output 
    */
   public void setYawPercentOutput(double percent) {
-    turretYaw.set(ControlMode.PercentOutput, percent);
+    double inhibited = percent * Constants.TURRET_YAW_ABSOLUTE_MAX_OUTPUT;
+    inhibited *= Util.getAndSetDouble("Turret Spin Inhibitor Yaw", 0.7);
+    turretYaw.set(ControlMode.PercentOutput, inhibited);
   }
 
   /**
@@ -318,6 +324,8 @@ public class SubsystemTurret extends SubsystemBase {
 
     turretPitch.setInverted(Constants.TURRET_PITCH_INVERT);
     turretYaw.setInverted(Constants.TURRET_YAW_INVERT);
+
+    turretYaw.configContinuousCurrentLimit(Constants.TURRET_YAW_AMP_LIMIT);
 
     turretYaw.setSensorPhase(true);
   }

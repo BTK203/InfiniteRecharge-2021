@@ -111,8 +111,11 @@ public class CyborgCommandEmulatePath extends CommandBase {
       lastHeadingDifference = headingDifference;
     }
 
+    //set the PID to align to the next point
     Point2D currentDestination = points[currentPointIndex + 1];
-    
+    double turn = Util.getAngleToHeading(currentLocation.getHeading(), currentLocation.getHeadingTo(currentDestination));
+    courseAdjuster.setTurn(turn);
+
     //figure out heading needed to be on top of currentDestination
     double headingToCurrentDestination = currentLocation.getHeadingTo(currentDestination);
     double requiredTurn = Util.getAngleToHeading(currentLocation.getHeading(), headingToCurrentDestination);
@@ -124,8 +127,8 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     //figure out the average turn for the next points ahead to help smooth the path.
     Point2D[] immediatePath = getNextNPoints(points, currentPointIndex, Constants.EMULATE_IMMEDIATE_PATH_SIZE);
-    double immediateDistance = getDistanceOfPath(immediatePath); //unit: in
-    double immediateTurn = Util.getAngleToHeading(immediatePath[0].getHeading(), immediatePath[immediatePath.length - 1].getHeading()); //unit: degrees
+    double immediateDistance = getDistanceOfPath(immediatePath) + currentLocation.getDistanceFrom(points[currentPointIndex]); //unit: in
+    double immediateTurn = Util.getAngleToHeading(currentLocation.getHeading(), immediatePath[immediatePath.length - 1].getHeading()); //unit: degrees
     immediateTurn = Math.toRadians(immediateTurn); //we need radians for arc length
     
     double headingToNextPoint = currentLocation.getHeadingTo(points[currentPointIndex + 1]);
@@ -169,6 +172,8 @@ public class CyborgCommandEmulatePath extends CommandBase {
       courseAdjuster.setBaseLeftVelocity(baseSpeed);
       courseAdjuster.setBaseRightVelocity(baseSpeed);
     }
+
+    courseAdjuster.update();
   }
 
   // Called once the command ends or is interrupted.
