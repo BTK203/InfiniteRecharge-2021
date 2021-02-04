@@ -138,7 +138,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     if(immediateTurn != 0) {
       //use immediateDistance and immediateTurn to calculate the left and right base velocities of the wheels.
-      double radius = immediateDistance / immediateTurn; //unit: 
+      double radius = immediateDistance / immediateTurn; //unit: in
       
       double leftDisplacement = 0;
       double rightDisplacement = 0;
@@ -236,12 +236,13 @@ public class CyborgCommandEmulatePath extends CommandBase {
     double distanceToDestination = currentPosition.getDistanceFrom(destination); //not what will be returned. This is a birds-eye value. Unit: in
 
     if(turn == 0) {
-      return new TrajectorySegment(baseSpeed, baseSpeed, distanceToDestination);
+      return new TrajectorySegment(baseSpeed, baseSpeed, distanceToDestination, 0, isForwards);
     }
 
-    double headingToDestination  = currentPosition.getHeadingTo(destination);
+    double originalHeadingToDestination = currentPosition.getHeadingTo(destination);
+    double headingToDestination  = Util.makeAcute(originalHeadingToDestination); //this heading should be the shortest angle to the horizontal
 
-    double a = 90 - destination.getHeading() - headingToDestination; //this value represents the angle between the line through both points (current and dest.) and the radius. It is named "a" because that description doesn't make a good name.
+    double a = 90 - Util.makeAcute(destination.getHeading()) - headingToDestination; //this value represents the angle between the line through both points (current and dest.) and the radius. It is named "a" because that description doesn't make a good name.
     double c = 180 - (2 * a); //represents the angle between the radii of the endpoints of the arc we are making.
 
     //for the remainder of calcuations, the angles must be in radians.
@@ -250,6 +251,11 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     //use the Law of Sines to derive the radius of the arc.
     double radius = (distanceToDestination * Math.sin(a)) / Math.sin(c); //unit: in
+
+    if(radius < 0) {
+      double a2 = Util.makeAcute(currentPosition.getHeading() + 90) - originalHeadingToDestination;
+      radius = distanceToDestination * Math.sin(a2);
+    }
 
     //now use angular kinematics to determine the velocities of both sides of the drivetrain.
     double arcDistance = radius * c; //unit: in
@@ -270,6 +276,6 @@ public class CyborgCommandEmulatePath extends CommandBase {
     double leftVelocity  = leftDisplacement / timeInterval; //unit: in/sec
     double rightVelocity = rightDisplacement / timeInterval;
 
-    return new TrajectorySegment(leftVelocity, rightVelocity, arcDistance);
+    return new TrajectorySegment(leftVelocity, rightVelocity, arcDistance, turn, isForwards);
   }
 }

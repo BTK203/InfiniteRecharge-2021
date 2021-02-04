@@ -99,6 +99,26 @@ public class Util {
 	}
 
 	/**
+	 * This method makes an angle acute by changing where it's horizontal reference point is.
+	 * @param angle The angle to make acute.
+	 * @return An angle who's absolute value is less than or equal to 90. 
+	 */
+	public static double makeAcute(double angle) {
+		boolean isNegative = angle < 0;
+
+		double acuteAngle = Math.abs(angle);
+		while(acuteAngle > 90) {
+			acuteAngle %= 90;
+		}
+
+		if(isNegative) {
+			acuteAngle *= -1;
+		}
+
+		return acuteAngle;
+	}
+
+	/**
 	 * Tests the equality of two values, then prints and returns the result.
 	 * Print string will be displayed on RioLog as an error reading: "Assertion [assertionID] SUCCEEDED/FAILED."
 	 * @param assertionName The informational name of the assertion. Will be used in the printout.

@@ -99,30 +99,7 @@ public class Robot extends TimedRobot {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
 
-    DriverStation.reportWarning("TEST RUNNING", false);
-    
-    //run tests
-    boolean[] tests = new boolean[10];
-    tests[0] = Util.assertEquals( "5 -> 2 = -3    ",   Util.getAngleToHeading(5, 2),    -3.0   );
-    tests[1] = Util.assertEquals( "348 -> 10 = 22 ",   Util.getAngleToHeading(348, 10),  22.0  );
-    tests[2] = Util.assertEquals( "180 -> 270 = 90",   Util.getAngleToHeading(180, 270), 90.0  );
-    tests[3] = Util.assertEquals( "22 -> 350 = -32",   Util.getAngleToHeading(22, 350), -32.0  );
-    tests[4] = Util.assertEquals( "90 -> 340 = -110 ", Util.getAngleToHeading(90, 340), -110.0 );
-    tests[5] = Util.assertEquals( "60 -> 28 = -32 ",   Util.getAngleToHeading(60, 28),  -32.0  );
-    tests[6] = Util.assertEquals( "1 -> -1 = -2   ",   Util.getAngleToHeading(1, -1),   -2.0   );
-    tests[7] = Util.assertEquals( "0 -> 340 = -20 ",   Util.getAngleToHeading(0, 340),  -20.0  );
-    tests[8] = Util.assertEquals( "271 -> 1 = 90  ",   Util.getAngleToHeading(271, 1),   90.0  );
-    tests[9] = Util.assertEquals( "5 -> 5 = 0     ",   Util.getAngleToHeading(5, 5),     0.0   );
-
-    boolean allTestsPassed = true;
-    for(int i=0; i<tests.length; i++) {
-      if(!tests[i]) {
-        allTestsPassed = false;
-        break;
-      }
-    }
-
-    DriverStation.reportError((allTestsPassed ? "ALL TESTS PASSED" : "TESTS FAILED"), false);
+    DriverStation.reportWarning("ANGLE RESULT: " + Double.valueOf(Util.getAngleToHeading(-120, 155)).toString(), false);
   }
 
   /**

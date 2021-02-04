@@ -11,7 +11,10 @@ public class TrajectorySegment {
     private double
         leftVelocity,
         rightVelocity,
-        distance;
+        distance,
+        turn;
+
+    private boolean isForwards;
 
     /**
      * Creates a new TrajectorySegment.
@@ -19,10 +22,12 @@ public class TrajectorySegment {
      * @param rightVelocity The velocity of the right drivetrain wheels.
      * @param distance The distance that the segment drivetrain covers.
      */    
-    public TrajectorySegment(double leftVelocity, double rightVelocity, double distance) {
+    public TrajectorySegment(double leftVelocity, double rightVelocity, double distance, double turn, boolean isForwards) {
         this.leftVelocity = leftVelocity;
         this.rightVelocity = rightVelocity;
         this.distance = distance;
+        this.turn = turn;
+        this.isForwards = isForwards;
     }
 
     /**
@@ -44,5 +49,19 @@ public class TrajectorySegment {
      */
     public double getDistance() {
         return distance;
+    }
+
+    /**
+     * Returns the angle that the robot will turn through during the trajectory.
+     */
+    public double getTurn() {
+        return turn;
+    }
+
+    /**
+     * Returns true if the robot will drive forwards through the path, false otherwise.
+     */
+    public boolean getIsForwards() {
+        return isForwards;
     }
 }
