@@ -14,7 +14,6 @@ import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemFeeder;
 import frc.robot.subsystems.SubsystemFlywheel;
 import frc.robot.subsystems.SubsystemIntake;
-import frc.robot.subsystems.SubsystemReceiver;
 import frc.robot.subsystems.SubsystemTurret;
 import frc.robot.util.Util;
 
@@ -25,7 +24,6 @@ public class CyborgCommandShootPayload extends CommandBase {
   private SubsystemIntake intake;
   private SubsystemFeeder feeder;
   private SubsystemFlywheel flywheel;
-  private SubsystemReceiver kiwilight;
   private SubsystemTurret turret;
 
   private int
@@ -50,7 +48,6 @@ public class CyborgCommandShootPayload extends CommandBase {
     SubsystemIntake intake, 
     SubsystemFeeder feeder, 
     SubsystemFlywheel flywheel, 
-    SubsystemReceiver kiwilight, 
     SubsystemTurret turret,
     int ballsToShoot, 
     int timeToWait,
@@ -59,7 +56,6 @@ public class CyborgCommandShootPayload extends CommandBase {
     this.intake = intake;
     this.feeder = feeder;
     this.flywheel = flywheel;
-    this.kiwilight = kiwilight;
     this.turret = turret;
     this.ballsToShoot = ballsToShoot;
     this.timeToWait = timeToWait;

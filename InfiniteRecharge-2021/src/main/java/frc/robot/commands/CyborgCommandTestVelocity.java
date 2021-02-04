@@ -23,10 +23,6 @@ public class CyborgCommandTestVelocity extends CommandBase {
     lastLeftPosition,
     lastRightPosition;
 
-  private long
-    elapsedTime,
-    lastExecute;
-
   private PIDController headingController;
 
   /** Creates a new CyborgCommandTestVelocity. */
@@ -65,8 +61,6 @@ public class CyborgCommandTestVelocity extends CommandBase {
     this.lastLeftPosition = drivetrain.getLeftPosition();
     this.lastRightPosition = drivetrain.getRightPosition();
 
-    this.elapsedTime = 0;
-    this.lastExecute = System.currentTimeMillis();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -75,14 +69,6 @@ public class CyborgCommandTestVelocity extends CommandBase {
     double velocitySetpoint = Util.getAndSetDouble("Drive Velocity Setpoint", 12);
     velocitySetpoint *= Constants.DRIVE_ROTATIONS_PER_INCH; //convert to rotations per second
     velocitySetpoint *= 60; //convert to rotations per minute
-
-    //ramp setpoint so that the start of the command is easier on the robot.
-    long currentTime = System.currentTimeMillis();
-    // elapsedTime += (currentTime - lastExecute);
-    // double ramp = Util.getAndSetDouble("Drive Velocity Ramp", 500);
-    // double rampMultiplier = elapsedTime / ramp;
-    // rampMultiplier = (rampMultiplier > 1 ? 1 : rampMultiplier);
-    // velocitySetpoint *= rampMultiplier;
 
     //correct heading
     double headingCorrection = headingController.calculate(drivetrain.getGyroAngle());
@@ -111,7 +97,6 @@ public class CyborgCommandTestVelocity extends CommandBase {
     //set history
     lastLeftPosition = newLeftPosition;
     lastRightPosition = newRightPosition;
-    lastExecute = currentTime;
   }
 
   // Called once the command ends or is interrupted.

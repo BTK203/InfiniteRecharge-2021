@@ -4,7 +4,6 @@
 
 package frc.robot.util;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemDrive;
@@ -42,17 +41,9 @@ public class PositionTracker {
         //track robot position in new thread
         this.updater = new Thread(
             () -> {
-                //TODO: decide if we want to keep loop time tracking
-                long lastLoopTime = System.currentTimeMillis();
                 while(true) {
                     //update using drivetrain values.
                     update();
-
-                    //track and report time elapsed during update.
-                    long currentTime = System.currentTimeMillis();
-                    long iterationTime = currentTime - lastLoopTime;
-                    SmartDashboard.putNumber("PositionTracker Iteration Time (ms)", (int) iterationTime);
-                    lastLoopTime = currentTime;
                 }
             }
         );

@@ -67,7 +67,7 @@ public class SixBallSimpleAuto implements IAuto {
         
         //align
         this.alignTurret = new CyborgCommandAlignTurret(turret, kiwilight, true);
-        this.shootTwoBalls = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, turret, 2, 15000, false);
+        this.shootTwoBalls = new CyborgCommandShootPayload(intake, feeder, flywheel, turret, 2, 15000, false);
         
         double trenchDistance = (double) Constants.AUTO_SHALLOW_TRENCH_DISTANCE;
         //init drive commands. Use CyborgCommandSmartDriveDistance if NavX is connected
@@ -83,7 +83,7 @@ public class SixBallSimpleAuto implements IAuto {
 
         //shoot balls
         this.alignAgain = new CyborgCommandAlignTurret(turret, kiwilight, true);
-        this.shootPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, turret, 4, 15000, false);
+        this.shootPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, turret, 4, 15000, false);
         
         //tell DS that we done
         this.declareVictory = new RunCommand(

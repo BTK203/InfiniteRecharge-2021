@@ -365,7 +365,7 @@ public class RobotContainer {
     SmartDashboard.putData("Drive Just Masters", new RunCommand(() -> SUB_DRIVE.driveJustMasters(DRIVER), SUB_DRIVE));
     SmartDashboard.putData("Drive Just Slaves", new RunCommand(() -> SUB_DRIVE.driveJustSlaves(DRIVER), SUB_DRIVE));
     SmartDashboard.putData("Drive Straight", new CyborgCommandSmartDriveDistance(SUB_DRIVE, 60, 0.6));
-    SmartDashboard.putData("Shoot Payload", new CyborgCommandShootPayload(SUB_INTAKE, SUB_FEEDER, SUB_FLYWHEEL, SUB_RECEIVER, SUB_TURRET, 3, 15000, false));
+    SmartDashboard.putData("Shoot Payload", new CyborgCommandShootPayload(SUB_INTAKE, SUB_FEEDER, SUB_FLYWHEEL, SUB_TURRET, 3, 15000, false));
     SmartDashboard.putData("Toggle Winch", climberManualDrive);
     SmartDashboard.putData("Drive Flywheel RPM", driveFlywheelRPM);
     SmartDashboard.putData("Record Path", new CyborgCommandRecordPath(POSITION_TRACKER));

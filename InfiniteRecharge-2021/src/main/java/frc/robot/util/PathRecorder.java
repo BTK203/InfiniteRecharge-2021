@@ -7,10 +7,7 @@ package frc.robot.util;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Robot;
 
@@ -69,17 +66,5 @@ public class PathRecorder {
 
     public void flushFile() throws IOException {
         buffer.flush();
-    }
-
-    private String pointArrayToString(ArrayList<Point2D> points) {
-        String retval = "";
-        for(int i=0; i<points.size(); i++) {
-            retval += points.get(i).toString();
-            if(i < points.size() - 1) {
-                retval += ",\n";
-            }
-        }
-
-        return retval;
     }
 }

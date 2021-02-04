@@ -16,7 +16,6 @@ import frc.robot.commands.CyborgCommandShootPayload;
 import frc.robot.commands.CyborgCommandSmartDriveDistance;
 import frc.robot.subsystems.SubsystemDrive;
 import frc.robot.subsystems.SubsystemTurret;
-import frc.robot.util.Util;
 import frc.robot.subsystems.SubsystemReceiver;
 import frc.robot.subsystems.SubsystemIntake;
 import frc.robot.subsystems.SubsystemFeeder;
@@ -57,7 +56,7 @@ public class TrenchAuto implements IAuto {
 
         //align
         this.alignTurret = new CyborgCommandAlignTurret(turret, kiwilight);
-        this.shootStartingPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, turret, 3, 15000, false);
+        this.shootStartingPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, turret, 3, 15000, false);
 
         //set the lower turret position so that the turret doesn't get destroyed
         this.setLowerTurretPosition = new CyborgCommandSetTurretPosition(turret, yawTarget, 0);
@@ -67,7 +66,7 @@ public class TrenchAuto implements IAuto {
         this.driveForward = new CyborgCommandSmartDriveDistance(drivetrain, Constants.AUTO_DEEP_TRENCH_DISTANCE * -1, 0.75);
 
         //shoot balls
-        this.shootRemainingPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, kiwilight, turret, 1000, 15000, false);
+        this.shootRemainingPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, turret, 1000, 15000, false);
     }
 
     public Command getCommand() {
