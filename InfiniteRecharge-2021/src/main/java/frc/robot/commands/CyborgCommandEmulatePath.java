@@ -24,6 +24,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
   private Point2D[] points;
   private int currentPointIndex;
   private double lastHeadingDifference;
+  private boolean lastIsForwards;
 
   /** Creates a new CyborgCommandEmulatePath. */
   public CyborgCommandEmulatePath(SubsystemDrive drivetrain) {
@@ -36,7 +37,8 @@ public class CyborgCommandEmulatePath extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    currentPointIndex = 0;
+    currentPointIndex = 1;
+    lastIsForwards = true;
 
     try {
       // String fileContents = Files.readString(Path.of("D:\\_Users\\Brach\\projects\\Test\\FRC\\out.txt")); //TODO: DELETE
@@ -89,41 +91,40 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     //resolve the point that the robot is currently at and where we want to aim
     if(currentPointIndex < points.length - 1) {
-      // double distanceToBasePoint = currentLocation.getDistanceFrom(points[currentPointIndex]);
-      // double distanceToNextPoint = currentLocation.getDistanceFrom(points[currentPointIndex + 1]);
-
-      // if(distanceToNextPoint < distanceToBasePoint) { //robot closer to aim point than current point.
+      // double headingToBasePoint = currentLocation.getHeadingTo(points[currentPointIndex]);
+      // double headingDifference = Math.abs(Util.getAngleToHeading(currentLocation.getHeading(), headingToBasePoint));
+      // SmartDashboard.putNumber("Emulate Heading Difference", headingDifference);
+      // SmartDashboard.putNumber("Emulate Last Head Diff", lastHeadingDifference);
+      
+      // if((headingDifference >= 90 && lastHeadingDifference < 90) || (headingDifference <= 90 && lastHeadingDifference > 90)) {
+      //   SmartDashboard.putBoolean("Emulate Advancing", true);
       //   currentPointIndex++;
+      // } else {
+      //   SmartDashboard.putBoolean("Emulate Advancing", false);
       // }
 
-      double headingToBasePoint = currentLocation.getHeadingTo(points[currentPointIndex]);
-      double headingDifference = Math.abs(Util.getAngleToHeading(currentLocation.getHeading(), headingToBasePoint));
-      SmartDashboard.putNumber("Emulate Heading Difference", headingDifference);
-      SmartDashboard.putNumber("Emulate Last Head Diff", lastHeadingDifference);
-      
-      if((headingDifference >= 90 && lastHeadingDifference < 90) || (headingDifference <= 90 && lastHeadingDifference > 90)) {
-        SmartDashboard.putBoolean("Emulate Advancing", true);
-        currentPointIndex++;
-      } else {
-        SmartDashboard.putBoolean("Emulate Advancing", false);
+      // lastHeadingDifference = headingDifference;
+
+      double currentDirection = currentLocation.getHeading();
+      if(!lastIsForwards) {
+        currentDirection += 180;
       }
 
-      lastHeadingDifference = headingDifference;
+      for(int limit=0; limit<10; limit++) {
+        if(Math.abs(Util.getAngleToHeading(currentDirection, currentLocation.getHeadingTo(points[currentPointIndex]))) >= 90) {
+          currentPointIndex++;
+        } else {
+          break;
+        }
+      }
     }
-
-    //set the PID to align to the next point
+    
     Point2D currentDestination = points[currentPointIndex + 1];
-    double turn = Util.getAngleToHeading(currentLocation.getHeading(), currentLocation.getHeadingTo(currentDestination));
-    courseAdjuster.setTurn(turn);
 
     //figure out heading needed to be on top of currentDestination
     double headingToCurrentDestination = currentLocation.getHeadingTo(currentDestination);
     double requiredTurn = Util.getAngleToHeading(currentLocation.getHeading(), headingToCurrentDestination);
     courseAdjuster.setTurn(requiredTurn);
-
-    SmartDashboard.putNumber("Emulate Heading To Dest", headingToCurrentDestination);
-    SmartDashboard.putNumber("Emulate Current Heading", currentLocation.getHeading());
-    SmartDashboard.putNumber("Emulate required turn", requiredTurn);
 
     //figure out the average turn for the next points ahead to help smooth the path.
     Point2D[] immediatePath = getNextNPoints(points, currentPointIndex, Constants.EMULATE_IMMEDIATE_PATH_SIZE);
@@ -133,17 +134,13 @@ public class CyborgCommandEmulatePath extends CommandBase {
     
     double headingToNextPoint = currentLocation.getHeadingTo(points[currentPointIndex + 1]);
     double headingDifference = Util.getAngleToHeading(currentLocation.getHeading(), headingToNextPoint);
-    SmartDashboard.putNumber("Emulate heading diff", headingDifference);
     boolean isForwards = Math.abs(headingDifference) < 90;
 
     if(immediateTurn != 0) {
       //use immediateDistance and immediateTurn to calculate the left and right base velocities of the wheels.
       double radius = immediateDistance / immediateTurn; //unit: in
-      
       double leftDisplacement = 0;
       double rightDisplacement = 0;
-
-      SmartDashboard.putBoolean("Emulate is Forwards", isForwards);
 
       if(isForwards) {
         leftDisplacement  = immediateTurn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
@@ -158,14 +155,6 @@ public class CyborgCommandEmulatePath extends CommandBase {
       double leftVelocity  = leftDisplacement / timeInterval; //unit: in/sec
       double rightVelocity = rightDisplacement / timeInterval;
 
-      SmartDashboard.putNumber("Emulate Time Interval", timeInterval);
-      SmartDashboard.putNumber("Emulate Immediate Distance", immediateDistance);
-      SmartDashboard.putNumber("Emulate Base Speed", baseSpeed);
-      SmartDashboard.putNumber("Emulate Right Displacment", rightDisplacement);
-      SmartDashboard.putNumber("Emulate Immediate Turn", immediateTurn);
-      SmartDashboard.putNumber("Emulate Left Velocity", leftVelocity);
-      SmartDashboard.putNumber("Emulate Right Velocity", rightVelocity);
-
       courseAdjuster.setBaseLeftVelocity(leftVelocity);
       courseAdjuster.setBaseRightVelocity(rightVelocity);
     } else {
@@ -174,6 +163,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
     }
 
     courseAdjuster.update();
+    lastIsForwards = isForwards;
   }
 
   // Called once the command ends or is interrupted.
@@ -227,7 +217,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
    * @param destination The new desination (with heading) of the robot's center.
    * @return A TrajectorySegment, which contains the left velocty, right velocity, and required distance to acheive the desination.
    */
-  private TrajectorySegment calculateTrajectory(Point2D currentPosition, Point2D destination, double baseSpeed) {
+  private static TrajectorySegment calculateTrajectory(Point2D currentPosition, Point2D destination, double baseSpeed) {
     //to calculate the required velocities, first derive the radius of the required arc from the two points.
     //to derive the radius, we need the distance between the points and the heading to the desination.
     boolean isForwards = Math.abs(currentPosition.getHeadingTo(destination)) < 90;
