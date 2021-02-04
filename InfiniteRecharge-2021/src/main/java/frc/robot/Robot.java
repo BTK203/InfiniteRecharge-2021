@@ -99,7 +99,13 @@ public class Robot extends TimedRobot {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
 
-    DriverStation.reportWarning("ANGLE RESULT: " + Double.valueOf(Util.getAngleToHeading(-120, 155)).toString(), false);
+    boolean[] tests = new boolean[6];
+    tests[0] = Util.assertEquals("18 -> 18", Util.getAcuteSuppliment(18), 18.0);
+    tests[1] = Util.assertEquals("-91 -> -1", Util.getAcuteSuppliment(-91), -1.0);
+    tests[2] = Util.assertEquals("456 -> 6", Util.getAcuteSuppliment(456), 6.0);
+
+    boolean allTests = tests[0] && tests[1] && tests[2];
+    DriverStation.reportError((allTests ? "ALL TESTS PASSED" : "SOME TESTS FAILED"), false);
   }
 
   /**

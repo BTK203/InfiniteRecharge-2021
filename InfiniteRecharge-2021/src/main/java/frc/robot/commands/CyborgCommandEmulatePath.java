@@ -240,9 +240,9 @@ public class CyborgCommandEmulatePath extends CommandBase {
     }
 
     double originalHeadingToDestination = currentPosition.getHeadingTo(destination);
-    double headingToDestination  = Util.makeAcute(originalHeadingToDestination); //this heading should be the shortest angle to the horizontal
+    double headingToDestination  = Util.getAcuteSuppliment(originalHeadingToDestination); //this heading should be the shortest angle to the horizontal
 
-    double a = 90 - Util.makeAcute(destination.getHeading()) - headingToDestination; //this value represents the angle between the line through both points (current and dest.) and the radius. It is named "a" because that description doesn't make a good name.
+    double a = 90 - Util.getAcuteSuppliment(destination.getHeading()) - headingToDestination; //this value represents the angle between the line through both points (current and dest.) and the radius. It is named "a" because that description doesn't make a good name.
     double c = 180 - (2 * a); //represents the angle between the radii of the endpoints of the arc we are making.
 
     //for the remainder of calcuations, the angles must be in radians.
@@ -253,7 +253,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
     double radius = (distanceToDestination * Math.sin(a)) / Math.sin(c); //unit: in
 
     if(radius < 0) {
-      double a2 = Util.makeAcute(currentPosition.getHeading() + 90) - originalHeadingToDestination;
+      double a2 = Util.getAcuteSuppliment(currentPosition.getHeading() + 90) - Util.getAcuteSuppliment(originalHeadingToDestination);
       radius = distanceToDestination * Math.sin(a2);
     }
 

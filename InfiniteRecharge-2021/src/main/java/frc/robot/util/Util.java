@@ -103,13 +103,10 @@ public class Util {
 	 * @param angle The angle to make acute.
 	 * @return An angle who's absolute value is less than or equal to 90. 
 	 */
-	public static double makeAcute(double angle) {
+	public static double getAcuteSuppliment(double angle) {
 		boolean isNegative = angle < 0;
-
-		double acuteAngle = Math.abs(angle);
-		while(acuteAngle > 90) {
-			acuteAngle %= 90;
-		}
+		double acuteAngle = Math.abs(angle) % 180;
+		acuteAngle = 180 - acuteAngle;
 
 		if(isNegative) {
 			acuteAngle *= -1;
