@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.SubsystemDrive;
+import frc.robot.util.CourseAdjuster;
 import frc.robot.util.Point2D;
 import frc.robot.util.TrajectorySegment;
 import frc.robot.util.Util;
@@ -33,7 +34,6 @@ public class CyborgCommandEmulatePath extends CommandBase {
   @Override
   public void initialize() {
     currentPointIndex = 1;
-    isForwards = true;
 
     try {
       String fileContents = Files.readString(Path.of("/home/lvuser/points.txt"));
@@ -62,6 +62,8 @@ public class CyborgCommandEmulatePath extends CommandBase {
     drivetrain.setPIDRamp(Util.getAndSetDouble("Drive PID Ramp", 0.5));
     drivetrain.setPIDConstants(kP, kI, kD, kF, izone, outLimitLow, outLimitHigh);
     Robot.getRobotContainer().zeroAllDrivetrain();
+
+    isForwards = Robot.getRobotContainer().getRobotPositionAndHeading().getHeadingTo(points[1]) > 90;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -88,14 +90,21 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
       double currentDirection = forwardsify(currentLocation.getHeading());
       for(int limit=0; limit<10; limit++) {
-        if(Math.abs(Util.getAngleToHeading(currentDirection, currentLocation.getHeadingTo(points[currentPointIndex]))) >= 90) {
+        double headingToNext = Math.abs(Util.getAngleToHeading(currentDirection, currentLocation.getHeadingTo(points[currentPointIndex])));
+        SmartDashboard.putNumber("Emulate Heading to next", headingToNext);
+        if(currentPointIndex < points.length - 1 && headingToNext >= 90) {
           currentPointIndex++;
         } else {
           break;
         }
       }
     }
+
+    currentPointIndex = (currentPointIndex > points.length - 2 ? points.length - 2 : currentPointIndex);
     
+    SmartDashboard.putNumber("Emulate current point", currentPointIndex);
+    SmartDashboard.putNumber("Emulate points", points.length);
+
     Point2D currentDestination = points[currentPointIndex + 1];
 
     //figure out if we need to drive forwards or backwards to acheive the point
@@ -103,9 +112,11 @@ public class CyborgCommandEmulatePath extends CommandBase {
     double headingDifference = Util.getAngleToHeading(currentLocation.getHeading(), headingToNextPoint);
     this.isForwards = Math.abs(headingDifference) < 90;
 
+    SmartDashboard.putBoolean("Emulate Forward", isForwards);
+
     //Resolve the path of points that are immediately ahead of the robot. This array will include the robot's location as the first point.
     Point2D[] nextPoints = getNextNPoints(points, currentPointIndex, Constants.EMULATE_IMMEDIATE_PATH_SIZE);
-    Point2D[] immediatePath = new Point2D[Constants.EMULATE_IMMEDIATE_PATH_SIZE + 1];
+    Point2D[] immediatePath = new Point2D[nextPoints.length + 1];
 
     //set first point to robot location, but the heading must be forwards trajectory.
     immediatePath[0] = new Point2D(currentLocation.getX(), currentLocation.getY(), forwardsify(currentLocation.getHeading()));
@@ -116,6 +127,10 @@ public class CyborgCommandEmulatePath extends CommandBase {
     //draw an "arc" that closely fits the path. The arc will be used to calculate the left and right velocities.
     double immediateDistance = getDistanceOfPath(immediatePath); //unit: in
     double immediateTurn = getTurnOfPath(immediatePath); //unit: degrees. Old code: double immediateTurn = Util.getAngleToHeading(forwardsify(currentLocation.getHeading()), currentDesination.getHeading());
+    immediateTurn *= Util.getAndSetDouble("Emulate Overturn", 1.2);
+    // double immediateTurn = Util.getAngleToHeading(forwardsify(currentLocation.getHeading()), currentDestination.getHeading());
+    
+    SmartDashboard.putNumber("Emulate immediate turn", immediateTurn);
     immediateTurn = Math.toRadians(immediateTurn); //we need radians for arc length
 
     if(immediateTurn != 0) {
@@ -137,11 +152,18 @@ public class CyborgCommandEmulatePath extends CommandBase {
       double leftVelocity  = leftDisplacement / timeInterval; //unit: in/sec
       double rightVelocity = rightDisplacement / timeInterval;
 
+      leftVelocity = IPStoRPM(leftVelocity);
+      rightVelocity = IPStoRPM(rightVelocity);
+      
+      leftVelocity = curveVelocity(leftVelocity);
+      rightVelocity = curveVelocity(rightVelocity);
+
       drivetrain.setLeftVelocity(leftVelocity);
       drivetrain.setRightVelocity(rightVelocity);
     } else {
-      drivetrain.setLeftVelocity(baseSpeed);
-      drivetrain.setRightVelocity(baseSpeed);
+      double curvedBaseSpeed = curveVelocity(IPStoRPM(baseSpeed));
+      drivetrain.setLeftVelocity(curvedBaseSpeed);
+      drivetrain.setRightVelocity(curvedBaseSpeed);
     }
   }
 
@@ -193,6 +215,27 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     return distance;
   }
+  
+  /**
+   * Converts a velocity in inches/sec to RPM.
+   * @param ips A velocity in inches/sec
+   * @return A velocity in RPM that corresponds to the velocity in ips.
+   */
+  private double IPStoRPM(double ips) {
+    double newVelocity = ips * Constants.DRIVE_ROTATIONS_PER_INCH; //convert to rotations per second
+    newVelocity *= 60; //convert to rotations per minute
+    return newVelocity;
+  }
+
+  /**
+   * This odd method is here so that the robot can achieve almost any velocity using only one set of PID constants.
+   * It works by increasing the target velocity so that the PID is forced to work harder than it would work otherwise.
+   * @param velocitySetpoint The original velocity setpoint in RPM
+   * @return The curved velocity setpoint in RPM
+   */
+  private double curveVelocity(double velocitySetpoint) {
+    return (velocitySetpoint > 1132 ? velocitySetpoint += (velocitySetpoint - 40) * 0.4 : velocitySetpoint); //1132 RPM ~= 45 in/sec
+  }
 
   /**
    * Returns the average turn of a path.
@@ -217,7 +260,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
    * @param isForwards True if robot is driving forwards, false otherwise
    */
   private double forwardsify(double angle) {
-    return (isForwards ? angle : (angle + 180) % 180);
+    return (isForwards ? angle : (angle + 180) % 360);
   }
 
   /**

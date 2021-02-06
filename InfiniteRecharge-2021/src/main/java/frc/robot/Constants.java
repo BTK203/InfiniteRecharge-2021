@@ -194,7 +194,7 @@ public final class Constants {
         AUTO_SHALLOW_TRENCH_DISTANCE = -154,
         TRENCH_AUTO_WAIT_TIME = 500,
         AUTO_OVERREV_EXTRA_RPM = 500,
-        EMULATE_IMMEDIATE_PATH_SIZE = 4;
+        EMULATE_IMMEDIATE_PATH_SIZE = 3;
 
     /**
      * Temporary auto
