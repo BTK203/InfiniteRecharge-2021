@@ -84,7 +84,7 @@ public final class Constants {
      */
     public static final boolean
         TURRET_YAW_INVERT      = false,
-        TURRET_PITCH_INVERT    = false,
+        TURRET_PITCH_INVERT    = true,
         TURRET_FLYWHEEL_INVERT = true;
 
     /**

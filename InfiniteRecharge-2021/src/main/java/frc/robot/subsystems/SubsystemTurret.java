@@ -115,7 +115,7 @@ public class SubsystemTurret extends SubsystemBase {
     speedx = speedx * Util.getAndSetDouble("Turret Spin Inhibitor Yaw", 0.7);
     speedy = speedy * Util.getAndSetDouble("Turret Spin Inhibitor Pitch", 1);
 
-    speedx = (speedx < 0 ? 0 : (speedx > Constants.TURRET_YAW_ABSOLUTE_MAX_OUTPUT ? Constants.TURRET_YAW_ABSOLUTE_MAX_OUTPUT : speedx));
+    speedx = (speedx < -1 * Constants.TURRET_YAW_ABSOLUTE_MAX_OUTPUT ? -1 * Constants.TURRET_YAW_ABSOLUTE_MAX_OUTPUT : (speedx > Constants.TURRET_YAW_ABSOLUTE_MAX_OUTPUT ? Constants.TURRET_YAW_ABSOLUTE_MAX_OUTPUT : speedx));
 
     turretYaw.set(ControlMode.PercentOutput, speedx);
     turretPitch.set(ControlMode.PercentOutput, speedy);
@@ -328,5 +328,6 @@ public class SubsystemTurret extends SubsystemBase {
     turretYaw.configContinuousCurrentLimit(Constants.TURRET_YAW_AMP_LIMIT);
 
     turretYaw.setSensorPhase(true);
+    turretPitch.setSensorPhase(true);
   }
 }

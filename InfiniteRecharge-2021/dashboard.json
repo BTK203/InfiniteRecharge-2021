@@ -198,8 +198,7 @@
                   "_title": "Left Out",
                   "Slider Settings/Min": -1.0,
                   "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625,
-                  "Visuals/Display value": true
+                  "Slider Settings/Block increment": 0.0625
                 },
                 "2,0": {
                   "_type": "Number Slider",
@@ -207,8 +206,7 @@
                   "_title": "Right Out",
                   "Slider Settings/Min": -1.0,
                   "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625,
-                  "Visuals/Display value": true
+                  "Slider Settings/Block increment": 0.0625
                 },
                 "0,1": {
                   "_type": "Simple Dial",
@@ -295,8 +293,7 @@
                   "_title": "Scissor Out",
                   "Slider Settings/Min": -1.0,
                   "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625,
-                  "Visuals/Display value": true
+                  "Slider Settings/Block increment": 0.0625
                 },
                 "2,0": {
                   "_type": "Number Slider",
@@ -304,8 +301,7 @@
                   "_title": "Winch Out",
                   "Slider Settings/Min": -1.0,
                   "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625,
-                  "Visuals/Display value": true
+                  "Slider Settings/Block increment": 0.0625
                 },
                 "1,0": {
                   "_type": "Boolean Box",
@@ -427,8 +423,7 @@
                       "_title": "Output",
                       "Slider Settings/Min": -1.0,
                       "Slider Settings/Max": 1.0,
-                      "Slider Settings/Block increment": 0.0625,
-                      "Visuals/Display value": true
+                      "Slider Settings/Block increment": 0.0625
                     }
                   }
                 }

@@ -325,7 +325,7 @@ public class RobotContainer {
     /**
      * OPERATOR controls
      */
-    SUB_TURRET.setDefaultCommand(new CyborgCommandSmartMoveTurret(SUB_TURRET));
+    SUB_TURRET.setDefaultCommand(new RunCommand(() -> { SUB_TURRET.moveTurret(OPERATOR); }, SUB_TURRET));
 
     SUB_INTAKE.setDefaultCommand(
       new ButtonCommandGroupRunIntakeFeeder(SUB_INTAKE, SUB_FEEDER, SUB_TURRET, OPERATOR)
