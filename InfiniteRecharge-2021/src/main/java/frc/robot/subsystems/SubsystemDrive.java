@@ -35,7 +35,11 @@ public class SubsystemDrive extends SubsystemBase {
     leftVelocity,
     rightVelocity,
     netVelocity,
-    fastestSpeed;
+    fastestSpeed,
+    lastThrottle;
+
+  private static long
+    lastRampTime;
 
   private AHRS navX;
 
@@ -71,6 +75,9 @@ public class SubsystemDrive extends SubsystemBase {
     netVelocity /= Constants.DRIVE_ROTATIONS_PER_INCH; //convert to inches per minute
     netVelocity /= 60; //convert to inches per second
 
+    lastThrottle = 0;
+    lastRampTime = System.currentTimeMillis();
+
     double speed = Math.abs(netVelocity);
     if(speed > fastestSpeed) {
       fastestSpeed = speed;
@@ -90,9 +97,6 @@ public class SubsystemDrive extends SubsystemBase {
     SmartDashboard.putNumber("Left Amps", leftMaster.getOutputCurrent());
 
     SmartDashboard.putBoolean("NavX Connected", getNavXConnected());
-
-    //read out velocity
-
   }
 
   /**
@@ -133,7 +137,11 @@ public class SubsystemDrive extends SubsystemBase {
     setInverts();
 
     double throttle = Xbox.RT(controller) - Xbox.LT(controller); 
+    throttle = oneWayRamp(throttle, lastThrottle, Util.getAndSetDouble("Drive One-Way Ramp", 0.5));
+    lastThrottle = throttle;
+
     double steering = Xbox.LEFT_X(controller);
+    steering *= Util.getAndSetDouble("Drive Steering Inhibitor", 0.7);
 
     double driveRight = throttle + steering;
     double driveLeft = throttle - steering; 
@@ -387,6 +395,29 @@ public class SubsystemDrive extends SubsystemBase {
   private void setFollowers() {
     leftSlave.follow(leftMaster);
     rightSlave.follow(rightMaster);
+  }
+
+  /**
+   * Ramps a value only when it is increasing.
+   * @param power desired value
+   * @param last last value
+   * @param ramp desired ramp (seconds from 0 to 1)
+   * @return ramped value from -1 to 1
+   */
+  private double oneWayRamp(double power, double last, double ramp) {
+    double rampedPower = power;
+    long currentTime = System.currentTimeMillis();
+
+    if(Math.abs(power) > Math.abs(last)) {
+      double elapsedTime = (currentTime - lastRampTime) / 1000.0;
+      double rampMultiplier = elapsedTime / ramp;
+      rampMultiplier = (rampMultiplier > 1 ? 1 : rampMultiplier);
+      rampedPower = last + (power * rampMultiplier);
+    }
+
+    lastRampTime = currentTime;
+
+    return rampedPower;
   }
 
   /**

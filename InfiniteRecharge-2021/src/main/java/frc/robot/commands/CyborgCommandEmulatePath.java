@@ -264,62 +264,11 @@ public class CyborgCommandEmulatePath extends CommandBase {
   }
 
   /**
-   * Calculates the left and right velocities required for the robot to acheive a destination and heading, and returns
-   * it along with a distance that the robot needs to drive with those velocities.
-   * @param currentPosition The current position and heading of the robot's center.
-   * @param destination The new desination (with heading) of the robot's center.
-   * @return A TrajectorySegment, which contains the left velocty, right velocity, and required distance to acheive the desination.
+   * Calculates the best speed that the robot should drive through an arc at.
+   * @param turnRadius The radius of the turn that the robot will take.
+   * @return The best speed for the turn in in/sec
    */
-  @Deprecated //will likely remove soon because other algorithm works just fine
-  private static TrajectorySegment calculateTrajectory(Point2D currentPosition, Point2D destination, double baseSpeed) {
-    //to calculate the required velocities, first derive the radius of the required arc from the two points.
-    //to derive the radius, we need the distance between the points and the heading to the desination.
-    boolean isForwards = Math.abs(currentPosition.getHeadingTo(destination)) < 90;
-
-    double turn = Util.getAngleToHeading(currentPosition.getHeading(), destination.getHeading());
-    double distanceToDestination = currentPosition.getDistanceFrom(destination); //not what will be returned. This is a birds-eye value. Unit: in
-
-    if(turn == 0) {
-      return new TrajectorySegment(baseSpeed, baseSpeed, distanceToDestination, 0, isForwards);
-    }
-
-    double originalHeadingToDestination = currentPosition.getHeadingTo(destination);
-    double headingToDestination  = Util.getAcuteSuppliment(originalHeadingToDestination); //this heading should be the shortest angle to the horizontal
-
-    double a = 90 - Util.getAcuteSuppliment(destination.getHeading()) - headingToDestination; //this value represents the angle between the line through both points (current and dest.) and the radius. It is named "a" because that description doesn't make a good name.
-    double c = 180 - (2 * a); //represents the angle between the radii of the endpoints of the arc we are making.
-
-    //for the remainder of calcuations, the angles must be in radians.
-    a = Math.toRadians(a);
-    c = Math.toRadians(c);
-
-    //use the Law of Sines to derive the radius of the arc.
-    double radius = (distanceToDestination * Math.sin(a)) / Math.sin(c); //unit: in
-
-    if(radius < 0) {
-      double a2 = Util.getAcuteSuppliment(currentPosition.getHeading() + 90) - Util.getAcuteSuppliment(originalHeadingToDestination);
-      radius = distanceToDestination * Math.sin(a2);
-    }
-
-    //now use angular kinematics to determine the velocities of both sides of the drivetrain.
-    double arcDistance = radius * c; //unit: in
-
-    double leftDisplacement = 0;
-    double rightDisplacement = 0;
-
-    if(isForwards) {
-      leftDisplacement  = turn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
-      rightDisplacement = turn * (radius + (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2));
-    } else {
-      leftDisplacement  = -1 * turn * (radius + (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
-      rightDisplacement = -1 * turn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2));
-    }
-
-    //convert displacments to velocities
-    double timeInterval  = arcDistance / baseSpeed; // unit: sec
-    double leftVelocity  = leftDisplacement / timeInterval; //unit: in/sec
-    double rightVelocity = rightDisplacement / timeInterval;
-
-    return new TrajectorySegment(leftVelocity, rightVelocity, arcDistance, turn, isForwards);
+  private static double calculateBestTangentialSpeed(double turnRadius) {
+    return 0;
   }
 }
