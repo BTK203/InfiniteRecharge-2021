@@ -269,6 +269,11 @@ public class CyborgCommandEmulatePath extends CommandBase {
    * @return The best speed for the turn in in/sec
    */
   private static double calculateBestTangentialSpeed(double turnRadius) {
+    //gather needed variables (coefficient of friction, normal force, and mass)
+    double coefficientOfFriction = Util.getAndSetDouble("Emulate Coefficient of Friction", 1); //defaults to the approximate CoE of rubber on concrete
+    double normalForce = Constants.ROBOT_WEIGHT_POUND_FORCE;
+    double robotMass = Util.poundForceToMass(Constants.ROBOT_WEIGHT_POUND_FORCE);
+
     return 0;
   }
 }

@@ -63,6 +63,24 @@ public class Util {
         val /= Math.pow(10, places);
         return val;
 	}
+
+	/**
+	 * Converts a force in lbf to Newtons (N)
+	 * @param lbf A value of force (lbf)
+	 * @return A value of force in Newtons
+	 */
+	public static double poundForceToNewtons(double lbf) {
+		return lbf * 4.44822;
+	}
+
+	/**
+	 * Converts a weight in lbf to kg.
+	 * @param lbf Weight in lbf (this is the readout that you get from any scale that deals in pounds)
+	 * @return Mass in kg
+	 */
+	public static double poundForceToMass(double lbf) {
+		return poundForceToNewtons(lbf) / 9.81; //convert to newtons and divide by the gravitational field strength.
+	}
 	
 	/**
 	 * Checks if a controller exists.

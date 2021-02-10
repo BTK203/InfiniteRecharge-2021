@@ -137,6 +137,12 @@ public final class Constants {
         HIGHEST_HEIGHT = 60;
 
     /**
+     * Drivetrain amp limits
+     */
+    public static final int
+        DRIVE_AMP_LIMIT = 60;
+
+    /**
      * Turret Constant Inhibitors and Amp Limits
      */
     public static final double
@@ -156,29 +162,23 @@ public final class Constants {
         TARGET_YELLOW = { 75 , 127, 22 , 95 , 147, 42  };
     
     /**
-     * Extraneous values
+     * Physical traits of the robot
      */
     public static final int
+        ROBOT_WEIGHT_POUND_FORCE = 120,
         TURRET_YAW_DEGREES = 345,
         DEFAULT_TURRET_YAW_TICKS = 1615628,
         YAW_FACE_FORWARD_DEGREES = 170,
-        DEFAULT_TURRET_PITCH_TICKS = 1000,
-        FLYWHEEL_STABLE_RPM = 5600,
+        DEFAULT_TURRET_PITCH_TICKS = 9000,
         TURRET_YAW_ALLOWABLE_ERROR = 50000,
         TURRET_PITCH_ALLOWABLE_ERROR = 30,
-        DRIVE_AMP_LIMIT = 60,
         SPARK_MINIMUM_VOLTAGE = 8, //used to check if motor controllers are connected
         TALON_MINIMUM_AMPERAGE = 1;
 
     public static final double 
         FLYWHEEL_GEAR_RATIO = 1.6071,
         DRIVETRAIN_ALLOWABLE_ERROR = 1,
-        CLIMBER_WINCH_ALLOWABLE_ERROR = 0.5,
-        PATH_RECORDER_DISTANCE_INTERVAL = 4,
-        DRIVETRAIN_WHEEL_BASE_WIDTH = 20;
-
-    public static final boolean
-        DRIVE_CAMERA_AUTOMATIC_EXPOSURE = false;
+        CLIMBER_WINCH_ALLOWABLE_ERROR = 0.5;
 
     /**
      * Auto values
@@ -187,14 +187,14 @@ public final class Constants {
         DISTANCE_INIT_LINE_TO_ALLIANCE_WALL = 120,
         KIWILIGHT_STABLE_DEGREES = 1, //degrees
         KIWILIGHT_STABLE_TIME = 0,
+        FLYWHEEL_STABLE_RPM = 5600,
+        AUTO_OVERREV_EXTRA_RPM = 500,
         TURRET_APPROX_TARGET_TICKS_CLOSE = -624258,
         TURRET_TARGET_TICKS_PER_INCH = -1399, //ticks to turn per inch away from wall
         AUTO_INIT_PITCH_TARGET = -694,
         AUTO_DEEP_TRENCH_DISTANCE = -150,
         AUTO_SHALLOW_TRENCH_DISTANCE = -154,
-        TRENCH_AUTO_WAIT_TIME = 500,
-        AUTO_OVERREV_EXTRA_RPM = 500,
-        EMULATE_IMMEDIATE_PATH_SIZE = 3;
+        TRENCH_AUTO_WAIT_TIME = 500;
 
     /**
      * Temporary auto
@@ -216,4 +216,17 @@ public final class Constants {
     public static final boolean
         AUTO_OVERREV_TURRET = true; //if set to true, flywheel speed will be increased by 500 RPM and feeder will not stop to regain FW velocity.
 
+
+    /**
+     * Emulation Constants
+     */
+    public static final double
+        PATH_RECORDER_DISTANCE_INTERVAL = 4,
+        DRIVETRAIN_WHEEL_BASE_WIDTH = 20;
+
+    public static final int
+        EMULATE_IMMEDIATE_PATH_SIZE = 3;
+
+    public static final boolean
+        DRIVE_CAMERA_AUTOMATIC_EXPOSURE = false;
 }
