@@ -54,6 +54,9 @@ public class SubsystemDrive extends SubsystemBase {
 
     navX = new AHRS(Port.kUSB);
 
+    lastThrottle = 0;
+    lastRampTime = System.currentTimeMillis();
+
     setBraking();
     setRamps();
     setFollowers();
@@ -74,9 +77,6 @@ public class SubsystemDrive extends SubsystemBase {
     SmartDashboard.putNumber("Raw Drive Velocity", netVelocity);
     netVelocity /= Constants.DRIVE_ROTATIONS_PER_INCH; //convert to inches per minute
     netVelocity /= 60; //convert to inches per second
-
-    lastThrottle = 0;
-    lastRampTime = System.currentTimeMillis();
 
     double speed = Math.abs(netVelocity);
     if(speed > fastestSpeed) {
@@ -416,7 +416,6 @@ public class SubsystemDrive extends SubsystemBase {
     }
 
     lastRampTime = currentTime;
-
     return rampedPower;
   }
 

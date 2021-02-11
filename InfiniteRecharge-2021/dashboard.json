@@ -42,7 +42,6 @@
                 },
                 {
                   "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Set Turret Position",
                   "_title": "/SmartDashboard/Set Turret Position"
                 },
                 {
@@ -144,8 +143,109 @@
             "content": {
               "_type": "Robot Preferences",
               "_source0": "network_table:///Preferences",
-              "_title": "/Preferences",
+              "_title": "Preferences",
               "Miscellaneous/Show search box": true
+            }
+          },
+          "5,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Emulate current point",
+              "_title": "/SmartDashboard/Emulate current point"
+            }
+          },
+          "6,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Emulate points",
+              "_title": "/SmartDashboard/Emulate points"
+            }
+          },
+          "5,3": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Emulate Forward",
+              "_title": "/SmartDashboard/Emulate Forward",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "5,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Robot Position",
+              "_title": "/SmartDashboard/Robot Position"
+            }
+          },
+          "5,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Emulate target point",
+              "_title": "/SmartDashboard/Emulate target point"
+            }
+          },
+          "5,5": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Emulate Heading to next",
+              "_title": "/SmartDashboard/Emulate Heading to next"
+            }
+          },
+          "5,6": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Right Output",
+              "_title": "/SmartDashboard/Right Output"
+            }
+          },
+          "7,6": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Left Output",
+              "_title": "/SmartDashboard/Left Output"
+            }
+          },
+          "7,5": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Emulate immediate turn",
+              "_title": "SmartDashboard/Emulate immediate turn"
             }
           }
         }
@@ -198,7 +298,8 @@
                   "_title": "Left Out",
                   "Slider Settings/Min": -1.0,
                   "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625
+                  "Slider Settings/Block increment": 0.0625,
+                  "Visuals/Display value": true
                 },
                 "2,0": {
                   "_type": "Number Slider",
@@ -206,7 +307,8 @@
                   "_title": "Right Out",
                   "Slider Settings/Min": -1.0,
                   "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625
+                  "Slider Settings/Block increment": 0.0625,
+                  "Visuals/Display value": true
                 },
                 "0,1": {
                   "_type": "Simple Dial",
@@ -293,7 +395,8 @@
                   "_title": "Scissor Out",
                   "Slider Settings/Min": -1.0,
                   "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625
+                  "Slider Settings/Block increment": 0.0625,
+                  "Visuals/Display value": true
                 },
                 "2,0": {
                   "_type": "Number Slider",
@@ -301,7 +404,8 @@
                   "_title": "Winch Out",
                   "Slider Settings/Min": -1.0,
                   "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625
+                  "Slider Settings/Block increment": 0.0625,
+                  "Visuals/Display value": true
                 },
                 "1,0": {
                   "_type": "Boolean Box",
@@ -423,7 +527,8 @@
                       "_title": "Output",
                       "Slider Settings/Min": -1.0,
                       "Slider Settings/Max": 1.0,
-                      "Slider Settings/Block increment": 0.0625
+                      "Slider Settings/Block increment": 0.0625,
+                      "Visuals/Display value": true
                     }
                   }
                 }

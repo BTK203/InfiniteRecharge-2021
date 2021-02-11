@@ -89,6 +89,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
       // lastHeadingDifference = headingDifference;
 
       double currentDirection = forwardsify(currentLocation.getHeading());
+      SmartDashboard.putNumber("Emulate Current Direction", currentDirection);
       for(int limit=0; limit<10; limit++) {
         double headingToNext = Math.abs(Util.getAngleToHeading(currentDirection, currentLocation.getHeadingTo(points[currentPointIndex])));
         SmartDashboard.putNumber("Emulate Heading to next", headingToNext);
@@ -101,9 +102,10 @@ public class CyborgCommandEmulatePath extends CommandBase {
     }
 
     currentPointIndex = (currentPointIndex > points.length - 2 ? points.length - 2 : currentPointIndex);
-    
+
     SmartDashboard.putNumber("Emulate current point", currentPointIndex);
     SmartDashboard.putNumber("Emulate points", points.length);
+    SmartDashboard.putString("Emulate target point", points[currentPointIndex].toString());
 
     Point2D currentDestination = points[currentPointIndex + 1];
 
@@ -115,7 +117,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
     SmartDashboard.putBoolean("Emulate Forward", isForwards);
 
     //Resolve the path of points that are immediately ahead of the robot. This array will include the robot's location as the first point.
-    Point2D[] nextPoints = getNextNPoints(points, currentPointIndex, Constants.EMULATE_IMMEDIATE_PATH_SIZE);
+    Point2D[] nextPoints = getNextNPoints(points, currentPointIndex + 1, Constants.EMULATE_IMMEDIATE_PATH_SIZE);
     Point2D[] immediatePath = new Point2D[nextPoints.length + 1];
 
     //set first point to robot location, but the heading must be forwards trajectory.
@@ -128,8 +130,12 @@ public class CyborgCommandEmulatePath extends CommandBase {
     double immediateDistance = getDistanceOfPath(immediatePath); //unit: in
     double immediateTurn = getTurnOfPath(immediatePath); //unit: degrees. Old code: double immediateTurn = Util.getAngleToHeading(forwardsify(currentLocation.getHeading()), currentDesination.getHeading());
     immediateTurn *= Util.getAndSetDouble("Emulate Overturn", 1.2);
-    // double immediateTurn = Util.getAngleToHeading(forwardsify(currentLocation.getHeading()), currentDestination.getHeading());
-    
+
+    //EXPERIMENTAL AND NOT PERM.
+    if(!isForwards) {
+      immediateTurn *= 2;
+    }
+
     SmartDashboard.putNumber("Emulate immediate turn", immediateTurn);
     immediateTurn = Math.toRadians(immediateTurn); //we need radians for arc length
 
@@ -247,7 +253,10 @@ public class CyborgCommandEmulatePath extends CommandBase {
     double lastHeading = path[0].getHeading();
     for(int i=1; i<path.length; i++) {
       double headingToPoint = path[i - 1].getHeadingTo(path[i]);
-      turn += Util.getAngleToHeading(lastHeading, headingToPoint);
+      double correctionToPoint = Util.getAngleToHeading(lastHeading, headingToPoint);
+      if(Math.abs(correctionToPoint) < 90) {
+        turn += correctionToPoint;
+      }
       lastHeading = headingToPoint;
     }
 
