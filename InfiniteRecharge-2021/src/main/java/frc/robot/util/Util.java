@@ -74,12 +74,48 @@ public class Util {
 	}
 
 	/**
+	 * Converts a force in Newtons to Pound-Force (lbf)
+	 * @param n A value of force in Newtons.
+	 * @return A value of force in Pounds (lbf).
+	 */
+	public static double newtonsToPoundForce(double n) {
+		return n / 4.44822;
+	}
+
+	/**
 	 * Converts a weight in lbf to kg.
 	 * @param lbf Weight in lbf (this is the readout that you get from any scale that deals in pounds)
 	 * @return Mass in kg
 	 */
-	public static double poundForceToMass(double lbf) {
+	public static double weightLBFToMassKG(double lbf) {
 		return poundForceToNewtons(lbf) / 9.81; //convert to newtons and divide by the gravitational field strength.
+	}
+
+	/**
+	 * Calculates a weight in Pounds given a mass in kilograms.
+	 * @param kg A mass in kilograms (the value you get from a balance)
+	 * @return Weight in pounds.
+	 */
+	public static double massKGToWeightLBF(double kg) {
+		return newtonsToPoundForce(kg * 9.81);
+	}
+
+	/**
+	 * Converts a value in inches to meters.
+	 * @param in A value of inches.
+	 * @return A value of meters.
+	 */
+	public static double inchesToMeters(double in) {
+		return in * 0.0254;
+	}
+
+	/**
+	 * Converts a value in meters to inches.
+	 * @param m A value of meters.
+	 * @return A value of inches.
+	 */
+	public static double metersToInches(double m) {
+		return m / 0.0254;
 	}
 	
 	/**

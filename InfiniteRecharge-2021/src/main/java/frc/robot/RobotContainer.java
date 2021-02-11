@@ -35,7 +35,6 @@ import frc.robot.commands.CyborgCommandRecordPath;
 import frc.robot.commands.CyborgCommandSetTurretPosition;
 import frc.robot.commands.CyborgCommandShootPayload;
 import frc.robot.commands.CyborgCommandSmartDriveDistance;
-import frc.robot.commands.CyborgCommandSmartMoveTurret;
 import frc.robot.commands.CyborgCommandTestScissorPositition;
 import frc.robot.commands.CyborgCommandTestVelocity;
 import frc.robot.commands.CyborgCommandZeroTurret;

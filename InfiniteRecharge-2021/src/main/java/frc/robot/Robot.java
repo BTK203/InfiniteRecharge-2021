@@ -10,6 +10,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.CyborgCommandEmulatePath;
+import frc.robot.subsystems.SubsystemDrive;
 import frc.robot.util.Util;
 
 /**
@@ -96,15 +98,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
-    // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
-
-    boolean[] tests = new boolean[6];
-    tests[0] = Util.assertEquals("18 -> 18", Util.getAcuteSuppliment(18), 18.0);
-    tests[1] = Util.assertEquals("-91 -> -1", Util.getAcuteSuppliment(-91), -1.0);
-    tests[2] = Util.assertEquals("456 -> 6", Util.getAcuteSuppliment(456), 6.0);
-
-    boolean allTests = tests[0] && tests[1] && tests[2];
+    boolean allTests = new CyborgCommandEmulatePath(new SubsystemDrive()).test();
     DriverStation.reportError((allTests ? "ALL TESTS PASSED" : "SOME TESTS FAILED"), false);
   }
 

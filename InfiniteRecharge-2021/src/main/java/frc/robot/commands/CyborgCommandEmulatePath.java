@@ -74,20 +74,6 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     //resolve the point that the robot is currently at and where we want to aim
     if(currentPointIndex < points.length - 1) {
-      // double headingToBasePoint = currentLocation.getHeadingTo(points[currentPointIndex]);
-      // double headingDifference = Math.abs(Util.getAngleToHeading(currentLocation.getHeading(), headingToBasePoint));
-      // SmartDashboard.putNumber("Emulate Heading Difference", headingDifference);
-      // SmartDashboard.putNumber("Emulate Last Head Diff", lastHeadingDifference);
-      
-      // if((headingDifference >= 90 && lastHeadingDifference < 90) || (headingDifference <= 90 && lastHeadingDifference > 90)) {
-      //   SmartDashboard.putBoolean("Emulate Advancing", true);
-      //   currentPointIndex++;
-      // } else {
-      //   SmartDashboard.putBoolean("Emulate Advancing", false);
-      // }
-
-      // lastHeadingDifference = headingDifference;
-
       double currentDirection = forwardsify(currentLocation.getHeading());
       SmartDashboard.putNumber("Emulate Current Direction", currentDirection);
       for(int limit=0; limit<10; limit++) {
@@ -128,7 +114,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     //draw an "arc" that closely fits the path. The arc will be used to calculate the left and right velocities.
     double immediateDistance = getDistanceOfPath(immediatePath); //unit: in
-    double immediateTurn = getTurnOfPath(immediatePath); //unit: degrees. Old code: double immediateTurn = Util.getAngleToHeading(forwardsify(currentLocation.getHeading()), currentDesination.getHeading());
+    double immediateTurn = getTurnOfPath(immediatePath); //unit: degrees
     immediateTurn *= Util.getAndSetDouble("Emulate Overturn", 1.2);
 
     //EXPERIMENTAL AND NOT PERM.
@@ -187,6 +173,30 @@ public class CyborgCommandEmulatePath extends CommandBase {
   }
 
   /**
+   * Prints test values. This method is temporary.
+   */
+  public boolean test() {
+    //test backwards
+    isForwards = false;
+    Point2D[] pointsBkwd = { new Point2D(0, 0, forwardsify(-90)), new Point2D(1, 4, 255), new Point2D(3, 7, 235), new Point2D(7, 8, 180) };
+
+    double distBkwd = getDistanceOfPath(pointsBkwd);
+    double turnBkwd = getTurnOfPath(pointsBkwd);
+    boolean distBkwdTest = Util.assertEquals("Distance Backwards = 11.852", Util.roundTo(distBkwd, 2), 11.85);
+    boolean turnBkwdTest = Util.assertEquals("Turn Backwards = -74.689", Util.roundTo(turnBkwd, 2), -74.69);
+
+    //test forwards
+    isForwards = true;
+    Point2D[] pointsFwd = { new Point2D(0, 0, forwardsify(90)), new Point2D(1, 4, 75), new Point2D(3, 7, 45), new Point2D(7, 8, 0) };
+    double distFwd = getDistanceOfPath(pointsFwd);
+    double turnFwd = getTurnOfPath(pointsFwd);
+    boolean distFwdTest = Util.assertEquals("Distance Forwards = 11.852", Util.roundTo(distFwd, 2), 11.85);
+    boolean turnFwdTest = Util.assertEquals("Turn Forwards = -74.689", Util.roundTo(turnFwd, 2), -74.69);
+
+    return distBkwdTest && turnBkwdTest && distFwdTest && turnFwdTest;
+  }
+
+  /**
    * Returns an "n" long array of points, starting at start.
    * @param baseArray The array to create a sub-array from.
    * @param start     The index to start the sub-array from.
@@ -215,9 +225,6 @@ public class CyborgCommandEmulatePath extends CommandBase {
     for(int i=0; i<path.length - 1; i++) {
       distance += path[i].getDistanceFrom(path[i + 1]);
     }
-
-    SmartDashboard.putNumber("Emulate Mini Path length", path.length);
-    SmartDashboard.putNumber("Emulate Path Distance", distance);
 
     return distance;
   }
@@ -278,11 +285,19 @@ public class CyborgCommandEmulatePath extends CommandBase {
    * @return The best speed for the turn in in/sec
    */
   private static double calculateBestTangentialSpeed(double turnRadius) {
-    //gather needed variables (coefficient of friction, normal force, and mass)
-    double coefficientOfFriction = Util.getAndSetDouble("Emulate Coefficient of Friction", 1); //defaults to the approximate CoE of rubber on concrete
-    double normalForce = Constants.ROBOT_WEIGHT_POUND_FORCE;
-    double robotMass = Util.poundForceToMass(Constants.ROBOT_WEIGHT_POUND_FORCE);
+    //gather needed variables (coefficient of friction, normal force, and mass) and convert to SI units.
+    double coefficientOfFriction = Util.getAndSetDouble("Emulate Coefficient of Friction", 1); //defaults to the approximate CoE of rubber on concrete. No Unit.
+    double normalForce = Util.poundForceToNewtons(Constants.ROBOT_WEIGHT_POUND_FORCE); //unit: N
+    double robotMass   = Util.weightLBFToMassKG(Constants.ROBOT_WEIGHT_POUND_FORCE); //unit: kg
+    double radius      = Util.inchesToMeters(turnRadius); //unit: m
 
-    return 0;
+    //formula: v = sqrt( (r * CoE * Fn) / m )
+    double bestSpeed = Math.sqrt( ( radius * coefficientOfFriction * normalForce ) / robotMass); //unit: m/s
+
+    //convert best speed to in/s
+    bestSpeed = Util.metersToInches(bestSpeed); //unit: in/s
+    double maxSpeed = Util.getAndSetDouble("Emulate Max Speed", 40);
+    bestSpeed = (bestSpeed > maxSpeed ? maxSpeed : bestSpeed);
+    return bestSpeed;
   }
 }
