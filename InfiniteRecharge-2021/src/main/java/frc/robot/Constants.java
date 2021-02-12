@@ -221,7 +221,7 @@ public final class Constants {
      * Emulation Constants
      */
     public static final double
-        PATH_RECORDER_DISTANCE_INTERVAL = 4,
+        PATH_RECORDER_DISTANCE_INTERVAL = 3,
         DRIVETRAIN_WHEEL_BASE_WIDTH = 20;
 
     public static final int
