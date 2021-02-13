@@ -14,6 +14,7 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.SubsystemDrive;
 import frc.robot.util.CourseAdjuster;
+import frc.robot.util.PathRecorder;
 import frc.robot.util.Point2D;
 import frc.robot.util.TrajectorySegment;
 import frc.robot.util.Util;
@@ -23,10 +24,13 @@ public class CyborgCommandEmulatePath extends CommandBase {
   private Point2D[] points;
   private int currentPointIndex;
   private boolean isForwards;
+  private PathRecorder recorder;
 
   /** Creates a new CyborgCommandEmulatePath. */
   public CyborgCommandEmulatePath(SubsystemDrive drivetrain) {
     this.drivetrain = drivetrain;
+    recorder = new PathRecorder("/home/lvuser/results.txt");
+
     addRequirements(drivetrain);
   }
 
@@ -34,6 +38,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
   @Override
   public void initialize() {
     currentPointIndex = 1;
+    recorder.init();
 
     try {
       String fileContents = Files.readString(Path.of("/home/lvuser/points.txt"));
@@ -70,16 +75,19 @@ public class CyborgCommandEmulatePath extends CommandBase {
   @Override
   public void execute() {
     Point2D currentLocation = Robot.getRobotContainer().getRobotPositionAndHeading();
+    recorder.recordPoint(currentLocation);
     // double baseSpeed = Util.getAndSetDouble("Emulation Base Speed", 75);
 
     //resolve the point that the robot is currently at and where we want to aim
     if(currentPointIndex < points.length - 1) {
       double currentDirection = forwardsify(currentLocation.getHeading());
-      SmartDashboard.putNumber("Emulate Current Direction", currentDirection);
       for(int limit=0; limit<10; limit++) {
+        //get the angle that the root needs to turn to acheive the point
         double headingToNext = Math.abs(Util.getAngleToHeading(currentDirection, currentLocation.getHeadingTo(points[currentPointIndex])));
         SmartDashboard.putNumber("Emulate Heading to next", headingToNext);
-        if(currentPointIndex < points.length - 1 && headingToNext >= 60) {
+
+        //get a path that consists of future points. If they are straight, 
+        if(currentPointIndex < points.length - 1 && headingToNext >= 90) {
           currentPointIndex++;
         } else {
           break;
@@ -116,7 +124,13 @@ public class CyborgCommandEmulatePath extends CommandBase {
     double immediateDistance = getDistanceOfPath(immediatePath); //unit: in
     double immediateTurn = getTurnOfPath(immediatePath); //unit: degrees
     SmartDashboard.putNumber("Emulate Immediate Turn Before Overturn", immediateTurn);
-    immediateTurn *= Util.getAndSetDouble("Emulate Overturn", 1.2);
+
+    if(immediateTurn < Util.getAndSetDouble("Positional Correction Threshold", 20)) {
+      //add positional correction to heading by aiming for 2 points ahead of us
+      double positionalCorrection = Util.getAngleToHeading(forwardsify(currentLocation.getHeading()), currentLocation.getHeadingTo(points[currentPointIndex + 2]));
+      immediateTurn += positionalCorrection * Util.getAndSetDouble("Emulate Positional Correction", 0.0625);
+      immediateTurn *= Util.getAndSetDouble("Emulate Overturn", 1.2);
+    }
 
     //EXPERIMENTAL AND NOT PERM.
     if(!isForwards) {
@@ -124,17 +138,17 @@ public class CyborgCommandEmulatePath extends CommandBase {
     }
 
     SmartDashboard.putNumber("Emulate immediate turn", immediateTurn);
-    immediateTurn = Math.toRadians(immediateTurn); //we need radians for arc length
-    double radius = immediateDistance / immediateTurn; //unit: in
-
-    // double baseSpeed = calculateBestTangentialSpeed(radius);
-    double baseSpeed = Util.getAndSetDouble("Emulate Base Speed", 40);
-    SmartDashboard.putNumber("Calc. Emulate Base Speed", baseSpeed);
+    immediateTurn = Math.toRadians(immediateTurn); //we need radians for arc length    
 
     if(immediateTurn != 0) {
       //use immediateDistance and immediateTurn to calculate the left and right base velocities of the wheels.
+      double radius = immediateDistance / immediateTurn; //unit: in
+
       double leftDisplacement = 0;
       double rightDisplacement = 0;
+
+      double baseSpeed = calculateBestTangentialSpeed(radius);
+      SmartDashboard.putNumber("Calc. Emulate Base Speed", baseSpeed);
 
       if(isForwards) {
         leftDisplacement  = immediateTurn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
@@ -158,6 +172,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
       drivetrain.setLeftVelocity(leftVelocity);
       drivetrain.setRightVelocity(rightVelocity);
     } else {
+      double baseSpeed = Util.getAndSetDouble("Emulate Max Speed", 40);
       double curvedBaseSpeed = curveVelocity(IPStoRPM(baseSpeed));
       drivetrain.setLeftVelocity(curvedBaseSpeed);
       drivetrain.setRightVelocity(curvedBaseSpeed);
@@ -169,12 +184,13 @@ public class CyborgCommandEmulatePath extends CommandBase {
   public void end(boolean interrupted) {
     drivetrain.setLeftPercentOutput(0);
     drivetrain.setRightPercentOutput(0);
+    recorder.closeFile();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return currentPointIndex >= points.length - 2; //command will finish when the last point is acheived.
+    return currentPointIndex >= points.length - 3; //command will finish when the last point is acheived.
   }
 
   /**
@@ -266,9 +282,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
     for(int i=1; i<path.length; i++) {
       double headingToPoint = path[i - 1].getHeadingTo(path[i]);
       double correctionToPoint = Util.getAngleToHeading(lastHeading, headingToPoint);
-      // if(Math.abs(correctionToPoint) < 135) {
-        turn += correctionToPoint;
-      // }
+      turn += correctionToPoint;
       lastHeading = headingToPoint;
     }
 
@@ -286,12 +300,13 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
   /**
    * Calculates the best speed that the robot should drive through an arc at.
-   * @param turnRadius The radius of the turn that the robot will take.
+   * @param turnRadius The radius of the turn that the robot will take in inches.
    * @return The best speed for the turn in in/sec
    */
   private static double calculateBestTangentialSpeed(double turnRadius) {
-    double maxSpeed = Util.getAndSetDouble("Emulate Max Speed", 40);
-    if(turnRadius == 0) {
+    double maxSpeed = Util.getAndSetDouble("Emulate Max Speed", 60);
+    double minSpeed = Util.getAndSetDouble("Emulate Min Speed", 50);
+    if(Double.isNaN(turnRadius)) {
       return maxSpeed;
     }
 
@@ -299,14 +314,22 @@ public class CyborgCommandEmulatePath extends CommandBase {
     double coefficientOfFriction = Util.getAndSetDouble("Emulate Coefficient of Friction", 1); //defaults to the approximate CoE of rubber on concrete. No Unit.
     double normalForce = Util.poundForceToNewtons(Constants.ROBOT_WEIGHT_POUND_FORCE); //unit: N
     double robotMass   = Util.weightLBFToMassKG(Constants.ROBOT_WEIGHT_POUND_FORCE); //unit: kg
-    double radius      = Util.inchesToMeters(turnRadius); //unit: m
+    double radius      = Math.abs(Util.inchesToMeters(turnRadius)); //unit: m. We can absolute value it because we dont care about the direction of the arc.
 
     //formula: v = sqrt( (r * CoE * Fn) / m )
-    double bestSpeed = Math.sqrt( ( radius * coefficientOfFriction * normalForce ) / robotMass); //unit: m/s
+    double bestSpeed = Math.sqrt( ( radius * coefficientOfFriction * normalForce ) / robotMass ); //unit: m/s
 
     //convert best speed to in/s
     bestSpeed = Util.metersToInches(bestSpeed); //unit: in/s
-    bestSpeed = (bestSpeed > maxSpeed ? maxSpeed : bestSpeed);
+    bestSpeed = (bestSpeed > maxSpeed ? maxSpeed : (bestSpeed < minSpeed ? minSpeed : bestSpeed));
+
+    SmartDashboard.putNumber("Emulate bs radius", radius);
+    SmartDashboard.putNumber("Emulate turn radius", turnRadius);
+    SmartDashboard.putNumber("Emulate best speed", bestSpeed);
+    SmartDashboard.putNumber("Emulate Normal Force", normalForce);
+    SmartDashboard.putNumber("Emulate Robot Mass", robotMass);
+    SmartDashboard.putNumber("Emulate CoE", coefficientOfFriction);
+
     return bestSpeed;
   }
 }

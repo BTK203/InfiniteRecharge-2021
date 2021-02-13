@@ -225,7 +225,7 @@ public final class Constants {
         DRIVETRAIN_WHEEL_BASE_WIDTH = 20;
 
     public static final int
-        EMULATE_IMMEDIATE_PATH_SIZE = 3;
+        EMULATE_IMMEDIATE_PATH_SIZE = 4;
 
     public static final boolean
         DRIVE_CAMERA_AUTOMATIC_EXPOSURE = false;
