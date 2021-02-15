@@ -68,7 +68,8 @@ public class CyborgCommandEmulatePath extends CommandBase {
     drivetrain.setPIDConstants(kP, kI, kD, kF, izone, outLimitLow, outLimitHigh);
     Robot.getRobotContainer().zeroAllDrivetrain();
 
-    isForwards = Robot.getRobotContainer().getRobotPositionAndHeading().getHeadingTo(points[1]) > 90;
+    isForwards = new Point2D(0, 0, 0).getHeadingTo(points[1]) < 90;
+    DriverStation.reportError("Inital is forwards: " + (isForwards ? "yes" : "no"), false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -76,7 +77,6 @@ public class CyborgCommandEmulatePath extends CommandBase {
   public void execute() {
     Point2D currentLocation = Robot.getRobotContainer().getRobotPositionAndHeading();
     recorder.recordPoint(currentLocation);
-    // double baseSpeed = Util.getAndSetDouble("Emulation Base Speed", 75);
 
     //resolve the point that the robot is currently at and where we want to aim
     if(currentPointIndex < points.length - 1) {
@@ -89,6 +89,8 @@ public class CyborgCommandEmulatePath extends CommandBase {
         //get a path that consists of future points. If they are straight, 
         if(currentPointIndex < points.length - 1 && headingToNext >= 90) {
           currentPointIndex++;
+
+          DriverStation.reportError("current heading: " + Double.valueOf(currentDirection).toString() + ", heading to: " + Double.valueOf(currentLocation.getHeadingTo(points[currentPointIndex])).toString() + ", heading to next: " + Double.valueOf(headingToNext).toString(), false);
         } else {
           break;
         }
@@ -111,7 +113,8 @@ public class CyborgCommandEmulatePath extends CommandBase {
     SmartDashboard.putBoolean("Emulate Forward", isForwards);
 
     //Resolve the path of points that are immediately ahead of the robot. This array will include the robot's location as the first point.
-    Point2D[] nextPoints = getNextNPoints(points, currentPointIndex + 1, Constants.EMULATE_IMMEDIATE_PATH_SIZE);
+    int immediatePathSize = (int) Util.getAndSetDouble("Emulate Immediate Path Size", 5);
+    Point2D[] nextPoints = getNextNPoints(points, currentPointIndex + 2, immediatePathSize);
     Point2D[] immediatePath = new Point2D[nextPoints.length + 1];
 
     //set first point to robot location, but the heading must be forwards trajectory.
@@ -127,8 +130,10 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     if(immediateTurn < Util.getAndSetDouble("Positional Correction Threshold", 20)) {
       //add positional correction to heading by aiming for 2 points ahead of us
-      double positionalCorrection = Util.getAngleToHeading(forwardsify(currentLocation.getHeading()), currentLocation.getHeadingTo(points[currentPointIndex + 2]));
-      immediateTurn += positionalCorrection * Util.getAndSetDouble("Emulate Positional Correction", 0.0625);
+      Point2D targetPoint = points[currentPointIndex + 2];
+      double positionalCorrection = Util.getAngleToHeading(forwardsify(currentLocation.getHeading()), currentLocation.getHeadingTo(targetPoint));
+      positionalCorrection *= currentLocation.getDistanceFrom(targetPoint) * Util.getAndSetDouble("Emulate Positional Correction Inhibitor", 1);
+      immediateTurn += positionalCorrection;
       immediateTurn *= Util.getAndSetDouble("Emulate Overturn", 1.2);
     }
 

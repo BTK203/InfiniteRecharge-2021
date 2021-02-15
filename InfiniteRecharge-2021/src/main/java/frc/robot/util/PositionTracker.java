@@ -158,6 +158,7 @@ public class PositionTracker {
     private boolean drivetrainAtZero() {
         return 
             Math.abs(drivetrain.getLeftPosition()) < 0.25 &&
-            Math.abs(drivetrain.getRightPosition()) < 0.25;
+            Math.abs(drivetrain.getRightPosition()) < 0.25 &&
+            Math.abs(drivetrain.getGyroAngle()) < 0.25;
     }
 }

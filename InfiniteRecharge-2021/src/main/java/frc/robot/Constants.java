@@ -224,9 +224,6 @@ public final class Constants {
         PATH_RECORDER_DISTANCE_INTERVAL = 3,
         DRIVETRAIN_WHEEL_BASE_WIDTH = 20;
 
-    public static final int
-        EMULATE_IMMEDIATE_PATH_SIZE = 4;
-
     public static final boolean
         DRIVE_CAMERA_AUTOMATIC_EXPOSURE = false;
 }
