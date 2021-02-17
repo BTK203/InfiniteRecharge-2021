@@ -69,7 +69,6 @@ public class CyborgCommandEmulatePath extends CommandBase {
     Robot.getRobotContainer().zeroAllDrivetrain();
 
     isForwards = new Point2D(0, 0, 0).getHeadingTo(points[1]) < 90;
-    DriverStation.reportError("Inital is forwards: " + (isForwards ? "yes" : "no"), false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -81,7 +80,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
     //resolve the point that the robot is currently at and where we want to aim
     if(currentPointIndex < points.length - 1) {
       double currentDirection = forwardsify(currentLocation.getHeading());
-      for(int limit=0; limit<10; limit++) {
+      for(int limit=0; limit<Constants.EMULATE_POINT_SKIP_LIMIT; limit++) {
         //get the angle that the root needs to turn to acheive the point
         double headingToNext = Math.abs(Util.getAngleToHeading(currentDirection, currentLocation.getHeadingTo(points[currentPointIndex])));
         SmartDashboard.putNumber("Emulate Heading to next", headingToNext);
@@ -107,7 +106,8 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     //figure out if we need to drive forwards or backwards to acheive the point
     double headingToNextPoint = currentLocation.getHeadingTo(currentDestination);
-    double headingDifference = Util.getAngleToHeading(currentLocation.getHeading(), headingToNextPoint);
+    // double headingDifference = Util.getAngleToHeading(currentLocation.getHeading(), headingToNextPoint); //add this back in if the new code breaks
+    double headingDifference = Util.getAngleToHeading(currentLocation.getHeading(), currentDestination.getHeading());
     this.isForwards = Math.abs(headingDifference) < 90;
 
     SmartDashboard.putBoolean("Emulate Forward", isForwards);
@@ -126,10 +126,11 @@ public class CyborgCommandEmulatePath extends CommandBase {
     //draw an "arc" that closely fits the path. The arc will be used to calculate the left and right velocities.
     double immediateDistance = getDistanceOfPath(immediatePath); //unit: in
     double immediateTurn = getTurnOfPath(immediatePath); //unit: degrees
-    boolean shouldZeroTurn = false;
-    if(Math.abs(immediateTurn) >= 165) {
-      shouldZeroTurn = true;
-    }
+    double headingChange = getHeadingChangeOfPath(immediatePath);
+
+    //figure out if the robot should switch directions (forward to backward or vice versa) without changing heading.
+    double turnToHeadingDifference = Math.abs(Util.getAngleToHeading(headingChange, immediateTurn));
+    boolean shouldZeroTurn = turnToHeadingDifference < Constants.EMULATE_MAX_HEADING_TO_TURN_DIFFERENCE;
 
     SmartDashboard.putNumber("Emulate Immediate Turn Before Overturn", immediateTurn);
 
@@ -209,30 +210,6 @@ public class CyborgCommandEmulatePath extends CommandBase {
   }
 
   /**
-   * Prints test values. This method is temporary.
-   */
-  public boolean test() {
-    //test backwards
-    isForwards = false;
-    Point2D[] pointsBkwd = { new Point2D(0, 0, forwardsify(-90)), new Point2D(1, 4, 255), new Point2D(3, 7, 235), new Point2D(7, 8, 180) };
-
-    double distBkwd = getDistanceOfPath(pointsBkwd);
-    double turnBkwd = getTurnOfPath(pointsBkwd);
-    boolean distBkwdTest = Util.assertEquals("Distance Backwards = 11.852", Util.roundTo(distBkwd, 2), 11.85);
-    boolean turnBkwdTest = Util.assertEquals("Turn Backwards = -74.689", Util.roundTo(turnBkwd, 2), -74.69);
-
-    //test forwards
-    isForwards = true;
-    Point2D[] pointsFwd = { new Point2D(0, 0, forwardsify(90)), new Point2D(1, 4, 75), new Point2D(3, 7, 45), new Point2D(7, 8, 0) };
-    double distFwd = getDistanceOfPath(pointsFwd);
-    double turnFwd = getTurnOfPath(pointsFwd);
-    boolean distFwdTest = Util.assertEquals("Distance Forwards = 11.852", Util.roundTo(distFwd, 2), 11.85);
-    boolean turnFwdTest = Util.assertEquals("Turn Forwards = -74.689", Util.roundTo(turnFwd, 2), -74.69);
-
-    return distBkwdTest && turnBkwdTest && distFwdTest && turnFwdTest;
-  }
-
-  /**
    * Returns an "n" long array of points, starting at start.
    * @param baseArray The array to create a sub-array from.
    * @param start     The index to start the sub-array from.
@@ -306,6 +283,15 @@ public class CyborgCommandEmulatePath extends CommandBase {
   }
 
   /**
+   * Returns the change in heading the robot will experience through a path.
+   * @param path The path immediately in front of the robot. Ideally, the first point of the path should be the robot's position and heading.
+   * @return The heading change the robot will experience through the path in degrees.
+   */
+  private double getHeadingChangeOfPath(Point2D[] path) {
+    return Util.getAngleToHeading(path[0].getHeading(), path[path.length - 1].getHeading());
+  }
+
+  /**
    * Returns an angle corresponding to the direction that the robot is travelling in
    * @param angle Original angle.
    * @param isForwards True if robot is driving forwards, false otherwise
@@ -347,5 +333,13 @@ public class CyborgCommandEmulatePath extends CommandBase {
     SmartDashboard.putNumber("Emulate CoE", coefficientOfFriction);
 
     return bestSpeed;
+  }
+
+  //TESTING
+  /**
+   * Prints test values. This method is temporary.
+   */
+  public boolean test() {
+    return true;
   }
 }

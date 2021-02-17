@@ -224,6 +224,10 @@ public final class Constants {
         PATH_RECORDER_DISTANCE_INTERVAL = 3,
         DRIVETRAIN_WHEEL_BASE_WIDTH = 20;
 
+    public static final int
+        EMULATE_POINT_SKIP_LIMIT = 5,
+        EMULATE_MAX_HEADING_TO_TURN_DIFFERENCE = 75;
+
     public static final boolean
         DRIVE_CAMERA_AUTOMATIC_EXPOSURE = false;
 }
