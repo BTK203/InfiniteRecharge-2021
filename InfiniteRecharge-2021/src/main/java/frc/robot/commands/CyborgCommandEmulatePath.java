@@ -126,6 +126,11 @@ public class CyborgCommandEmulatePath extends CommandBase {
     //draw an "arc" that closely fits the path. The arc will be used to calculate the left and right velocities.
     double immediateDistance = getDistanceOfPath(immediatePath); //unit: in
     double immediateTurn = getTurnOfPath(immediatePath); //unit: degrees
+    boolean shouldZeroTurn = false;
+    if(Math.abs(immediateTurn) >= 165) {
+      shouldZeroTurn = true;
+    }
+
     SmartDashboard.putNumber("Emulate Immediate Turn Before Overturn", immediateTurn);
 
     if(immediateTurn < Util.getAndSetDouble("Positional Correction Threshold", 20)) {
@@ -167,6 +172,11 @@ public class CyborgCommandEmulatePath extends CommandBase {
       double timeInterval  = immediateDistance / baseSpeed; // unit: sec
       double leftVelocity  = leftDisplacement / timeInterval; //unit: in/sec
       double rightVelocity = rightDisplacement / timeInterval;
+
+      if(shouldZeroTurn) {
+        leftVelocity = baseSpeed;
+        rightVelocity = baseSpeed;
+      }
 
       leftVelocity = IPStoRPM(leftVelocity);
       rightVelocity = IPStoRPM(rightVelocity);
@@ -287,6 +297,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
     for(int i=1; i<path.length; i++) {
       double headingToPoint = path[i - 1].getHeadingTo(path[i]);
       double correctionToPoint = Util.getAngleToHeading(lastHeading, headingToPoint);
+
       turn += correctionToPoint;
       lastHeading = headingToPoint;
     }
