@@ -82,11 +82,12 @@ public class CyborgCommandEmulatePath extends CommandBase {
       double currentDirection = forwardsify(currentLocation.getHeading());
       for(int limit=0; limit<Constants.EMULATE_POINT_SKIP_LIMIT; limit++) {
         //get the angle that the root needs to turn to acheive the point
+        SmartDashboard.putNumber("Emulate heading current to next", currentLocation.getHeadingTo(points[currentPointIndex]));
         double headingToNext = Math.abs(Util.getAngleToHeading(currentDirection, currentLocation.getHeadingTo(points[currentPointIndex])));
         SmartDashboard.putNumber("Emulate Heading to next", headingToNext);
 
         //get a path that consists of future points. If they are straight, 
-        if(currentPointIndex < points.length - 1 && headingToNext >= 90) {
+        if(currentPointIndex < points.length - 1 && headingToNext >= 75) {
           currentPointIndex++;
 
           DriverStation.reportError("current heading: " + Double.valueOf(currentDirection).toString() + ", heading to: " + Double.valueOf(currentLocation.getHeadingTo(points[currentPointIndex])).toString() + ", heading to next: " + Double.valueOf(headingToNext).toString(), false);
@@ -106,8 +107,9 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     //figure out if we need to drive forwards or backwards to acheive the point
     double headingToNextPoint = currentLocation.getHeadingTo(currentDestination);
-    // double headingDifference = Util.getAngleToHeading(currentLocation.getHeading(), headingToNextPoint); //add this back in if the new code breaks
-    double headingDifference = Util.getAngleToHeading(currentLocation.getHeading(), currentDestination.getHeading());
+    double headingDifference = Util.getAngleToHeading(currentLocation.getHeading(), headingToNextPoint); //add this back in if the new code breaks
+    SmartDashboard.putNumber("Emulate heading diff", headingDifference);
+    // double headingDifference = Util.getAngleToHeading(currentLocation.getHeading(), currentDestination.getHeading());
     this.isForwards = Math.abs(headingDifference) < 90;
 
     SmartDashboard.putBoolean("Emulate Forward", isForwards);
@@ -126,11 +128,15 @@ public class CyborgCommandEmulatePath extends CommandBase {
     //draw an "arc" that closely fits the path. The arc will be used to calculate the left and right velocities.
     double immediateDistance = getDistanceOfPath(immediatePath); //unit: in
     double immediateTurn = getTurnOfPath(immediatePath); //unit: degrees
-    double headingChange = getHeadingChangeOfPath(immediatePath);
+    double headingChange = Util.getAngleToHeading(immediatePath[1].getHeading(), immediatePath[immediatePath.length - 1].getHeading());
+    SmartDashboard.putNumber("Emulate heading change", headingChange);
 
     //figure out if the robot should switch directions (forward to backward or vice versa) without changing heading.
     double turnToHeadingDifference = Math.abs(Util.getAngleToHeading(headingChange, immediateTurn));
-    boolean shouldZeroTurn = turnToHeadingDifference < Constants.EMULATE_MAX_HEADING_TO_TURN_DIFFERENCE;
+    SmartDashboard.putNumber("Emulate Turn to heading difference", turnToHeadingDifference);
+    boolean shouldZeroTurn = turnToHeadingDifference > Constants.EMULATE_MAX_HEADING_TO_TURN_DIFFERENCE;
+    // boolean shouldZeroTurn = Math.abs(immediateTurn) > 165;
+    
 
     SmartDashboard.putNumber("Emulate Immediate Turn Before Overturn", immediateTurn);
 
@@ -169,14 +175,33 @@ public class CyborgCommandEmulatePath extends CommandBase {
         rightDisplacement = -1 * immediateTurn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2));
       }
 
+      SmartDashboard.putNumber("Emulate left displacement", leftDisplacement);
+      SmartDashboard.putNumber("Emulate right displacement", rightDisplacement);
+
+      if (
+        (leftDisplacement < 0 && rightDisplacement < 0 && isForwards) ||
+        (leftDisplacement > 0 && rightDisplacement > 0 && !isForwards)
+      ) {
+        leftDisplacement *= -1;
+        rightDisplacement *= -1;
+      }
+
       //convert displacments to velocities
       double timeInterval  = immediateDistance / baseSpeed; // unit: sec
       double leftVelocity  = leftDisplacement / timeInterval; //unit: in/sec
       double rightVelocity = rightDisplacement / timeInterval;
 
+      SmartDashboard.putNumber("Emulate time interval", timeInterval);
+      SmartDashboard.putNumber("Emulate left vel.", leftVelocity);
+      SmartDashboard.putNumber("Emulate right vel.", rightVelocity);
+
+      //occasionally, the drivetrain will fail to reach a point and start driving in the other direction.
+      //This code fixes that problem.
+
       if(shouldZeroTurn) {
-        leftVelocity = baseSpeed;
-        rightVelocity = baseSpeed;
+        double vel = (isForwards ? baseSpeed : -1 * baseSpeed);
+        leftVelocity = vel;
+        rightVelocity = vel;
       }
 
       leftVelocity = IPStoRPM(leftVelocity);
@@ -288,6 +313,8 @@ public class CyborgCommandEmulatePath extends CommandBase {
    * @return The heading change the robot will experience through the path in degrees.
    */
   private double getHeadingChangeOfPath(Point2D[] path) {
+    SmartDashboard.putNumber("Emulate path 0 heading", path[0].getHeading());
+    SmartDashboard.putNumber("Emulate path length heading", path[path.length - 1].getHeading());
     return Util.getAngleToHeading(path[0].getHeading(), path[path.length - 1].getHeading());
   }
 
