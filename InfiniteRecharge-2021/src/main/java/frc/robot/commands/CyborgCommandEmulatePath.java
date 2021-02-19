@@ -22,10 +22,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
   private Point2D[] points;
   private int currentPointIndex;
   private long lastTime;
-  private double
-    lastBestSpeed,
-    lastLeftVelocity,
-    lastRightVelocity;
+  private double lastBestVelocity;
   private boolean isForwards;
   private PathRecorder recorder;
 
@@ -43,9 +40,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
     currentPointIndex = 1;
     recorder.init();
     lastTime = System.currentTimeMillis();
-    lastBestSpeed = 0;
-    lastLeftVelocity = 0;
-    lastRightVelocity = 0;
+    lastBestVelocity = 0;
 
     try {
       String fileContents = Files.readString(Path.of("/home/lvuser/points.txt"));
@@ -58,6 +53,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
       }
     } catch (IOException ex) {
       DriverStation.reportError("IO EXCEPTION", true);
+      return;
     }
 
     //update the PID Constants for heading.
@@ -132,7 +128,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
       immediatePath[i] = nextPoints[i - 1];
     }
 
-    //draw an "arc" that closely fits the path. The arc will be used to calculate the left and right velocities.
+    //get an "arc" that closely fits the path. The arc will be used to calculate the left and right velocities.
     double immediateDistance = getDistanceOfPath(immediatePath); //unit: in
     double immediateTurn = getTurnOfPath(immediatePath); //unit: degrees
     double headingChange = Util.getAngleToHeading(immediatePath[1].getHeading(), immediatePath[immediatePath.length - 1].getHeading());
@@ -171,20 +167,29 @@ public class CyborgCommandEmulatePath extends CommandBase {
       double leftDisplacement = 0;
       double rightDisplacement = 0;
 
-      double baseSpeed = calculateBestTangentialSpeed(radius);
-      SmartDashboard.putNumber("Calc. Emulate Base Speed", baseSpeed);
+      double baseVelocity = calculateBestTangentialSpeed(radius);
+      if(!isForwards) {
+        baseVelocity *= -1;
+      }
+      
+      //ramp base speed to reduce skid
+      baseVelocity = ramp(baseVelocity, lastBestVelocity, Util.getAndSetDouble("Emulate Ramp", 0.5));
+      lastBestVelocity = baseVelocity;
+
+      SmartDashboard.putNumber("Calc. Emulate Base Velocity", baseVelocity);
 
       if(isForwards) {
         leftDisplacement  = immediateTurn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
         rightDisplacement = immediateTurn * (radius + (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2));
       } else {
-        leftDisplacement  = -1 * immediateTurn * (radius + (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
-        rightDisplacement = -1 * immediateTurn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2));
+        leftDisplacement  = immediateTurn * (radius + (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
+        rightDisplacement = immediateTurn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2));
       }
 
       SmartDashboard.putNumber("Emulate left displacement", leftDisplacement);
       SmartDashboard.putNumber("Emulate right displacement", rightDisplacement);
 
+      // here in case calculations return values that make the robot drive away from it's target point
       if (
         (leftDisplacement < 0 && rightDisplacement < 0 && isForwards) ||
         (leftDisplacement > 0 && rightDisplacement > 0 && !isForwards)
@@ -194,18 +199,15 @@ public class CyborgCommandEmulatePath extends CommandBase {
       }
 
       //convert displacments to velocities
-      double timeInterval  = immediateDistance / baseSpeed; // unit: sec
+      double timeInterval  = immediateDistance / baseVelocity; // unit: sec
       double leftVelocity  = leftDisplacement / timeInterval; //unit: in/sec
       double rightVelocity = rightDisplacement / timeInterval;
 
       SmartDashboard.putNumber("Emulate left vel.", leftVelocity);
       SmartDashboard.putNumber("Emulate right vel.", rightVelocity);
 
-      //occasionally, the drivetrain will fail to reach a point and start driving in the other direction.
-      //This code fixes that problem.
-
       if(shouldZeroTurn) {
-        double vel = (isForwards ? baseSpeed : -1 * baseSpeed);
+        double vel = (isForwards ? baseVelocity : -1 * baseVelocity);
         leftVelocity = vel;
         rightVelocity = vel;
       }
@@ -219,17 +221,17 @@ public class CyborgCommandEmulatePath extends CommandBase {
       drivetrain.setLeftVelocity(leftVelocity);
       drivetrain.setRightVelocity(rightVelocity);
     } else {
-      double baseSpeed = Util.getAndSetDouble("Emulate Max Speed", 40);
+      double baseVelocity = Util.getAndSetDouble("Emulate Max Speed", 40);
       if(!isForwards) {
-        baseSpeed *= -1;
+        baseVelocity *= -1;
       }
 
-      baseSpeed = ramp(baseSpeed, lastBestSpeed, Util.getAndSetDouble("Emulate Ramp", 0.75));
-      lastBestSpeed = baseSpeed;
+      baseVelocity = ramp(baseVelocity, lastBestVelocity, Util.getAndSetDouble("Emulate Ramp", 0.75));
+      lastBestVelocity = baseVelocity;
 
-      double curvedBaseSpeed = curveVelocity(IPStoRPM(baseSpeed));
-      drivetrain.setLeftVelocity(curvedBaseSpeed);
-      drivetrain.setRightVelocity(curvedBaseSpeed);
+      double curvedBaseVelocity = curveVelocity(IPStoRPM(baseVelocity));
+      drivetrain.setLeftVelocity(curvedBaseVelocity);
+      drivetrain.setRightVelocity(curvedBaseVelocity);
     }
 
     lastTime = System.currentTimeMillis();
@@ -321,18 +323,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     return turn;
   }
-
-  /**
-   * Returns the change in heading the robot will experience through a path.
-   * @param path The path immediately in front of the robot. Ideally, the first point of the path should be the robot's position and heading.
-   * @return The heading change the robot will experience through the path in degrees.
-   */
-  private double getHeadingChangeOfPath(Point2D[] path) {
-    SmartDashboard.putNumber("Emulate path 0 heading", path[0].getHeading());
-    SmartDashboard.putNumber("Emulate path length heading", path[path.length - 1].getHeading());
-    return Util.getAngleToHeading(path[0].getHeading(), path[path.length - 1].getHeading());
-  }
-
+  
   /**
    * Returns an angle corresponding to the direction that the robot is travelling in
    * @param angle Original angle.
@@ -356,7 +347,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     //gather needed variables (coefficient of friction, normal force, and mass) and convert to SI units.
     double coefficientOfFriction = Util.getAndSetDouble("Emulate Coefficient of Friction", 1); //defaults to the approximate CoE of rubber on concrete. No Unit.
-    double normalForce = Util.poundForceToNewtons(Constants.ROBOT_WEIGHT_POUND_FORCE); //unit: N
+    double normalForce = Util.poundForceToNewtons(Constants.ROBOT_WEIGHT_POUND_FORCE); //unit: N. There is no extra downwards force on the robot so Fn == Fg
     double robotMass   = Util.weightLBFToMassKG(Constants.ROBOT_WEIGHT_POUND_FORCE); //unit: kg
     double radius      = Math.abs(Util.inchesToMeters(turnRadius)); //unit: m. We can absolute value it because we dont care about the direction of the arc.
 
