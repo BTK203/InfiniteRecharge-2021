@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.SerialPort.Port;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants. This class should not be used for any other
@@ -69,6 +71,15 @@ public final class Constants {
     public static final int
         BEATER_ID = 13,
         FEEDER_ID = 14;
+
+    /**
+     * Jevois ID and baud rate
+     */
+    public static final int
+        JEVOIS_BAUD_RATE = 115200;
+
+    public static final Port
+        JEVOIS_PORT = Port.kUSB;
     
     /**
      * Drivetrain motor inverts

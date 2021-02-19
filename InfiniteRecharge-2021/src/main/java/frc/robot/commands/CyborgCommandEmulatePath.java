@@ -13,16 +13,19 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.SubsystemDrive;
-import frc.robot.util.CourseAdjuster;
 import frc.robot.util.PathRecorder;
 import frc.robot.util.Point2D;
-import frc.robot.util.TrajectorySegment;
 import frc.robot.util.Util;
 
 public class CyborgCommandEmulatePath extends CommandBase {
   private SubsystemDrive drivetrain;
   private Point2D[] points;
   private int currentPointIndex;
+  private long lastTime;
+  private double
+    lastBestSpeed,
+    lastLeftVelocity,
+    lastRightVelocity;
   private boolean isForwards;
   private PathRecorder recorder;
 
@@ -39,6 +42,10 @@ public class CyborgCommandEmulatePath extends CommandBase {
   public void initialize() {
     currentPointIndex = 1;
     recorder.init();
+    lastTime = System.currentTimeMillis();
+    lastBestSpeed = 0;
+    lastLeftVelocity = 0;
+    lastRightVelocity = 0;
 
     try {
       String fileContents = Files.readString(Path.of("/home/lvuser/points.txt"));
@@ -191,7 +198,6 @@ public class CyborgCommandEmulatePath extends CommandBase {
       double leftVelocity  = leftDisplacement / timeInterval; //unit: in/sec
       double rightVelocity = rightDisplacement / timeInterval;
 
-      SmartDashboard.putNumber("Emulate time interval", timeInterval);
       SmartDashboard.putNumber("Emulate left vel.", leftVelocity);
       SmartDashboard.putNumber("Emulate right vel.", rightVelocity);
 
@@ -214,10 +220,19 @@ public class CyborgCommandEmulatePath extends CommandBase {
       drivetrain.setRightVelocity(rightVelocity);
     } else {
       double baseSpeed = Util.getAndSetDouble("Emulate Max Speed", 40);
+      if(!isForwards) {
+        baseSpeed *= -1;
+      }
+
+      baseSpeed = ramp(baseSpeed, lastBestSpeed, Util.getAndSetDouble("Emulate Ramp", 0.75));
+      lastBestSpeed = baseSpeed;
+
       double curvedBaseSpeed = curveVelocity(IPStoRPM(baseSpeed));
       drivetrain.setLeftVelocity(curvedBaseSpeed);
       drivetrain.setRightVelocity(curvedBaseSpeed);
     }
+
+    lastTime = System.currentTimeMillis();
   }
 
   // Called once the command ends or is interrupted.
@@ -360,6 +375,32 @@ public class CyborgCommandEmulatePath extends CommandBase {
     SmartDashboard.putNumber("Emulate CoE", coefficientOfFriction);
 
     return bestSpeed;
+  }
+
+
+  /**
+   * Ramps a value.
+   * @param power desired value
+   * @param last last value
+   * @param ramp desired ramp (seconds from 0 to 1)
+   * @return ramped value from -1 to 1
+   */
+  private double ramp(double power, double last, double ramp) {
+    double rampedPower = power;
+    long currentTime = System.currentTimeMillis();
+
+    double elapsedTime = (currentTime - lastTime) / 1000.0;
+    double rampMultiplier = elapsedTime / ramp;
+    rampMultiplier = (rampMultiplier > 1 ? 1 : rampMultiplier);
+
+    DriverStation.reportError("power: " + Double.valueOf(power).toString(), false);
+    DriverStation.reportError("last: " + Double.valueOf(last).toString(), false);
+
+    rampedPower = last + (power * rampMultiplier);
+
+    DriverStation.reportError("new power: " + Double.valueOf(rampedPower).toString(), false);
+
+    return rampedPower;
   }
 
   //TESTING

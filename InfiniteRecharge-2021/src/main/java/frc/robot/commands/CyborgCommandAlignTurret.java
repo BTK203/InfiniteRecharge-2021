@@ -130,6 +130,7 @@ public class CyborgCommandAlignTurret extends CommandBase {
         newPitchPosition = (-9.512 * targetDistance) -65.85;
       }
 
+      newPitchPosition += Util.getAndSetDouble("Align Degree Boost", 0);
       turret.setPitchPosition(newPitchPosition);
 
       pitchAligned = Math.abs(newPitchPosition - turret.getPitchPosition()) < Constants.TURRET_PITCH_ALLOWABLE_ERROR;
