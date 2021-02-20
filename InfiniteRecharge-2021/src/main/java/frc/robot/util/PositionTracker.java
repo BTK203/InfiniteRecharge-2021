@@ -4,7 +4,6 @@
 
 package frc.robot.util;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemDrive;
 
@@ -102,8 +101,11 @@ public class PositionTracker {
         driveX /= Constants.DRIVE_ROTATIONS_PER_INCH;
         driveY /= Constants.DRIVE_ROTATIONS_PER_INCH;
 
-        SmartDashboard.putNumber("PT DriveX", driveX);
-        SmartDashboard.putNumber("PT DriveY", driveY);
+        if(Math.abs(heading - rotation) < 10) {
+            double correctionRatio = Util.getAndSetDouble("PositionTracker correction ratio", 1);
+            driveX *= correctionRatio;
+            driveY *= correctionRatio;
+        }
 
         this.x += driveX;
         this.y += driveY;

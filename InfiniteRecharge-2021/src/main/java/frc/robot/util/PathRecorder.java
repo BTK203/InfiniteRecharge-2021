@@ -23,13 +23,14 @@ public class PathRecorder {
         this.file = file;
         lastPoint = new Point2D(0, 0, 0);
         lastFlushTime = System.currentTimeMillis();
-        // init();
     }
 
     public void init(){
         try {
             writer = new FileWriter(file, false);
             buffer = new BufferedWriter(writer);
+
+            buffer.append("0,0,0\n0,0,0\n0,0,0\n0,0,0\n");
         } catch (IOException ex) {
             DriverStation.reportError("IO EXCEPTION", true);
         }

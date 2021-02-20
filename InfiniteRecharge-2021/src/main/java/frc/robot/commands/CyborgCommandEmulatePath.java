@@ -7,6 +7,7 @@ package frc.robot.commands;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -73,7 +74,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
     // //drivetrain closed loop ramp
     drivetrain.setPIDRamp(Util.getAndSetDouble("Drive PID Ramp", 0.5));
     drivetrain.setPIDConstants(kP, kI, kD, kF, izone, outLimitLow, outLimitHigh);
-    Robot.getRobotContainer().zeroAllDrivetrain();
+    // Robot.getRobotContainer().zeroAllDrivetrain();
 
     isForwards = new Point2D(0, 0, 0).getHeadingTo(points[1]) < 90;
   }
@@ -123,7 +124,8 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     //Resolve the path of points that are immediately ahead of the robot. This array will include the robot's location as the first point.
     int immediatePathSize = (int) Util.getAndSetDouble("Emulate Immediate Path Size", 5);
-    Point2D[] nextPoints = getNextNPoints(points, currentPointIndex + 2, immediatePathSize);
+    int pointsToSkip = (int) Util.getAndSetDouble("Emulate Points to skip", 2);
+    Point2D[] nextPoints = getNextNPoints(points, currentPointIndex + pointsToSkip, immediatePathSize);
     Point2D[] immediatePath = new Point2D[nextPoints.length + 1];
 
     //set first point to robot location, but the heading must be forwards trajectory.
@@ -185,14 +187,6 @@ public class CyborgCommandEmulatePath extends CommandBase {
       SmartDashboard.putNumber("Emulate left displacement", leftDisplacement);
       SmartDashboard.putNumber("Emulate right displacement", rightDisplacement);
 
-      if (
-        (leftDisplacement < 0 && rightDisplacement < 0 && isForwards) ||
-        (leftDisplacement > 0 && rightDisplacement > 0 && !isForwards)
-      ) {
-        leftDisplacement *= -1;
-        rightDisplacement *= -1;
-      }
-
       //convert displacments to velocities
       double timeInterval  = immediateDistance / baseSpeed; // unit: sec
       double leftVelocity  = leftDisplacement / timeInterval; //unit: in/sec
@@ -224,9 +218,6 @@ public class CyborgCommandEmulatePath extends CommandBase {
         baseSpeed *= -1;
       }
 
-      baseSpeed = ramp(baseSpeed, lastBestSpeed, Util.getAndSetDouble("Emulate Ramp", 0.75));
-      lastBestSpeed = baseSpeed;
-
       double curvedBaseSpeed = curveVelocity(IPStoRPM(baseSpeed));
       drivetrain.setLeftVelocity(curvedBaseSpeed);
       drivetrain.setRightVelocity(curvedBaseSpeed);
@@ -246,7 +237,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return currentPointIndex >= points.length - 3; //command will finish when the last point is acheived.
+    return currentPointIndex >= points.length - Util.getAndSetDouble("Emulate Points to skip", 2) - 2; //command will finish when the last point is acheived.
   }
 
   /**
@@ -375,32 +366,6 @@ public class CyborgCommandEmulatePath extends CommandBase {
     SmartDashboard.putNumber("Emulate CoE", coefficientOfFriction);
 
     return bestSpeed;
-  }
-
-
-  /**
-   * Ramps a value.
-   * @param power desired value
-   * @param last last value
-   * @param ramp desired ramp (seconds from 0 to 1)
-   * @return ramped value from -1 to 1
-   */
-  private double ramp(double power, double last, double ramp) {
-    double rampedPower = power;
-    long currentTime = System.currentTimeMillis();
-
-    double elapsedTime = (currentTime - lastTime) / 1000.0;
-    double rampMultiplier = elapsedTime / ramp;
-    rampMultiplier = (rampMultiplier > 1 ? 1 : rampMultiplier);
-
-    DriverStation.reportError("power: " + Double.valueOf(power).toString(), false);
-    DriverStation.reportError("last: " + Double.valueOf(last).toString(), false);
-
-    rampedPower = last + (power * rampMultiplier);
-
-    DriverStation.reportError("new power: " + Double.valueOf(rampedPower).toString(), false);
-
-    return rampedPower;
   }
 
   //TESTING
