@@ -225,92 +225,15 @@
               "_title": "/SmartDashboard/Left Output"
             }
           },
-          "2,0": {
+          "7,7": {
             "size": [
-              3,
+              2,
               1
             ],
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Emulate Immediate Turn Before Overturn",
               "_title": "/SmartDashboard/Emulate Immediate Turn Before Overturn"
-            }
-          },
-          "3,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Emulate path 0 heading",
-              "_title": "/SmartDashboard/Emulate path 0 heading"
-            }
-          },
-          "3,3": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Emulate path length heading",
-              "_title": "/SmartDashboard/Emulate path length heading"
-            }
-          },
-          "3,4": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Emulate Turn to heading difference",
-              "_title": "SmartDashboard/Emulate Turn to heading difference"
-            }
-          },
-          "3,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Emulate heading change",
-              "_title": "SmartDashboard/Emulate heading change"
-            }
-          },
-          "3,5": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Emulate Heading to next",
-              "_title": "SmartDashboard/Emulate Heading to next"
-            }
-          },
-          "4,5": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Emulate heading current to next",
-              "_title": "SmartDashboard/Emulate heading current to next"
-            }
-          },
-          "1,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Emulate heading diff",
-              "_title": "SmartDashboard/Emulate heading diff"
             }
           },
           "7,5": {
@@ -1132,7 +1055,7 @@
     }
   ],
   "windowGeometry": {
-    "x": -1928.0,
+    "x": -8.0,
     "y": -8.0,
     "width": 1936.0,
     "height": 1056.0
