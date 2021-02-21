@@ -63,7 +63,7 @@ public class CyborgCommandShootPayload extends CommandBase {
 
     addRequirements(this.intake);
     addRequirements(this.feeder);
-    //we do not require flywheel because we need the rpm command running, we just need it to read out rpms
+    //we do not require flywheel because CyborgCommandFlywheelVelocity takes care of rpms; we just read out velocity
   }
 
   public CyborgCommandShootPayload(

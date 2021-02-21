@@ -30,12 +30,10 @@ public class PathRecorder {
             writer = new FileWriter(file, false);
             buffer = new BufferedWriter(writer);
 
-            buffer.append("0,0,0\n0,0,0\n0,0,0\n0,0,0\n");
+            // buffer.append("0,0,0\n0,0,0\n0,0,0\n0,0,0\n");
         } catch (IOException ex) {
             DriverStation.reportError("IO EXCEPTION", true);
         }
-
-        Robot.getRobotContainer().zeroAllDrivetrain();
     }
 
     public void closeFile() {

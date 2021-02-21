@@ -56,7 +56,7 @@ public class CyborgCommandSmartDriveDistance extends CommandBase {
 
     //set up distance controller 
     this.distanceTraveled = 0;
-    double distanceP = Util.getAndSetDouble("Drive Distance kP", 0);
+    double distanceP = Util.getAndSetDouble("Drive Distance kP", 0.03);
     double distanceI = Util.getAndSetDouble("Drive Distance kI", 0);
     double distanceD = Util.getAndSetDouble("Drive Distance kD", 0);
     distanceController = new PIDController(distanceP, distanceI, distanceD);
@@ -65,7 +65,7 @@ public class CyborgCommandSmartDriveDistance extends CommandBase {
     //set up heading controller
     this.heading = drivetrain.getGyroAngle();
     // this.heading = Util.getAndSetDouble("Test Drivetrain Heading", 0);
-    double headingP = Util.getAndSetDouble("Drive Heading kP", 0);
+    double headingP = Util.getAndSetDouble("Drive Heading kP", 0.05);
     double headingI = Util.getAndSetDouble("Drive Heading kI", 0);
     double headingD = Util.getAndSetDouble("Drive Heading kD", 0);
     headingController = new PIDController(headingP, headingI, headingD);

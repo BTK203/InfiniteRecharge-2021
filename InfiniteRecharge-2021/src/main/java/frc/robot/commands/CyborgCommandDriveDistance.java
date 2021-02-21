@@ -51,11 +51,11 @@ public class CyborgCommandDriveDistance extends CommandBase {
     DriverStation.reportWarning("Drive Target Left: " + Double.valueOf(leftDestination).toString(), false);
     DriverStation.reportWarning("Drive Target Right: " + Double.valueOf(rightDestination).toString(), false);
 
-    double p = Util.getAndSetDouble("Drivetrain kP", 0);
-    double i = Util.getAndSetDouble("Drivetrain kI", 0);
-    double d = Util.getAndSetDouble("Drivetrain kD", 0);
-    double f = Util.getAndSetDouble("Drivetrain kF", 0);
-    double iZone = Util.getAndSetDouble("Drivetrain IZone", 0);
+    double p = Util.getAndSetDouble("Dumb Drive Distance kP", 0.03);
+    double i = Util.getAndSetDouble("Dumb Drive Distance kI", 0);
+    double d = Util.getAndSetDouble("Dumb Drive Distance kD", 0);
+    double f = Util.getAndSetDouble("Dumb Drive Distance kF", 0);
+    double iZone = Util.getAndSetDouble("Dumb Drive Distance IZone", 0);
     double out = inhibitor;
 
     drivetrain.setPIDConstants(p, i, d, f, iZone, out);

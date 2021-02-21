@@ -4,17 +4,22 @@
 
 package frc.robot.auto;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.commands.ConstantCommandDriveIntake;
 import frc.robot.commands.CyborgCommandAlignTurret;
+import frc.robot.commands.CyborgCommandDriveDistance;
 import frc.robot.commands.CyborgCommandEmulatePath;
 import frc.robot.commands.CyborgCommandFlywheelVelocity;
 import frc.robot.commands.CyborgCommandSetTurretPosition;
 import frc.robot.commands.CyborgCommandShootPayload;
 import frc.robot.commands.CyborgCommandSmartDriveDistance;
+import frc.robot.commands.CyborgCommandWait;
+import frc.robot.commands.CyborgCommandWaitForFlywheel;
 import frc.robot.commands.CyborgCommandZeroTurret;
 import frc.robot.subsystems.SubsystemDrive;
 import frc.robot.subsystems.SubsystemFeeder;
@@ -22,6 +27,7 @@ import frc.robot.subsystems.SubsystemFlywheel;
 import frc.robot.subsystems.SubsystemIntake;
 import frc.robot.subsystems.SubsystemReceiver;
 import frc.robot.subsystems.SubsystemTurret;
+import frc.robot.util.Util;
 
 /**
  * This auto is written for the optional autonomous video for judging. 
@@ -40,7 +46,9 @@ public class JudgementAuto implements IAuto {
     driveBackToStart;
 
   private ConstantCommandDriveIntake collectPowerCells;
+  private CyborgCommandWait finishCollecting;
   private CyborgCommandSetTurretPosition positionTurret;
+  private CyborgCommandWaitForFlywheel waitForFlywheel;
   private CyborgCommandSmartDriveDistance driveForward;
   private CyborgCommandFlywheelVelocity driveFlywheel;
   private CyborgCommandAlignTurret align;
@@ -64,11 +72,17 @@ public class JudgementAuto implements IAuto {
     driveToSite             = new CyborgCommandEmulatePath(drivetrain, Constants.JUDGEMENT_AUTO_DRIVE_TO_SITE_PATH_FILE);
     driveBackToStart        = new CyborgCommandEmulatePath(drivetrain, Constants.JUDGEMENT_AUTO_DRIVE_BACK_TO_START_PATH_FILE);
     collectPowerCells       = new ConstantCommandDriveIntake(intake, feeder);
+    finishCollecting        = new CyborgCommandWait(750);
     positionTurret          = new CyborgCommandSetTurretPosition(turret, Constants.AUTO_INIT_YAW_TARGET, Constants.AUTO_INIT_PITCH_TARGET, true, kiwilight);
+    waitForFlywheel         = new CyborgCommandWaitForFlywheel(flywheel);
     driveForward            = new CyborgCommandSmartDriveDistance(drivetrain, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_DISTANCE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_POWER);
     driveFlywheel           = new CyborgCommandFlywheelVelocity(flywheel);
-    align                   = new CyborgCommandAlignTurret(turret, kiwilight);
+    align                   = new CyborgCommandAlignTurret(turret, kiwilight, false, (int) Util.getAndSetDouble("Judgement Auto Turret Yaw Offset", 0));
     shootPowerCells         = new CyborgCommandShootPayload(intake, feeder, flywheel, turret, Constants.JUDGEMENT_AUTO_BALLS_TO_SHOOT, false);
+  
+    if(Constants.AUTO_OVERREV_TURRET) {
+      driveFlywheel.overrideRPM(Util.getAndSetDouble("FW Velocity Target", 6000) + Constants.AUTO_OVERREV_EXTRA_RPM);
+    }
   }
 
   /**
@@ -87,14 +101,21 @@ public class JudgementAuto implements IAuto {
    */
   public Command getCommand() {
     //join any commands that need to be joinec
-    Command driveAndCollectPowerCells  = collectPowerCells.raceWith(driveToPowerCells); //will drive intake until path is completed
+    Command driveAndWait = driveToPowerCells.andThen(finishCollecting);
+    Command driveAndCollectPowerCells  = collectPowerCells.raceWith(driveAndWait); //will drive intake until path is completed
 
     //next three commands are all one group. To run the group, schedule doShootingThings.
     Command driveAndShootPowerCells    = align.raceWith(driveForward, shootPowerCells); //align WHILE driving forward and shooting power cells.
-    Command positionAndShootPowerCells = positionTurret.andThen(driveAndShootPowerCells); //position turret than do ^
+    // Command spinUpAndPosition = waitForFlywheel.alongWith(positionTurret);
+    // Command positionAndShootPowerCells = spinUpAndPosition.andThen(driveAndShootPowerCells); //position turret than do ^ GOOD. UNCOMMENT WHEN ENCODER CABLE FIXED
+    
+    Command spinUpAndPosition = waitForFlywheel;
+    Command positionAndShootPowerCells = spinUpAndPosition.andThen(driveAndShootPowerCells);
     Command doShootingThings           = driveFlywheel.raceWith(positionAndShootPowerCells); //do all of ^ while spinning flywheel
     
-    Command finalCommand = zeroDrivetrain.andThen(zeroTurret, driveAndCollectPowerCells, driveToSite, doShootingThings, driveBackToStart, zeroTurretAgain);
+ 
+    // Command finalCommand = zeroDrivetrain.andThen(zeroTurret, driveAndCollectPowerCells, driveToSite, doShootingThings, driveBackToStart, zeroTurretAgain); //FINAL COMMAND. UNCOMMENT WHEN ENCODER CABLE FIXED
+    Command finalCommand = zeroDrivetrain.andThen(driveAndCollectPowerCells, driveToSite, doShootingThings, driveBackToStart, zeroTurretAgain);
     return finalCommand;
   }
 

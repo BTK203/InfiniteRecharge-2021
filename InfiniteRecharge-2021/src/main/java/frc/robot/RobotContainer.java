@@ -26,12 +26,15 @@ import frc.robot.auto.SixBallSimpleAuto;
 import frc.robot.auto.TrenchAuto;
 import frc.robot.commands.ButtonCommandGroupRunIntakeFeeder;
 import frc.robot.commands.ButtonCommandMoveClimber;
+import frc.robot.commands.ConstantCommandDriveIntake;
 import frc.robot.commands.CyborgCommandAlignTurret;
 import frc.robot.commands.CyborgCommandCalibrateTurretPitch;
 import frc.robot.commands.CyborgCommandCalibrateTurretYaw;
+import frc.robot.commands.CyborgCommandDriveDistance;
 import frc.robot.commands.CyborgCommandEmulatePath;
 import frc.robot.commands.CyborgCommandFlywheelVelocity;
 import frc.robot.commands.CyborgCommandRecordPath;
+import frc.robot.commands.CyborgCommandSmartDriveDistance;
 import frc.robot.commands.CyborgCommandZeroTurret;
 import frc.robot.commands.ManualCommandDrive;
 import frc.robot.commands.ToggleCommandDriveClimber;
@@ -350,6 +353,13 @@ public class RobotContainer {
     SmartDashboard.putData("Zero All Drivetrain", new InstantCommand(() -> zeroAllDrivetrain()));
     SmartDashboard.putData("Record Path", new CyborgCommandRecordPath(POSITION_TRACKER));
     SmartDashboard.putData("Emulate Path", new CyborgCommandEmulatePath(SUB_DRIVE));
+
+    /**
+     * Temporary dashboard buttons
+     */
+    SmartDashboard.putData("Run Intake", new ConstantCommandDriveIntake(SUB_INTAKE, SUB_FEEDER));
+    SmartDashboard.putData("Test DD", new CyborgCommandDriveDistance(SUB_DRIVE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_DISTANCE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_POWER));
+    SmartDashboard.putData("Test SDD", new CyborgCommandSmartDriveDistance(SUB_DRIVE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_DISTANCE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_POWER));
   }
   
   private void configureChoosers() {

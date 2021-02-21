@@ -249,7 +249,9 @@ public final class Constants {
      */
     public static final int
         JUDGEMENT_AUTO_BALLS_TO_SHOOT = 5,
-        JUDGEMENT_AUTO_SHOOT_DRIVE_DISTANCE = 132; //unit: in
+        JUDGEMENT_AUTO_SHOOT_DRIVE_DISTANCE = 132, //inches
+        JUDGEMENT_AUTO_YAW_TARGET = 1200000, //ticks
+        JUDGEMENT_AUTO_PITCH_TARGET = -9389; //ticks
 
     public static final double
         JUDGEMENT_AUTO_SHOOT_DRIVE_POWER = 0.15; //unit in/s

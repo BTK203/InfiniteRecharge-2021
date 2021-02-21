@@ -20,11 +20,13 @@ import frc.robot.util.Util;
 public class CyborgCommandAlignTurret extends CommandBase {
   private SubsystemTurret turret;
   private SubsystemReceiver kiwilight;
-  private boolean targetPreviouslySeen;
   private boolean
+    targetPreviouslySeen,
     endable,
     yawAligned,
     pitchAligned;
+
+  private int offset;
 
   private long 
     lastAlignedTime,
@@ -32,15 +34,35 @@ public class CyborgCommandAlignTurret extends CommandBase {
 
   /**
    * Creates a new CyborgCommandAlignTurret.
+   * @param turret Turret to align.
+   * @param kiwilight KiwiLight client to use.
+   * @param endable True if the command ends when the target is aligned, false otherwise.
+   * @param offset Offset in degrees to use. Use this when shooting while moving.
    */
-  public CyborgCommandAlignTurret(SubsystemTurret turret, SubsystemReceiver kiwilight, boolean endable) {
+  public CyborgCommandAlignTurret(SubsystemTurret turret, SubsystemReceiver kiwilight, boolean endable, int offset) {
     this.turret = turret;
     this.kiwilight = kiwilight;
     this.endable = endable;
+    this.offset = offset;
 
     addRequirements(this.turret);
   }
 
+  /**
+   * Creates a new CyborgCommandAlignTurret.
+   * @param turret The turret to align.
+   * @param kiwilight The KiwiLight client to use.
+   * @param endable True if the command ends when the target is aligned, false otherwise.
+   */
+  public CyborgCommandAlignTurret(SubsystemTurret turret, SubsystemReceiver kiwilight, boolean endable) {
+    this(turret, kiwilight, endable, 0);
+  }
+
+  /**
+   * Creates a new CyborgCommandAlignTurret.
+   * @param turret The turret to align.
+   * @param kiwilight The KiwiLight client to use.
+   */
   public CyborgCommandAlignTurret(SubsystemTurret turret, SubsystemReceiver kiwilight) {
     this(turret, kiwilight, false);
   }
@@ -81,6 +103,7 @@ public class CyborgCommandAlignTurret extends CommandBase {
     Joystick operator = Robot.getRobotContainer().getOperator(); //in case no target
 
     double horizontalAngle = kiwilight.getHorizontalAngleToTarget() * -1;
+    horizontalAngle += offset;
     horizontalAngle *= Util.getAndSetDouble("Vision multiplier", 1);
 
     double horizontalPosition = turret.getYawPosition() * -1;

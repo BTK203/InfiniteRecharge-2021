@@ -176,6 +176,39 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
+          "5,4": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Run Intake",
+              "_title": "SmartDashboard/Run Intake"
+            }
+          },
+          "5,5": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Test DD",
+              "_title": "SmartDashboard/Test DD"
+            }
+          },
+          "5,6": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Test SDD",
+              "_title": "SmartDashboard/Test SDD"
+            }
+          },
           "12,0": {
             "size": [
               5,
@@ -882,7 +915,7 @@
     }
   ],
   "windowGeometry": {
-    "x": -8.0,
+    "x": -1928.0,
     "y": -8.0,
     "width": 1936.0,
     "height": 1056.0
