@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.auto.BareMinimumAuto;
 import frc.robot.auto.IAuto;
 import frc.robot.auto.InitAuto;
+import frc.robot.auto.JudgementAuto;
 import frc.robot.auto.SixBallSimpleAuto;
 import frc.robot.auto.TrenchAuto;
 import frc.robot.commands.ButtonCommandGroupRunIntakeFeeder;
@@ -28,15 +29,9 @@ import frc.robot.commands.ButtonCommandMoveClimber;
 import frc.robot.commands.CyborgCommandAlignTurret;
 import frc.robot.commands.CyborgCommandCalibrateTurretPitch;
 import frc.robot.commands.CyborgCommandCalibrateTurretYaw;
-import frc.robot.commands.CyborgCommandDriveDistance;
 import frc.robot.commands.CyborgCommandEmulatePath;
 import frc.robot.commands.CyborgCommandFlywheelVelocity;
 import frc.robot.commands.CyborgCommandRecordPath;
-import frc.robot.commands.CyborgCommandSetTurretPosition;
-import frc.robot.commands.CyborgCommandShootPayload;
-import frc.robot.commands.CyborgCommandSmartDriveDistance;
-import frc.robot.commands.CyborgCommandTestScissorPositition;
-import frc.robot.commands.CyborgCommandTestVelocity;
 import frc.robot.commands.CyborgCommandZeroTurret;
 import frc.robot.commands.ManualCommandDrive;
 import frc.robot.commands.ToggleCommandDriveClimber;
@@ -73,7 +68,7 @@ public class RobotContainer {
   private final SubsystemSpinner   SUB_SPINNER  = new SubsystemSpinner();
   private final SubsystemClimb     SUB_CLIMB    = new SubsystemClimb();
   private final SubsystemReceiver  SUB_RECEIVER = new SubsystemReceiver();
-  // private final CameraHub          CAMERA_HUB   = new CameraHub();
+  private final CameraHub          CAMERA_HUB   = new CameraHub();
 
   /**
    * Utilities
@@ -146,6 +141,9 @@ public class RobotContainer {
         break;
       case EIGHT_BALL_TRENCH:
         currentAuto = new TrenchAuto(SUB_DRIVE, SUB_TURRET, SUB_RECEIVER, SUB_INTAKE, SUB_FEEDER, SUB_FLYWHEEL);
+        break;
+      case FLEX_TIME:
+        currentAuto = new JudgementAuto(SUB_DRIVE, SUB_INTAKE, SUB_FEEDER, SUB_TURRET, SUB_FLYWHEEL, SUB_RECEIVER);
         break;
       default:
         currentAuto = new InitAuto(SUB_DRIVE, SUB_TURRET);
@@ -272,7 +270,6 @@ public class RobotContainer {
    */
   public void printAllSystemsGo() {
     boolean 
-      climbIsGo     = SUB_CLIMB.getSystemIsGo(),
       driveIsGo     = SUB_DRIVE.getSystemIsGo(),
       feederIsGo    = SUB_FEEDER.getSystemIsGo(),
       flywheelIsGo  = SUB_FLYWHEEL.getSystemIsGo(),
@@ -282,7 +279,6 @@ public class RobotContainer {
       turretIsGo    = SUB_TURRET.getSystemIsGo();
 
     boolean allSystemsGo = 
-      climbIsGo &&
       driveIsGo &&
       feederIsGo &&
       flywheelIsGo &&
@@ -346,27 +342,12 @@ public class RobotContainer {
     /**
      * Dashboard Buttons
      */
-    SmartDashboard.putData("Drive Flywheel RPM", driveFlywheelRPM);
-    SmartDashboard.putData("Align Turret", new CyborgCommandAlignTurret(SUB_TURRET, SUB_RECEIVER, false));
     SmartDashboard.putData("Calibrate Turret Yaw", new CyborgCommandCalibrateTurretYaw(SUB_TURRET));
     SmartDashboard.putData("Calibrate Turret Pitch", new CyborgCommandCalibrateTurretPitch(SUB_TURRET));
-    SmartDashboard.putData("Zero Scissor and Winch Encoders", new InstantCommand(() -> SUB_CLIMB.zeroEncoders(), SUB_CLIMB));
-    SmartDashboard.putData("Test Scissor PID", new CyborgCommandTestScissorPositition(SUB_CLIMB, OPERATOR));
     SmartDashboard.putData("Zero Turret", new CyborgCommandZeroTurret(SUB_TURRET));
-    SmartDashboard.putData("Set Turret Position", new CyborgCommandSetTurretPosition(SUB_TURRET, 500000, 0, false, null, true));
-    SmartDashboard.putData("Drive Distance", new CyborgCommandDriveDistance(SUB_DRIVE, -132, 0.75));
-    SmartDashboard.putData("Drive Distance Smart", new CyborgCommandSmartDriveDistance(SUB_DRIVE, 156, 1));
-    SmartDashboard.putData("Test Drive Velocity", new CyborgCommandTestVelocity(SUB_DRIVE, 156));
-    SmartDashboard.putData("Reset Fastest Speed", new InstantCommand(() -> SUB_DRIVE.resetFastestSpeed()));
-    SmartDashboard.putData("Zero Yaw", new InstantCommand(() -> SUB_TURRET.setCurrentYawEncoderPosition(0), SUB_TURRET));
+    SmartDashboard.putData("Zero Yaw Encoder", new InstantCommand(() -> SUB_TURRET.setCurrentYawEncoderPosition(0), SUB_TURRET));
     SmartDashboard.putData("Zero Drivetrain Encoders", new InstantCommand(() -> SUB_DRIVE.zeroEncoders()));
     SmartDashboard.putData("Zero All Drivetrain", new InstantCommand(() -> zeroAllDrivetrain()));
-    SmartDashboard.putData("Drive Just Masters", new RunCommand(() -> SUB_DRIVE.driveJustMasters(DRIVER), SUB_DRIVE));
-    SmartDashboard.putData("Drive Just Slaves", new RunCommand(() -> SUB_DRIVE.driveJustSlaves(DRIVER), SUB_DRIVE));
-    SmartDashboard.putData("Drive Straight", new CyborgCommandSmartDriveDistance(SUB_DRIVE, 60, 0.6));
-    SmartDashboard.putData("Shoot Payload", new CyborgCommandShootPayload(SUB_INTAKE, SUB_FEEDER, SUB_FLYWHEEL, SUB_TURRET, 3, 15000, false));
-    SmartDashboard.putData("Toggle Winch", climberManualDrive);
-    SmartDashboard.putData("Drive Flywheel RPM", driveFlywheelRPM);
     SmartDashboard.putData("Record Path", new CyborgCommandRecordPath(POSITION_TRACKER));
     SmartDashboard.putData("Emulate Path", new CyborgCommandEmulatePath(SUB_DRIVE));
   }
@@ -378,6 +359,7 @@ public class RobotContainer {
     autoChooser.addOption("Init Only", AutoMode.INIT_ONLY);
     autoChooser.addOption("Simple Six Ball", AutoMode.SIX_BALL_SIMPLE);
     autoChooser.addOption("Eight Ball", AutoMode.EIGHT_BALL_TRENCH);
+    autoChooser.addOption("Judgement Auto", AutoMode.FLEX_TIME);
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     //declare the different drive schemes available

@@ -200,12 +200,13 @@ public final class Constants {
         KIWILIGHT_STABLE_TIME = 0,
         FLYWHEEL_STABLE_RPM = 5600,
         AUTO_OVERREV_EXTRA_RPM = 500,
-        TURRET_APPROX_TARGET_TICKS_CLOSE = -624258,
+        AUTO_INIT_YAW_TARGET = -624258,
         TURRET_TARGET_TICKS_PER_INCH = -1399, //ticks to turn per inch away from wall
         AUTO_INIT_PITCH_TARGET = -694,
         AUTO_DEEP_TRENCH_DISTANCE = -150,
         AUTO_SHALLOW_TRENCH_DISTANCE = -154,
-        TRENCH_AUTO_WAIT_TIME = 500;
+        TRENCH_AUTO_WAIT_TIME = 500,
+        SHOOT_PAYLOAD_DEFAULT_WAIT_TIME = 15000; //15 seconds or 15,000 ms
 
     /**
      * Temporary auto
@@ -238,6 +239,25 @@ public final class Constants {
     public static final int
         EMULATE_POINT_SKIP_LIMIT = 5,
         EMULATE_MAX_HEADING_TO_TURN_DIFFERENCE = 75;
+
+    public static final String
+        EMULATE_DEFAULT_POINTS_FILE_PATH = "/home/lvuser/points.txt",
+        EMULATE_RESULTS_FILE_PATH = "/home/lvuser/results.txt";
+
+    /**
+     * Judgement auto
+     */
+    public static final int
+        JUDGEMENT_AUTO_BALLS_TO_SHOOT = 5,
+        JUDGEMENT_AUTO_SHOOT_DRIVE_DISTANCE = 132; //unit: in
+
+    public static final double
+        JUDGEMENT_AUTO_SHOOT_DRIVE_POWER = 0.15; //unit in/s
+
+    public static final String
+        JUDGEMENT_AUTO_DRIVE_TO_POWER_CELLS_PATH_FILE = "/home/lvuser/ja_driveToCells.txt",
+        JUDGEMENT_AUTO_DRIVE_TO_SITE_PATH_FILE        = "/home/lvuser/ja_driveToSite.txt",
+        JUDGEMENT_AUTO_DRIVE_BACK_TO_START_PATH_FILE  = "/home/lvuser/ja_driveBackToStart.txt";
 
     public static final boolean
         DRIVE_CAMERA_AUTOMATIC_EXPOSURE = false;

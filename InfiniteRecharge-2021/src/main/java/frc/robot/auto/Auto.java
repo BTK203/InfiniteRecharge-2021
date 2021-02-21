@@ -20,7 +20,7 @@ public class Auto {
      * @return ticks to set the turret to
      */
     public static int getYawTicksToTarget(double offsetY) {
-        double offsetYawTicks = (offsetY * Constants.TURRET_TARGET_TICKS_PER_INCH) + Constants.TURRET_APPROX_TARGET_TICKS_CLOSE;
+        double offsetYawTicks = (offsetY * Constants.TURRET_TARGET_TICKS_PER_INCH) + Constants.AUTO_INIT_YAW_TARGET;
         offsetYawTicks *= -1;
         return (int) offsetYawTicks;
     }

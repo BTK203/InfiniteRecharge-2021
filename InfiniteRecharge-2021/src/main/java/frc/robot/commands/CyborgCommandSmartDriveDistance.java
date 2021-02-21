@@ -24,7 +24,7 @@ public class CyborgCommandSmartDriveDistance extends CommandBase {
   private double
     distance,
     heading,
-    speed,
+    power,
     distanceTraveled,
     lastLeftPosition,
     lastRightPosition;
@@ -37,11 +37,12 @@ public class CyborgCommandSmartDriveDistance extends CommandBase {
    * Creates a new CyborgCommandSmartDriveDistance.
    * @param drivetrain the drivetrain to drive.
    * @param distance the distance to drive, in inches.
+   * @param power The speed at which to drive, in inches per second
    */
-  public CyborgCommandSmartDriveDistance(SubsystemDrive drivetrain, double distance, double speed) {
+  public CyborgCommandSmartDriveDistance(SubsystemDrive drivetrain, double distance, double power) {
     this.drivetrain = drivetrain;
     this.distance = distance * Constants.DRIVE_ROTATIONS_PER_INCH;
-    this.speed = speed;
+    this.power = power;
     addRequirements(this.drivetrain);
   }
 
@@ -89,7 +90,7 @@ public class CyborgCommandSmartDriveDistance extends CommandBase {
 
     //get distance PID output
     double outputForDistance = distanceController.calculate(distanceTraveled);
-    outputForDistance = (outputForDistance > speed ? speed : (outputForDistance < speed * -1 ? speed * -1 : outputForDistance));
+    outputForDistance = (outputForDistance > power ? power : (outputForDistance < power * -1 ? power * -1 : outputForDistance));
 
     //get output for heading
     double outputForHeading = headingController.calculate(drivetrain.getGyroAngle());

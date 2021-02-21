@@ -7,7 +7,6 @@ package frc.robot.commands;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -23,14 +22,20 @@ public class CyborgCommandEmulatePath extends CommandBase {
   private Point2D[] points;
   private int currentPointIndex;
   private boolean isForwards;
+  private String pointsFilePath;
   private PathRecorder recorder;
 
   /** Creates a new CyborgCommandEmulatePath. */
-  public CyborgCommandEmulatePath(SubsystemDrive drivetrain) {
+  public CyborgCommandEmulatePath(SubsystemDrive drivetrain, String filePath) {
     this.drivetrain = drivetrain;
-    recorder = new PathRecorder("/home/lvuser/results.txt");
+    this.pointsFilePath = filePath;
+    recorder = new PathRecorder(Constants.EMULATE_RESULTS_FILE_PATH);
 
     addRequirements(drivetrain);
+  }
+
+  public CyborgCommandEmulatePath(SubsystemDrive drivetrain) {
+    this(drivetrain, Constants.EMULATE_DEFAULT_POINTS_FILE_PATH);
   }
 
   // Called when the command is initially scheduled.
@@ -40,7 +45,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
     recorder.init();
 
     try {
-      String fileContents = Files.readString(Path.of("/home/lvuser/points.txt"));
+      String fileContents = Files.readString(Path.of(pointsFilePath));
 
       //create array of points based on fileContents
       String pointStrings[] = fileContents.split("\n");

@@ -32,37 +32,8 @@
                 },
                 {
                   "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Drive Distance",
-                  "_title": "/SmartDashboard/Drive Distance"
-                },
-                {
-                  "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Drive Flywheel RPM",
-                  "_title": "/SmartDashboard/Drive Flywheel RPM"
-                },
-                {
-                  "_type": "Command",
-                  "_title": "/SmartDashboard/Set Turret Position"
-                },
-                {
-                  "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Test Scissor PID",
-                  "_title": "/SmartDashboard/Test Scissor PID"
-                },
-                {
-                  "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Toggle Winch",
-                  "_title": "/SmartDashboard/Toggle Winch"
-                },
-                {
-                  "_type": "Command",
                   "_source0": "network_table:///SmartDashboard/Zero Drivetrain Encoders",
                   "_title": "/SmartDashboard/Zero Drivetrain Encoders"
-                },
-                {
-                  "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Zero Scissor and Winch Encoders",
-                  "_title": "/SmartDashboard/Zero Scissor and Winch Encoders"
                 },
                 {
                   "_type": "Command",
@@ -71,56 +42,23 @@
                 },
                 {
                   "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Zero Yaw",
-                  "_title": "/SmartDashboard/Zero Yaw"
-                },
-                {
-                  "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Shoot Payload",
-                  "_title": "SmartDashboard/Shoot Payload"
-                },
-                {
-                  "_type": "Command",
                   "_source0": "network_table:///SmartDashboard/Zero All Drivetrain",
                   "_title": "/SmartDashboard/Zero All Drivetrain"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Record Path",
+                  "_title": "/SmartDashboard/Record Path"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Emulate Path",
+                  "_title": "/SmartDashboard/Emulate Path"
                 }
               ]
             }
           },
-          "7,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Emulate Path",
-              "_title": "/SmartDashboard/Emulate Path"
-            }
-          },
-          "7,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Record Path",
-              "_title": "/SmartDashboard/Record Path"
-            }
-          },
-          "7,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Test Drive Velocity",
-              "_title": "SmartDashboard/Test Drive Velocity"
-            }
-          },
-          "7,3": {
+          "7,4": {
             "size": [
               2,
               2
@@ -135,7 +73,7 @@
               "Visuals/Counter clockwise": false
             }
           },
-          "5,0": {
+          "7,0": {
             "size": [
               1,
               1
@@ -146,7 +84,7 @@
               "_title": "/SmartDashboard/Emulate current point"
             }
           },
-          "6,0": {
+          "8,0": {
             "size": [
               1,
               1
@@ -157,7 +95,7 @@
               "_title": "/SmartDashboard/Emulate points"
             }
           },
-          "5,3": {
+          "5,0": {
             "size": [
               2,
               2
@@ -170,7 +108,7 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "5,1": {
+          "7,1": {
             "size": [
               2,
               1
@@ -181,7 +119,7 @@
               "_title": "/SmartDashboard/Robot Position"
             }
           },
-          "5,2": {
+          "7,2": {
             "size": [
               2,
               1
@@ -192,18 +130,7 @@
               "_title": "/SmartDashboard/Emulate target point"
             }
           },
-          "5,5": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Emulate Heading to next",
-              "_title": "/SmartDashboard/Emulate Heading to next"
-            }
-          },
-          "5,6": {
+          "7,3": {
             "size": [
               2,
               1
@@ -214,7 +141,7 @@
               "_title": "/SmartDashboard/Right Output"
             }
           },
-          "7,6": {
+          "5,3": {
             "size": [
               2,
               1
@@ -225,7 +152,7 @@
               "_title": "/SmartDashboard/Left Output"
             }
           },
-          "7,7": {
+          "5,2": {
             "size": [
               2,
               1
@@ -236,7 +163,7 @@
               "_title": "/SmartDashboard/Emulate Immediate Turn Before Overturn"
             }
           },
-          "7,5": {
+          "7,6": {
             "size": [
               2,
               1
@@ -296,7 +223,7 @@
           "0,0": {
             "size": [
               5,
-              4
+              8
             ],
             "content": {
               "_type": "Grid Layout",
@@ -360,77 +287,6 @@
                   "_type": "Toggle Switch",
                   "_source0": "network_table:///Preferences/Override Drive Lock",
                   "_title": "OVERRIDE LOCK"
-                }
-              }
-            }
-          },
-          "0,4": {
-            "size": [
-              5,
-              4
-            ],
-            "content": {
-              "_type": "Grid Layout",
-              "_title": "Climber",
-              "Layout/Number of columns": 3,
-              "Layout/Number of rows": 3,
-              "Layout/Label position": "BOTTOM",
-              "_children": {
-                "0,2": {
-                  "_type": "Text View",
-                  "_source0": "network_table:///SmartDashboard/Scissor Position",
-                  "_title": "Scissor Position"
-                },
-                "2,2": {
-                  "_type": "Text View",
-                  "_source0": "network_table:///SmartDashboard/Winch Position",
-                  "_title": "Winch Position"
-                },
-                "2,1": {
-                  "_type": "Simple Dial",
-                  "_source0": "network_table:///SmartDashboard/Winch Amps",
-                  "_title": "Winch Amps",
-                  "Range/Min": 0.0,
-                  "Range/Max": 100.0,
-                  "Visuals/Show value": true
-                },
-                "0,1": {
-                  "_type": "Simple Dial",
-                  "_source0": "network_table:///SmartDashboard/Scissor Amps",
-                  "_title": "Scissor Amps",
-                  "Range/Min": 0.0,
-                  "Range/Max": 100.0,
-                  "Visuals/Show value": true
-                },
-                "0,0": {
-                  "_type": "Number Slider",
-                  "_source0": "network_table:///SmartDashboard/Scissor Out",
-                  "_title": "Scissor Out",
-                  "Slider Settings/Min": -1.0,
-                  "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625,
-                  "Visuals/Display value": true
-                },
-                "2,0": {
-                  "_type": "Number Slider",
-                  "_source0": "network_table:///SmartDashboard/Winch Out",
-                  "_title": "Winch Out",
-                  "Slider Settings/Min": -1.0,
-                  "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625,
-                  "Visuals/Display value": true
-                },
-                "1,0": {
-                  "_type": "Boolean Box",
-                  "_source0": "network_table:///SmartDashboard/CLIMBER ACTIVE",
-                  "_title": "ACTIVE",
-                  "Colors/Color when true": "#7CFC00FF",
-                  "Colors/Color when false": "#8B0000FF"
-                },
-                "1,2": {
-                  "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Toggle Winch",
-                  "_title": "/SmartDashboard/Toggle Winch"
                 }
               }
             }
@@ -829,36 +685,7 @@
           "5,0": {
             "size": [
               3,
-              2
-            ],
-            "content": {
-              "_type": "Grid Layout",
-              "_title": "Climber",
-              "Layout/Number of columns": 3,
-              "Layout/Number of rows": 3,
-              "Layout/Label position": "BOTTOM",
-              "_children": {
-                "0,1": {
-                  "_type": "Boolean Box",
-                  "_source0": "network_table:///SmartDashboard/Winch Connected",
-                  "_title": "Winch",
-                  "Colors/Color when true": "#7CFC00FF",
-                  "Colors/Color when false": "#8B0000FF"
-                },
-                "2,1": {
-                  "_type": "Boolean Box",
-                  "_source0": "network_table:///SmartDashboard/Scissor Connected",
-                  "_title": "Scissor",
-                  "Colors/Color when true": "#7CFC00FF",
-                  "Colors/Color when false": "#8B0000FF"
-                }
-              }
-            }
-          },
-          "5,2": {
-            "size": [
-              3,
-              3
+              5
             ],
             "content": {
               "_type": "Grid Layout",
@@ -881,17 +708,17 @@
                   "Colors/Color when true": "#7CFC00FF",
                   "Colors/Color when false": "#8B0000FF"
                 },
-                "0,1": {
-                  "_type": "Boolean Box",
-                  "_source0": "network_table:///SmartDashboard/Right Slave Connected",
-                  "_title": "Right Slave",
-                  "Colors/Color when true": "#7CFC00FF",
-                  "Colors/Color when false": "#8B0000FF"
-                },
-                "2,1": {
+                "2,2": {
                   "_type": "Boolean Box",
                   "_source0": "network_table:///SmartDashboard/Left Slave Connected",
                   "_title": "Left Slave",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                "0,2": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Right Slave Connected",
+                  "_title": "Right Slave",
                   "Colors/Color when true": "#7CFC00FF",
                   "Colors/Color when false": "#8B0000FF"
                 }

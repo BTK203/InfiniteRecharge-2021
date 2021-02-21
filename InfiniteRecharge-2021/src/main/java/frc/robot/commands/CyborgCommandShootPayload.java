@@ -66,6 +66,17 @@ public class CyborgCommandShootPayload extends CommandBase {
     //we do not require flywheel because we need the rpm command running, we just need it to read out rpms
   }
 
+  public CyborgCommandShootPayload(
+    SubsystemIntake intake,
+    SubsystemFeeder feeder,
+    SubsystemFlywheel flywheel,
+    SubsystemTurret turret,
+    int ballsToShoot,
+    boolean runIntake
+  ) {
+    this(intake, feeder, flywheel, turret, ballsToShoot, Constants.SHOOT_PAYLOAD_DEFAULT_WAIT_TIME, runIntake);
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {

@@ -418,20 +418,4 @@ public class SubsystemDrive extends SubsystemBase {
     lastRampTime = currentTime;
     return rampedPower;
   }
-
-  /**
-   * METHODS FOR DEVELOPMENT PURPOSES ONLY
-   */
-
-  public void driveJustMasters(Joystick controller) {
-    double drive = Xbox.RT(controller) - Xbox.LT(controller);
-    leftMaster.set(drive);
-    rightMaster.set(drive);
-  }
-
-  public void driveJustSlaves(Joystick controller) {
-    double drive = Xbox.RT(controller) - Xbox.LT(controller);
-    leftSlave.set(drive);
-    rightSlave.set(drive);
-  }
 }
