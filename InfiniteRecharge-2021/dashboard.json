@@ -152,17 +152,6 @@
               "_title": "/SmartDashboard/Left Output"
             }
           },
-          "5,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Emulate Immediate Turn Before Overturn",
-              "_title": "/SmartDashboard/Emulate Immediate Turn Before Overturn"
-            }
-          },
           "7,6": {
             "size": [
               2,
@@ -209,6 +198,17 @@
               "_title": "SmartDashboard/Test SDD"
             }
           },
+          "5,7": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Test Turret Position",
+              "_title": "SmartDashboard/Test Turret Position"
+            }
+          },
           "12,0": {
             "size": [
               5,
@@ -217,8 +217,30 @@
             "content": {
               "_type": "Robot Preferences",
               "_source0": "network_table:///Preferences",
-              "_title": "Preferences",
+              "_title": "/Preferences",
               "Miscellaneous/Show search box": true
+            }
+          },
+          "4,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Yaw PID Target",
+              "_title": "SmartDashboard/Yaw PID Target"
+            }
+          },
+          "5,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Yaw PID Error",
+              "_title": "SmartDashboard/Yaw PID Error"
             }
           }
         }

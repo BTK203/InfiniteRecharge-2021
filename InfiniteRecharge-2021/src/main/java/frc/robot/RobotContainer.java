@@ -34,6 +34,7 @@ import frc.robot.commands.CyborgCommandDriveDistance;
 import frc.robot.commands.CyborgCommandEmulatePath;
 import frc.robot.commands.CyborgCommandFlywheelVelocity;
 import frc.robot.commands.CyborgCommandRecordPath;
+import frc.robot.commands.CyborgCommandSetTurretPosition;
 import frc.robot.commands.CyborgCommandSmartDriveDistance;
 import frc.robot.commands.CyborgCommandZeroTurret;
 import frc.robot.commands.ManualCommandDrive;
@@ -357,6 +358,7 @@ public class RobotContainer {
     /**
      * Temporary dashboard buttons
      */
+    SmartDashboard.putData("Test Turret Position", new CyborgCommandSetTurretPosition(SUB_TURRET, Constants.JUDGEMENT_AUTO_YAW_TARGET, Constants.JUDGEMENT_AUTO_PITCH_TARGET, true, SUB_RECEIVER));
     SmartDashboard.putData("Run Intake", new ConstantCommandDriveIntake(SUB_INTAKE, SUB_FEEDER));
     SmartDashboard.putData("Test DD", new CyborgCommandDriveDistance(SUB_DRIVE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_DISTANCE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_POWER));
     SmartDashboard.putData("Test SDD", new CyborgCommandSmartDriveDistance(SUB_DRIVE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_DISTANCE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_POWER));
