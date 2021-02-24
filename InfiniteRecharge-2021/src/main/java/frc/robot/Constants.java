@@ -181,8 +181,8 @@ public final class Constants {
         DEFAULT_TURRET_YAW_TICKS = 1615628,
         YAW_FACE_FORWARD_DEGREES = 170,
         DEFAULT_TURRET_PITCH_TICKS = 9000,
-        TURRET_YAW_ALLOWABLE_ERROR = 50000,
-        TURRET_PITCH_ALLOWABLE_ERROR = 30,
+        TURRET_YAW_ALLOWABLE_ERROR = 75000,
+        TURRET_PITCH_ALLOWABLE_ERROR = 350,
         SPARK_MINIMUM_VOLTAGE = 8, //used to check if motor controllers are connected
         TALON_MINIMUM_AMPERAGE = 1;
 
@@ -250,7 +250,7 @@ public final class Constants {
     public static final int
         JUDGEMENT_AUTO_BALLS_TO_SHOOT = 5,
         JUDGEMENT_AUTO_SHOOT_DRIVE_DISTANCE = 132, //inches
-        JUDGEMENT_AUTO_YAW_TARGET = 334367, //ticks
+        JUDGEMENT_AUTO_YAW_TARGET = 175000, //ticks
         JUDGEMENT_AUTO_PITCH_TARGET = -8916; //ticks
 
     public static final double

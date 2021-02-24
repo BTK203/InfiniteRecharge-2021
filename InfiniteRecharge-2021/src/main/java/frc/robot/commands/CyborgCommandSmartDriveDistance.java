@@ -25,13 +25,33 @@ public class CyborgCommandSmartDriveDistance extends CommandBase {
     distance,
     heading,
     power,
+    absoluteMaxHeadingCorrection,
     distanceTraveled,
     lastLeftPosition,
     lastRightPosition;
 
+  private boolean setHeadingOnInit;
+
   private PIDController
     distanceController,
     headingController;
+
+  /**
+   * Creates a new CyborgCommandSmartDriveDistance.
+   * @param drivetrain the drivetrain to drive.
+   * @param distance the distance to drive, in inches.
+   * @param power The speed at which to drive, in inches per second
+   * @param constantHeading The heading to align to in degrees.
+   */
+  public CyborgCommandSmartDriveDistance(SubsystemDrive drivetrain, double distance, double power, double constantHeading, double absoluteMaxHeadingCorrection) {
+    this.drivetrain = drivetrain;
+    this.distance = distance * Constants.DRIVE_ROTATIONS_PER_INCH;
+    this.power = power;
+    this.setHeadingOnInit = false;
+    this.heading = constantHeading;
+    this.absoluteMaxHeadingCorrection = absoluteMaxHeadingCorrection;
+    addRequirements(this.drivetrain);
+  }
 
   /**
    * Creates a new CyborgCommandSmartDriveDistance.
@@ -43,6 +63,8 @@ public class CyborgCommandSmartDriveDistance extends CommandBase {
     this.drivetrain = drivetrain;
     this.distance = distance * Constants.DRIVE_ROTATIONS_PER_INCH;
     this.power = power;
+    this.setHeadingOnInit = true;
+    this.absoluteMaxHeadingCorrection = 1;
     addRequirements(this.drivetrain);
   }
 
@@ -63,12 +85,15 @@ public class CyborgCommandSmartDriveDistance extends CommandBase {
     distanceController.setSetpoint(distance);
 
     //set up heading controller
-    this.heading = drivetrain.getGyroAngle();
-    // this.heading = Util.getAndSetDouble("Test Drivetrain Heading", 0);
     double headingP = Util.getAndSetDouble("Drive Heading kP", 0.05);
     double headingI = Util.getAndSetDouble("Drive Heading kI", 0);
     double headingD = Util.getAndSetDouble("Drive Heading kD", 0);
     headingController = new PIDController(headingP, headingI, headingD);
+
+    if(setHeadingOnInit) {
+      this.heading = drivetrain.getGyroAngle();
+    }
+
     headingController.setSetpoint(heading);
   }
 
@@ -94,8 +119,8 @@ public class CyborgCommandSmartDriveDistance extends CommandBase {
 
     //get output for heading
     double outputForHeading = headingController.calculate(drivetrain.getGyroAngle());
-    double maxHeadingOutput = Util.getAndSetDouble("Drive Distance Heading Inhibitor", 0.3);
-    outputForHeading = (outputForHeading > maxHeadingOutput ? maxHeadingOutput : (maxHeadingOutput < maxHeadingOutput * -1 ? maxHeadingOutput * -1 : outputForHeading));
+    outputForHeading *= Util.getAndSetDouble("Drive Distance Heading Inhibitor", 0.3) * absoluteMaxHeadingCorrection;
+    // outputForHeading = (outputForHeading > maxHeadingOutput ? maxHeadingOutput : (maxHeadingOutput < maxHeadingOutput * -1 ? maxHeadingOutput * -1 : outputForHeading));
 
     double leftOutput = outputForDistance - outputForHeading;
     double rightOutput = outputForDistance + outputForHeading;

@@ -42,7 +42,10 @@ public class JudgementAuto implements IAuto {
     driveBackToStart;
 
   private ConstantCommandDriveIntake driveIntake;
-  private CyborgCommandWait finishCollecting;
+  private CyborgCommandWait 
+    finishCollecting,
+    waitToAlign;
+  
   private CyborgCommandSetTurretPosition positionTurret;
   private CyborgCommandSmartDriveDistance driveForward;
   private CyborgCommandFlywheelVelocity driveFlywheel;
@@ -66,10 +69,11 @@ public class JudgementAuto implements IAuto {
     driveToPowerCells       = new CyborgCommandEmulatePath(drivetrain, Constants.JUDGEMENT_AUTO_DRIVE_TO_POWER_CELLS_PATH_FILE);
     driveToSite             = new CyborgCommandEmulatePath(drivetrain, Constants.JUDGEMENT_AUTO_DRIVE_TO_SITE_PATH_FILE);
     driveBackToStart        = new CyborgCommandEmulatePath(drivetrain, Constants.JUDGEMENT_AUTO_DRIVE_BACK_TO_START_PATH_FILE);
-    driveIntake       = new ConstantCommandDriveIntake(intake, feeder);
+    driveIntake             = new ConstantCommandDriveIntake(intake, feeder);
     finishCollecting        = new CyborgCommandWait(750);
-    positionTurret          = new CyborgCommandSetTurretPosition(turret, Constants.JUDGEMENT_AUTO_YAW_TARGET, Constants.JUDGEMENT_AUTO_PITCH_TARGET, true, kiwilight);
-    driveForward            = new CyborgCommandSmartDriveDistance(drivetrain, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_DISTANCE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_POWER);
+    waitToAlign             = new CyborgCommandWait(500);
+    positionTurret          = new CyborgCommandSetTurretPosition(turret, Constants.JUDGEMENT_AUTO_YAW_TARGET, Constants.JUDGEMENT_AUTO_PITCH_TARGET);
+    driveForward            = new CyborgCommandSmartDriveDistance(drivetrain, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_DISTANCE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_POWER, -90, 0.35);
     driveFlywheel           = new CyborgCommandFlywheelVelocity(flywheel);
     align                   = new CyborgCommandAlignTurret(turret, kiwilight, false, (int) Util.getAndSetDouble("Judgement Auto Turret Yaw Offset", 0));
     shootPowerCells         = new CyborgCommandShootPayload(intake, feeder, flywheel, turret, Constants.JUDGEMENT_AUTO_BALLS_TO_SHOOT, false);
@@ -100,7 +104,8 @@ public class JudgementAuto implements IAuto {
     Command driveAndCollect = driveToPowerCells.andThen(finishCollecting);
     Command driveAndCollectWithIntake = driveAndCollect.raceWith(driveIntake);
     
-    Command driveAndShoot = align.raceWith(driveForward, shootPowerCells);
+    Command waitAndThenShoot = waitToAlign.andThen(shootPowerCells);
+    Command driveAndShoot = align.raceWith(driveForward, waitAndThenShoot);
 
     //form it all together
     Command collectAndShootPowerCells = driveAndCollectWithIntake.andThen(driveToSite, positionTurret, driveAndShoot);
