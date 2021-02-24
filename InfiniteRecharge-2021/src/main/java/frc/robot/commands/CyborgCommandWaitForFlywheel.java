@@ -8,6 +8,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemFlywheel;
 
+/**
+ * This command is deprecated because I don't actually use it anywhere. Will be removed soon 
+ */
+@Deprecated
 public class CyborgCommandWaitForFlywheel extends CommandBase {
   private SubsystemFlywheel flywheel;
 

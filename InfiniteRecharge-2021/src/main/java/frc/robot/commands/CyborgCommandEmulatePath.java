@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -87,15 +86,11 @@ public class CyborgCommandEmulatePath extends CommandBase {
       double currentDirection = forwardsify(currentLocation.getHeading());
       for(int limit=0; limit<Constants.EMULATE_POINT_SKIP_LIMIT; limit++) {
         //get the angle that the root needs to turn to acheive the point
-        SmartDashboard.putNumber("Emulate heading current to next", currentLocation.getHeadingTo(points[currentPointIndex]));
         double headingToNext = Math.abs(Util.getAngleToHeading(currentDirection, currentLocation.getHeadingTo(points[currentPointIndex])));
-        SmartDashboard.putNumber("Emulate Heading to next", headingToNext);
 
         //get a path that consists of future points. If they are straight, 
         if(currentPointIndex < points.length - 1 && headingToNext >= 75) {
           currentPointIndex++;
-
-          DriverStation.reportError("current heading: " + Double.valueOf(currentDirection).toString() + ", heading to: " + Double.valueOf(currentLocation.getHeadingTo(points[currentPointIndex])).toString() + ", heading to next: " + Double.valueOf(headingToNext).toString(), false);
         } else {
           break;
         }
@@ -103,21 +98,12 @@ public class CyborgCommandEmulatePath extends CommandBase {
     }
 
     currentPointIndex = (currentPointIndex > points.length - 2 ? points.length - 2 : currentPointIndex);
-
-    SmartDashboard.putNumber("Emulate current point", currentPointIndex);
-    SmartDashboard.putNumber("Emulate points", points.length);
-    SmartDashboard.putString("Emulate target point", points[currentPointIndex].toString());
-
     Point2D currentDestination = points[currentPointIndex + 1];
 
     //figure out if we need to drive forwards or backwards to acheive the point
     double headingToNextPoint = currentLocation.getHeadingTo(currentDestination);
     double headingDifference = Util.getAngleToHeading(currentLocation.getHeading(), headingToNextPoint); //add this back in if the new code breaks
-    SmartDashboard.putNumber("Emulate heading diff", headingDifference);
-    // double headingDifference = Util.getAngleToHeading(currentLocation.getHeading(), currentDestination.getHeading());
     this.isForwards = Math.abs(headingDifference) < 90;
-
-    SmartDashboard.putBoolean("Emulate Forward", isForwards);
 
     //Resolve the path of points that are immediately ahead of the robot. This array will include the robot's location as the first point.
     int immediatePathSize = (int) Util.getAndSetDouble("Emulate Immediate Path Size", 5);
@@ -135,16 +121,10 @@ public class CyborgCommandEmulatePath extends CommandBase {
     double immediateDistance = getDistanceOfPath(immediatePath); //unit: in
     double immediateTurn = getTurnOfPath(immediatePath); //unit: degrees
     double headingChange = Util.getAngleToHeading(immediatePath[1].getHeading(), immediatePath[immediatePath.length - 1].getHeading());
-    SmartDashboard.putNumber("Emulate heading change", headingChange);
 
     //figure out if the robot should switch directions (forward to backward or vice versa) without changing heading.
     double turnToHeadingDifference = Math.abs(Util.getAngleToHeading(headingChange, immediateTurn));
-    SmartDashboard.putNumber("Emulate Turn to heading difference", turnToHeadingDifference);
-    boolean shouldZeroTurn = turnToHeadingDifference > Constants.EMULATE_MAX_HEADING_TO_TURN_DIFFERENCE;
-    // boolean shouldZeroTurn = Math.abs(immediateTurn) > 165;
-    
-
-    SmartDashboard.putNumber("Emulate Immediate Turn Before Overturn", immediateTurn);
+    boolean shouldZeroTurn = turnToHeadingDifference > Constants.EMULATE_MAX_HEADING_TO_TURN_DIFFERENCE;    
 
     if(immediateTurn < Util.getAndSetDouble("Positional Correction Threshold", 20)) {
       //add positional correction to heading by aiming for 2 points ahead of us
@@ -155,12 +135,11 @@ public class CyborgCommandEmulatePath extends CommandBase {
       immediateTurn *= Util.getAndSetDouble("Emulate Overturn", 1.2);
     }
 
-    //EXPERIMENTAL AND NOT PERM.
+    //We found that the algorithm calculates a backwards turn to be half as much as a fowards turn, so we correct that here. When the season is over, we will find the actual reason that this happens.
     if(!isForwards) {
       immediateTurn *= 2;
     }
 
-    SmartDashboard.putNumber("Emulate immediate turn", immediateTurn);
     immediateTurn = Math.toRadians(immediateTurn); //we need radians for arc length    
 
     if(immediateTurn != 0) {
@@ -172,8 +151,6 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
       double baseVelocity = calculateBestTangentialSpeed(radius);
 
-      SmartDashboard.putNumber("Calc. Emulate Base Velocity", baseVelocity);
-
       if(isForwards) {
         leftDisplacement  = immediateTurn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
         rightDisplacement = immediateTurn * (radius + (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2));
@@ -182,16 +159,10 @@ public class CyborgCommandEmulatePath extends CommandBase {
         rightDisplacement = -1 * immediateTurn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2));
       }
 
-      SmartDashboard.putNumber("Emulate left displacement", leftDisplacement);
-      SmartDashboard.putNumber("Emulate right displacement", rightDisplacement);
-
       //convert displacments to velocities
       double timeInterval  = immediateDistance / baseVelocity; // unit: sec
       double leftVelocity  = leftDisplacement / timeInterval; //unit: in/sec
       double rightVelocity = rightDisplacement / timeInterval;
-
-      SmartDashboard.putNumber("Emulate left vel.", leftVelocity);
-      SmartDashboard.putNumber("Emulate right vel.", rightVelocity);
 
       if(shouldZeroTurn) {
         double vel = (isForwards ? baseVelocity : -1 * baseVelocity);
@@ -339,13 +310,6 @@ public class CyborgCommandEmulatePath extends CommandBase {
     //convert best speed to in/s
     bestSpeed = Util.metersToInches(bestSpeed); //unit: in/s
     bestSpeed = (bestSpeed > maxSpeed ? maxSpeed : (bestSpeed < minSpeed ? minSpeed : bestSpeed));
-
-    SmartDashboard.putNumber("Emulate bs radius", radius);
-    SmartDashboard.putNumber("Emulate turn radius", turnRadius);
-    SmartDashboard.putNumber("Emulate best speed", bestSpeed);
-    SmartDashboard.putNumber("Emulate Normal Force", normalForce);
-    SmartDashboard.putNumber("Emulate Robot Mass", robotMass);
-    SmartDashboard.putNumber("Emulate CoE", coefficientOfFriction);
 
     return bestSpeed;
   }
