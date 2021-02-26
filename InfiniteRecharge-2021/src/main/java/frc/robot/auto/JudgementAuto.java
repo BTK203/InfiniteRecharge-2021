@@ -71,9 +71,9 @@ public class JudgementAuto implements IAuto {
     driveBackToStart        = new CyborgCommandEmulatePath(drivetrain, Constants.JUDGEMENT_AUTO_DRIVE_BACK_TO_START_PATH_FILE);
     driveIntake             = new ConstantCommandDriveIntake(intake, feeder);
     finishCollecting        = new CyborgCommandWait(750);
-    waitToAlign             = new CyborgCommandWait(500);
+    waitToAlign             = new CyborgCommandWait(1000);
     positionTurret          = new CyborgCommandSetTurretPosition(turret, Constants.JUDGEMENT_AUTO_YAW_TARGET, Constants.JUDGEMENT_AUTO_PITCH_TARGET);
-    driveForward            = new CyborgCommandSmartDriveDistance(drivetrain, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_DISTANCE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_POWER, -90, 0.35);
+    driveForward            = new CyborgCommandSmartDriveDistance(drivetrain, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_DISTANCE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_POWER, -90, 0.40);
     driveFlywheel           = new CyborgCommandFlywheelVelocity(flywheel);
     align                   = new CyborgCommandAlignTurret(turret, kiwilight, false, (int) Util.getAndSetDouble("Judgement Auto Turret Yaw Offset", 0));
     shootPowerCells         = new CyborgCommandShootPayload(intake, feeder, flywheel, turret, Constants.JUDGEMENT_AUTO_BALLS_TO_SHOOT, false);
