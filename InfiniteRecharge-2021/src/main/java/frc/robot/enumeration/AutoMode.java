@@ -15,5 +15,6 @@ public enum AutoMode {
     THE_BARE_MINIMUM,
     SIX_BALL_SIMPLE,
     EIGHT_BALL_TRENCH,
-    FLEX_TIME
+    FLEX_TIME,
+    FLEX_TIME_TRADIATIONAL
 }

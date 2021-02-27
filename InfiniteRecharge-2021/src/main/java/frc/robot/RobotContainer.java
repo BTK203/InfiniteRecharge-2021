@@ -23,6 +23,7 @@ import frc.robot.auto.IAuto;
 import frc.robot.auto.InitAuto;
 import frc.robot.auto.JudgementAuto;
 import frc.robot.auto.SixBallSimpleAuto;
+import frc.robot.auto.TraditionalJudgementAuto;
 import frc.robot.auto.TrenchAuto;
 import frc.robot.commands.ButtonCommandGroupRunIntakeFeeder;
 import frc.robot.commands.ButtonCommandMoveClimber;
@@ -47,6 +48,7 @@ import frc.robot.subsystems.SubsystemFeeder;
 import frc.robot.subsystems.SubsystemFlywheel;
 import frc.robot.subsystems.SubsystemIntake;
 import frc.robot.subsystems.SubsystemReceiver;
+import frc.robot.subsystems.SubsystemJevois;
 import frc.robot.subsystems.SubsystemSpinner;
 import frc.robot.subsystems.SubsystemTurret;
 import frc.robot.util.Util;
@@ -72,7 +74,8 @@ public class RobotContainer {
   private final SubsystemSpinner   SUB_SPINNER  = new SubsystemSpinner();
   private final SubsystemClimb     SUB_CLIMB    = new SubsystemClimb();
   private final SubsystemReceiver  SUB_RECEIVER = new SubsystemReceiver();
-  private final CameraHub          CAMERA_HUB   = new CameraHub();
+  // private final SubsystemJevois    SUB_JEVOIS   = new SubsystemJevois();
+  // private final CameraHub          CAMERA_HUB   = new CameraHub();
 
   /**
    * Utilities
@@ -148,6 +151,9 @@ public class RobotContainer {
         break;
       case FLEX_TIME:
         currentAuto = new JudgementAuto(SUB_DRIVE, SUB_INTAKE, SUB_FEEDER, SUB_TURRET, SUB_FLYWHEEL, SUB_RECEIVER);
+        break;
+      case FLEX_TIME_TRADIATIONAL:
+        currentAuto = new TraditionalJudgementAuto(SUB_DRIVE, SUB_TURRET, SUB_INTAKE, SUB_FEEDER, SUB_FLYWHEEL, SUB_RECEIVER);
         break;
       default:
         currentAuto = new InitAuto(SUB_DRIVE, SUB_TURRET);
@@ -361,7 +367,7 @@ public class RobotContainer {
     SmartDashboard.putData("Test Turret Position", new CyborgCommandSetTurretPosition(SUB_TURRET, Constants.JUDGEMENT_AUTO_YAW_TARGET, Constants.JUDGEMENT_AUTO_PITCH_TARGET, true, SUB_RECEIVER));
     SmartDashboard.putData("Run Intake", new ConstantCommandDriveIntake(SUB_INTAKE, SUB_FEEDER));
     SmartDashboard.putData("Test DD", new CyborgCommandDriveDistance(SUB_DRIVE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_DISTANCE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_POWER));
-    SmartDashboard.putData("Test SDD", new CyborgCommandSmartDriveDistance(SUB_DRIVE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_DISTANCE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_POWER));
+    SmartDashboard.putData("Test SDD", new CyborgCommandSmartDriveDistance(SUB_DRIVE));
   }
   
   private void configureChoosers() {
@@ -371,7 +377,8 @@ public class RobotContainer {
     autoChooser.addOption("Init Only", AutoMode.INIT_ONLY);
     autoChooser.addOption("Simple Six Ball", AutoMode.SIX_BALL_SIMPLE);
     autoChooser.addOption("Eight Ball", AutoMode.EIGHT_BALL_TRENCH);
-    autoChooser.addOption("Judgement Auto", AutoMode.FLEX_TIME);
+    autoChooser.addOption("Judgement Auto", AutoMode.FLEX_TIME); 
+    autoChooser.addOption("Traditional Judgement Auto", AutoMode.FLEX_TIME_TRADIATIONAL);
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     //declare the different drive schemes available

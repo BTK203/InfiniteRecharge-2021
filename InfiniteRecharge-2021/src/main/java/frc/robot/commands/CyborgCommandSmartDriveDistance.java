@@ -30,7 +30,9 @@ public class CyborgCommandSmartDriveDistance extends CommandBase {
     lastLeftPosition,
     lastRightPosition;
 
-  private boolean setHeadingOnInit;
+  private boolean 
+    setHeadingOnInit,
+    setEverythingOnInit;
 
   private PIDController
     distanceController,
@@ -50,6 +52,7 @@ public class CyborgCommandSmartDriveDistance extends CommandBase {
     this.setHeadingOnInit = false;
     this.heading = constantHeading;
     this.absoluteMaxHeadingCorrection = absoluteMaxHeadingCorrection;
+    this.setEverythingOnInit = false;
     addRequirements(this.drivetrain);
   }
 
@@ -65,6 +68,21 @@ public class CyborgCommandSmartDriveDistance extends CommandBase {
     this.power = power;
     this.setHeadingOnInit = true;
     this.absoluteMaxHeadingCorrection = 1;
+    this.setEverythingOnInit = false;
+    addRequirements(this.drivetrain);
+  }
+
+  /**
+   * Creates a new CyborgCommandSmartDriveDistance.
+   * The distance and power parameters will be pulled from the preferences table.
+   * @param drivetrain The drivetrain to drive.
+   */
+  public CyborgCommandSmartDriveDistance(SubsystemDrive drivetrain) {
+    this.drivetrain = drivetrain;
+    this.setEverythingOnInit = true;
+    this.setHeadingOnInit = true;
+    this.absoluteMaxHeadingCorrection = 1;
+
     addRequirements(this.drivetrain);
   }
 
@@ -72,6 +90,11 @@ public class CyborgCommandSmartDriveDistance extends CommandBase {
   @Override
   public void initialize() {
     //set up vars
+    if(setEverythingOnInit) {
+      this.distance = Util.getAndSetDouble("SDD Test Distance", 0) * Constants.DRIVE_ROTATIONS_PER_INCH;
+      this.power    = Util.getAndSetDouble("SDD Test Power", 0);
+    }
+
     DriverStation.reportWarning("CyborgCommandSmartDriveDistance enters", false);
     this.lastLeftPosition = drivetrain.getLeftPosition();
     this.lastRightPosition = drivetrain.getRightPosition();

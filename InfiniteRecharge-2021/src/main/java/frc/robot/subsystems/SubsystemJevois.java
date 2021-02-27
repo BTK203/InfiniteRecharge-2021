@@ -4,7 +4,10 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.hal.util.UncleanStatusException;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -19,16 +22,35 @@ public class SubsystemJevois extends SubsystemBase {
     currentMessage,
     lastCompletedMessage;
 
+  private boolean portInitalized;
+
   /** Creates a new SubsystemJevois. */
   public SubsystemJevois() {
-    port = new SerialPort(Constants.JEVOIS_BAUD_RATE, Constants.JEVOIS_PORT);
+    closestBallX = -1;
+    closestBallY = -1;
+    closestBallRadius = -1;
+    currentMessage = "";
+    lastCompletedMessage = "No Message!";
+    portInitalized = false;
+
+    try {
+      port = new SerialPort(Constants.JEVOIS_BAUD_RATE, Constants.JEVOIS_PORT);
+      portInitalized = true;
+    } catch(UncleanStatusException ex) {
+      DriverStation.reportError("Unclean Status! Is the right Port specified?", true);
+      DriverStation.reportError(ex.getMessage(), false);
+    }
   }
 
   //[x,y,r],[x,y,r]
   @Override
   public void periodic() {
-    currentMessage += port.readString();
+    if(portInitalized) {
+      currentMessage += port.readString();
+    } else {
+      DriverStation.reportError("SubsystemJevois' port was not initalized!", true);
+    }
 
-    //parse USB message
+    SmartDashboard.putString("Jevois data", currentMessage);
   }
 }
