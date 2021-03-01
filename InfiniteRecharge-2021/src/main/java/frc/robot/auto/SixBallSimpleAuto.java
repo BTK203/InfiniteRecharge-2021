@@ -43,9 +43,7 @@ public class SixBallSimpleAuto implements IAuto {
         wait,
         driveForward,
         alignAgain,
-        shootPayload,
-        declareVictory; //possibly temporary, just indicates to driverstation that command is done 
-
+        shootPayload;
 
     /**
      * Creates a new SixBallSimpleAuto, initalizing commands
@@ -62,44 +60,52 @@ public class SixBallSimpleAuto implements IAuto {
         
         //position turret to get target in vision view
         int yawTarget = Auto.getYawTicksToTarget(Util.getAndSetDouble("Auto Start Offset", 0));
-        int pitchTarget = Constants.AUTO_INIT_PITCH_TARGET;
-        this.positionTurret = new CyborgCommandSetTurretPosition(turret, yawTarget, pitchTarget, true, kiwilight);
-        
-        //align
+        this.positionTurret = new CyborgCommandSetTurretPosition(turret, yawTarget, Constants.AUTO_INIT_PITCH_TARGET, true, kiwilight);
         this.alignTurret = new CyborgCommandAlignTurret(turret, kiwilight, true);
         this.shootTwoBalls = new CyborgCommandShootPayload(intake, feeder, flywheel, turret, 2, 15000, false);
         
         double trenchDistance = (double) Constants.AUTO_SHALLOW_TRENCH_DISTANCE;
-        //init drive commands. Use CyborgCommandSmartDriveDistance if NavX is connected
-        if(drivetrain.getNavXConnected() && Util.getAndSetBoolean("Use SmartDistance", true)) {
-            this.driveBack = new CyborgCommandSmartDriveDistance(drivetrain, trenchDistance, Constants.DRIVE_AUTO_INHIBITOR);
-            this.driveForward = new CyborgCommandSmartDriveDistance(drivetrain, trenchDistance * -1, Constants.DRIVE_AUTO_INHIBITOR);
-        } else {
-            this.driveBack = new CyborgCommandDriveDistance(drivetrain, trenchDistance, Constants.DRIVE_AUTO_INHIBITOR);
-            this.driveForward = new CyborgCommandDriveDistance(drivetrain, trenchDistance * -1, Constants.DRIVE_AUTO_INHIBITOR);
-        }
+        this.driveBack = getDriveDistanceCommand(drivetrain, trenchDistance);
+        this.driveForward = getDriveDistanceCommand(drivetrain, trenchDistance * -1);
+        
         this.collectBalls = new ConstantCommandDriveIntake(intake, feeder);
         this.wait = new CyborgCommandWait(Constants.TRENCH_AUTO_WAIT_TIME);
 
         //shoot balls
         this.alignAgain = new CyborgCommandAlignTurret(turret, kiwilight, true);
         this.shootPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, turret, 4, 15000, false);
-        
-        //tell DS that we done
-        this.declareVictory = new RunCommand(
-            () -> {
-                DriverStation.reportWarning("6-BALL DONE", false);
-            }
-        );
     }
 
+    /**
+     * Returns the command to schedule.
+     */
     public Command getCommand() {
         Command initAndShoot = init.andThen(positionTurret, alignTurret, shootTwoBalls);
         Command driveAndCollect = (driveBack.andThen(wait, driveForward)).raceWith(collectBalls);
-        return initAndShoot.andThen(driveAndCollect, alignAgain, shootPayload, declareVictory);
+
+        return initAndShoot.andThen(driveAndCollect, alignAgain, shootPayload);
     }
 
+    /**
+     * Will always return true because this Auto requires the flywheel to spin.
+     */
     public boolean requiresFlywheel() {
         return true;
+    }
+
+    /**
+     * Returns the best simple drive command to use based on the state of the drivetrain.
+     * @param drivetrain The drivetrain that the command requires
+     * @param distance The distance the command should drive in inches.
+     * @return A straight-driving command (CyborgCommandDriveDistance or CyborgCommandSmartDriveDistance) 
+     * chosen based on the existence of the NavX. If it is command, CyborgCommandSmartDriveDistance will be 
+     * returned.
+     */
+    private Command getDriveDistanceCommand(SubsystemDrive drivetrain, double distance) {
+        if(drivetrain.getNavXConnected() && Util.getAndSetBoolean("Use SmartDistance", true)) {
+            return new CyborgCommandSmartDriveDistance(drivetrain, distance, Constants.DRIVE_AUTO_INHIBITOR);
+        } else {
+            return new CyborgCommandDriveDistance(drivetrain, distance, Constants.DRIVE_AUTO_INHIBITOR);
+        }
     }
 }

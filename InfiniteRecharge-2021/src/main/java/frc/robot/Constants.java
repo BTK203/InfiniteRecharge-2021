@@ -202,7 +202,7 @@ public final class Constants {
         AUTO_OVERREV_EXTRA_RPM = 500,
         AUTO_INIT_YAW_TARGET = -624258,
         TURRET_TARGET_TICKS_PER_INCH = -1399, //ticks to turn per inch away from wall
-        AUTO_INIT_PITCH_TARGET = -694,
+        AUTO_INIT_PITCH_TARGET = -5000,
         AUTO_DEEP_TRENCH_DISTANCE = -150,
         AUTO_SHALLOW_TRENCH_DISTANCE = -154,
         TRENCH_AUTO_WAIT_TIME = 500,
@@ -226,7 +226,7 @@ public final class Constants {
      * More auto values but booleans
      */
     public static final boolean
-        AUTO_OVERREV_TURRET = true; //if set to true, flywheel speed will be increased by 500 RPM and feeder will not stop to regain FW velocity.
+        AUTO_OVERREV_TURRET = false; //if set to true, flywheel speed will be increased by 500 RPM and feeder will not stop to regain FW velocity.
 
 
     /**
@@ -261,6 +261,26 @@ public final class Constants {
         JUDGEMENT_AUTO_DRIVE_TO_SITE_PATH_FILE        = "/home/lvuser/ja_driveToSite.txt",
         JUDGEMENT_AUTO_DRIVE_BACK_TO_START_PATH_FILE  = "/home/lvuser/ja_driveBackToStart.txt";
 
+    /**
+     * Traditional Judgment Auto
+     */
+    public static final int
+        TRAD_JUDGEMENT_AUTO_BALLS_TO_SHOOT = 5,
+        TRAD_JUDGEMENT_AUTO_AVOID_DISTANCE = 36, //inches
+        TRAD_JUDGEMENT_AUTO_YAW_TARGET = 325000, //ticks
+        TRAD_JUDGEMENT_AUTO_PITCH_TARGET = -8916;
+
+    public static final double
+        TRAD_JUDGEMENT_AUTO_AVOID_POWER = 0.5;
+
+    public static final String
+        TRAD_JUDGEMENT_AUTO_DRIVE_TO_POWER_CELLS_PT_1_FILE = "/home/lvuser/ja2_driveToCells_pt1.txt",
+        TRAD_JUDGEMENT_AUTO_DRIVE_TO_POWER_CELLS_PT_2_FILE = "/home/lvuser/ja2_driveToCells_pt2.txt",
+        TRAD_JUDGEMENT_AUTO_DRIVE_TO_SITE_FILE             = "/home/lvuser/ja2_driveToSite.txt";
+
+    /**
+     * Camera Stuff
+     */
     public static final boolean
         DRIVE_CAMERA_AUTOMATIC_EXPOSURE = false;
 }

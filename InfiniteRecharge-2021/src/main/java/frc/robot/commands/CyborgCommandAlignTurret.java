@@ -197,9 +197,9 @@ public class CyborgCommandAlignTurret extends CommandBase {
     if(endable) {
       boolean stableForTime = alignedTime > 250;
       return stableForTime;
-    } else {
-      return false;
-    }
+    } 
+    
+    return false;
   }
 
   private boolean stable() {
