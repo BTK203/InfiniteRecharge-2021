@@ -209,18 +209,6 @@
               "_title": "SmartDashboard/Test Turret Position"
             }
           },
-          "12,0": {
-            "size": [
-              5,
-              8
-            ],
-            "content": {
-              "_type": "Robot Preferences",
-              "_source0": "network_table:///Preferences",
-              "_title": "/Preferences",
-              "Miscellaneous/Show search box": true
-            }
-          },
           "4,2": {
             "size": [
               1,
@@ -241,6 +229,29 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Yaw PID Error",
               "_title": "SmartDashboard/Yaw PID Error"
+            }
+          },
+          "7,7": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Yaw Out",
+              "_title": "SmartDashboard/Yaw Out"
+            }
+          },
+          "12,0": {
+            "size": [
+              5,
+              8
+            ],
+            "content": {
+              "_type": "Robot Preferences",
+              "_source0": "network_table:///Preferences",
+              "_title": "Preferences",
+              "Miscellaneous/Show search box": true
             }
           }
         }
@@ -293,8 +304,7 @@
                   "_title": "Left Out",
                   "Slider Settings/Min": -1.0,
                   "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625,
-                  "Visuals/Display value": true
+                  "Slider Settings/Block increment": 0.0625
                 },
                 "2,0": {
                   "_type": "Number Slider",
@@ -302,8 +312,7 @@
                   "_title": "Right Out",
                   "Slider Settings/Min": -1.0,
                   "Slider Settings/Max": 1.0,
-                  "Slider Settings/Block increment": 0.0625,
-                  "Visuals/Display value": true
+                  "Slider Settings/Block increment": 0.0625
                 },
                 "0,1": {
                   "_type": "Simple Dial",
@@ -451,8 +460,7 @@
                       "_title": "Output",
                       "Slider Settings/Min": -1.0,
                       "Slider Settings/Max": 1.0,
-                      "Slider Settings/Block increment": 0.0625,
-                      "Visuals/Display value": true
+                      "Slider Settings/Block increment": 0.0625
                     }
                   }
                 }
@@ -939,7 +947,7 @@
   "windowGeometry": {
     "x": -1928.0,
     "y": -8.0,
-    "width": 1936.0,
-    "height": 1056.0
+    "width": 1940.0,
+    "height": 1066.0
   }
 }

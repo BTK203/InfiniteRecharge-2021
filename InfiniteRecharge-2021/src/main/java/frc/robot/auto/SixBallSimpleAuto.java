@@ -37,6 +37,7 @@ public class SixBallSimpleAuto implements IAuto {
         init,
         positionTurret,
         alignTurret,
+        waitToAlign,
         shootTwoBalls,
         driveBack,
         collectBalls,
@@ -60,8 +61,9 @@ public class SixBallSimpleAuto implements IAuto {
         
         //position turret to get target in vision view
         int yawTarget = Auto.getYawTicksToTarget(Util.getAndSetDouble("Auto Start Offset", 0));
-        this.positionTurret = new CyborgCommandSetTurretPosition(turret, yawTarget, Constants.AUTO_INIT_PITCH_TARGET, true, kiwilight);
-        this.alignTurret = new CyborgCommandAlignTurret(turret, kiwilight, true);
+        this.positionTurret = new CyborgCommandSetTurretPosition(turret, yawTarget, Constants.AUTO_INIT_PITCH_TARGET);
+        this.alignTurret = new CyborgCommandAlignTurret(turret, kiwilight);
+        this.waitToAlign = new CyborgCommandWait(500);
         this.shootTwoBalls = new CyborgCommandShootPayload(intake, feeder, flywheel, turret, 2, 15000, false);
         
         double trenchDistance = (double) Constants.AUTO_SHALLOW_TRENCH_DISTANCE;
@@ -72,7 +74,7 @@ public class SixBallSimpleAuto implements IAuto {
         this.wait = new CyborgCommandWait(Constants.TRENCH_AUTO_WAIT_TIME);
 
         //shoot balls
-        this.alignAgain = new CyborgCommandAlignTurret(turret, kiwilight, true);
+        this.alignAgain = new CyborgCommandAlignTurret(turret, kiwilight);
         this.shootPayload = new CyborgCommandShootPayload(intake, feeder, flywheel, turret, 4, 15000, false);
     }
 
@@ -80,10 +82,13 @@ public class SixBallSimpleAuto implements IAuto {
      * Returns the command to schedule.
      */
     public Command getCommand() {
-        Command initAndShoot = init.andThen(positionTurret, alignTurret, shootTwoBalls);
+        Command waitThenShoot = waitToAlign.andThen(shootTwoBalls);
+        Command alignAndShoot = alignTurret.raceWith(waitThenShoot);
+        Command initAndShoot = init.andThen(positionTurret, alignAndShoot);
         Command driveAndCollect = (driveBack.andThen(wait, driveForward)).raceWith(collectBalls);
 
-        return initAndShoot.andThen(driveAndCollect, alignAgain, shootPayload);
+        Command alignAndShootAgain = alignAgain.raceWith(shootPayload);
+        return initAndShoot.andThen(driveAndCollect, alignAndShootAgain);
     }
 
     /**

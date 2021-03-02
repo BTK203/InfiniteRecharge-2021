@@ -157,12 +157,11 @@ public final class Constants {
      * Turret Constant Inhibitors and Amp Limits
      */
     public static final double
-        TURRET_YAW_ABSOLUTE_MAX_OUTPUT = 0.68;
+        TURRET_YAW_ABSOLUTE_MAX_OUTPUT = 0.5;
 
     public static final int
         TURRET_YAW_AMP_LIMIT = 100;
 
-        
     /*
     * FORMAT: Red_Min, Green_Min, Blue_Min, Red_Max, Green_Max, Blue_Max.
     */
@@ -204,7 +203,7 @@ public final class Constants {
         TURRET_TARGET_TICKS_PER_INCH = -1399, //ticks to turn per inch away from wall
         AUTO_INIT_PITCH_TARGET = -5000,
         AUTO_DEEP_TRENCH_DISTANCE = -150,
-        AUTO_SHALLOW_TRENCH_DISTANCE = -154,
+        AUTO_SHALLOW_TRENCH_DISTANCE = -156,
         TRENCH_AUTO_WAIT_TIME = 500,
         SHOOT_PAYLOAD_DEFAULT_WAIT_TIME = 15000; //15 seconds or 15,000 ms
 
@@ -219,7 +218,7 @@ public final class Constants {
      */
     public static final double 
         DRIVE_ROTATIONS_PER_INCH = 0.472,
-        DRIVE_AUTO_INHIBITOR = 1,
+        DRIVE_AUTO_INHIBITOR = 0.8,
         EMULATE_PATH_MAX_POINT_DISTANCE = 1;
 
     /**
@@ -267,16 +266,15 @@ public final class Constants {
     public static final int
         TRAD_JUDGEMENT_AUTO_BALLS_TO_SHOOT = 5,
         TRAD_JUDGEMENT_AUTO_AVOID_DISTANCE = 36, //inches
-        TRAD_JUDGEMENT_AUTO_YAW_TARGET = 325000, //ticks
+        TRAD_JUDGEMENT_AUTO_YAW_TARGET = 712413, //ticks
         TRAD_JUDGEMENT_AUTO_PITCH_TARGET = -8916;
 
     public static final double
         TRAD_JUDGEMENT_AUTO_AVOID_POWER = 0.5;
 
     public static final String
-        TRAD_JUDGEMENT_AUTO_DRIVE_TO_POWER_CELLS_PT_1_FILE = "/home/lvuser/ja2_driveToCells_pt1.txt",
-        TRAD_JUDGEMENT_AUTO_DRIVE_TO_POWER_CELLS_PT_2_FILE = "/home/lvuser/ja2_driveToCells_pt2.txt",
-        TRAD_JUDGEMENT_AUTO_DRIVE_TO_SITE_FILE             = "/home/lvuser/ja2_driveToSite.txt";
+        TRAD_JUDGEMENT_AUTO_DRIVE_TO_POWER_CELLS_FILE = "/home/lvuser/ja2_collectCells.txt",
+        TRAD_JUDGEMENT_AUTO_DRIVE_TO_SITE_FILE        = "/home/lvuser/ja2_driveToSite.txt";
 
     /**
      * Camera Stuff

@@ -14,6 +14,7 @@ import frc.robot.commands.CyborgCommandEmulatePath;
 import frc.robot.commands.CyborgCommandSetTurretPosition;
 import frc.robot.commands.CyborgCommandShootPayload;
 import frc.robot.commands.CyborgCommandSmartDriveDistance;
+import frc.robot.commands.CyborgCommandWait;
 import frc.robot.subsystems.SubsystemDrive;
 import frc.robot.subsystems.SubsystemFeeder;
 import frc.robot.subsystems.SubsystemFlywheel;
@@ -29,11 +30,12 @@ public class TraditionalJudgementAuto implements IAuto {
     private Command doSixBallAuto;
     private ConstantCommandDriveIntake driveIntake;
     private CyborgCommandEmulatePath
-        driveTo2PowerCells, // path emulators are listed in the order in which they should be executed.
-        driveTo3PowerCells,
+        driveTo5PowerCells, // path emulators are listed in the order in which they should be executed.
         driveToSite;
-
-    private CyborgCommandSmartDriveDistance driveForwardToAvoidPost;
+    private CyborgCommandWait
+        waitToCollect,
+        waitToAlign;
+    private CyborgCommandSmartDriveDistance driveToStraightenOut;
     private CyborgCommandSetTurretPosition setTurretPosition;
     private CyborgCommandAlignTurret alignTurret;
     private CyborgCommandShootPayload shootPowerCells;
@@ -50,10 +52,11 @@ public class TraditionalJudgementAuto implements IAuto {
         this.zeroDrivetrain          = new InstantCommand( () -> { Robot.getRobotContainer().zeroAllDrivetrain(); } );
         this.doSixBallAuto           = new SixBallSimpleAuto(drivetrain, turret, kiwilight, intake, feeder, flywheel).getCommand();
         this.driveIntake             = new ConstantCommandDriveIntake(intake, feeder);
-        this.driveTo2PowerCells      = new CyborgCommandEmulatePath(drivetrain, Constants.TRAD_JUDGEMENT_AUTO_DRIVE_TO_POWER_CELLS_PT_1_FILE);
-        this.driveTo3PowerCells      = new CyborgCommandEmulatePath(drivetrain, Constants.TRAD_JUDGEMENT_AUTO_DRIVE_TO_POWER_CELLS_PT_2_FILE);
+        this.driveTo5PowerCells      = new CyborgCommandEmulatePath(drivetrain, Constants.TRAD_JUDGEMENT_AUTO_DRIVE_TO_POWER_CELLS_FILE);
         this.driveToSite             = new CyborgCommandEmulatePath(drivetrain, Constants.TRAD_JUDGEMENT_AUTO_DRIVE_TO_SITE_FILE);
-        this.driveForwardToAvoidPost = new CyborgCommandSmartDriveDistance(drivetrain, Constants.TRAD_JUDGEMENT_AUTO_AVOID_DISTANCE, Constants.TRAD_JUDGEMENT_AUTO_AVOID_POWER);
+        this.waitToCollect           = new CyborgCommandWait(750);
+        this.waitToAlign             = new CyborgCommandWait(500);
+        this.driveToStraightenOut    = new CyborgCommandSmartDriveDistance(drivetrain, 36, 0.5, 0, 0.32);
         this.setTurretPosition       = new CyborgCommandSetTurretPosition(turret, Constants.TRAD_JUDGEMENT_AUTO_YAW_TARGET, Constants.TRAD_JUDGEMENT_AUTO_PITCH_TARGET);
         this.alignTurret             = new CyborgCommandAlignTurret(turret, kiwilight);
         this.shootPowerCells         = new CyborgCommandShootPayload(intake, feeder, flywheel, turret, Constants.TRAD_JUDGEMENT_AUTO_BALLS_TO_SHOOT, false);
@@ -75,13 +78,14 @@ public class TraditionalJudgementAuto implements IAuto {
      */
     public Command getCommand() {
         //drive to power cells while running intake to collect them
-        Command driveToPowerCells = driveTo2PowerCells.andThen(driveForwardToAvoidPost, driveTo3PowerCells);
-        Command collectPowerCells = driveToPowerCells.raceWith(driveIntake);
+        Command collectPowerCells = driveTo5PowerCells.andThen(waitToCollect);
+        Command collectPowerCellsWithIntake = collectPowerCells.raceWith(driveIntake);
 
         //align turret while shooting 5 power cells
-        Command alignAndShoot = alignTurret.raceWith(shootPowerCells);
+        Command waitThenShoot = waitToAlign.andThen(shootPowerCells);
+        Command alignAndShoot = alignTurret.raceWith(waitThenShoot);
 
-        Command finalCommand = zeroDrivetrain.andThen(doSixBallAuto, collectPowerCells, driveToSite, setTurretPosition, alignAndShoot);
+        Command finalCommand = zeroDrivetrain.andThen(doSixBallAuto, collectPowerCellsWithIntake, driveToSite, driveToStraightenOut, setTurretPosition, alignAndShoot);
         return finalCommand;
     }
 
