@@ -56,7 +56,7 @@ public class TraditionalJudgementAuto implements IAuto {
         this.driveToSite             = new CyborgCommandEmulatePath(drivetrain, Constants.TRAD_JUDGEMENT_AUTO_DRIVE_TO_SITE_FILE);
         this.waitToCollect           = new CyborgCommandWait(750);
         this.waitToAlign             = new CyborgCommandWait(500);
-        this.driveToStraightenOut    = new CyborgCommandSmartDriveDistance(drivetrain, 36, 0.5, 0, 0.32);
+        this.driveToStraightenOut    = new CyborgCommandSmartDriveDistance(drivetrain, 36, 0.15, 0, 1);
         this.setTurretPosition       = new CyborgCommandSetTurretPosition(turret, Constants.TRAD_JUDGEMENT_AUTO_YAW_TARGET, Constants.TRAD_JUDGEMENT_AUTO_PITCH_TARGET);
         this.alignTurret             = new CyborgCommandAlignTurret(turret, kiwilight);
         this.shootPowerCells         = new CyborgCommandShootPayload(intake, feeder, flywheel, turret, Constants.TRAD_JUDGEMENT_AUTO_BALLS_TO_SHOOT, false);

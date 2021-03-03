@@ -79,7 +79,7 @@ public final class Constants {
         JEVOIS_BAUD_RATE = 115200;
 
     public static final Port
-        JEVOIS_PORT = Port.kUSB;
+        JEVOIS_PORT = Port.kUSB1;
     
     /**
      * Drivetrain motor inverts
@@ -266,7 +266,7 @@ public final class Constants {
     public static final int
         TRAD_JUDGEMENT_AUTO_BALLS_TO_SHOOT = 5,
         TRAD_JUDGEMENT_AUTO_AVOID_DISTANCE = 36, //inches
-        TRAD_JUDGEMENT_AUTO_YAW_TARGET = 712413, //ticks
+        TRAD_JUDGEMENT_AUTO_YAW_TARGET = 675000, //ticks
         TRAD_JUDGEMENT_AUTO_PITCH_TARGET = -8916;
 
     public static final double

@@ -52,7 +52,7 @@ public class SubsystemDrive extends SubsystemBase {
     rightMaster = new CANSparkMax(Constants.DRIVE_RIGHT_MASTER_ID, MotorType.kBrushless);
     rightSlave = new CANSparkMax(Constants.DRIVE_RIGHT_SLAVE_ID, MotorType.kBrushless);
 
-    navX = new AHRS(Port.kUSB);
+    navX = new AHRS(Port.kUSB2);
 
     lastThrottle = 0;
     lastRampTime = System.currentTimeMillis();

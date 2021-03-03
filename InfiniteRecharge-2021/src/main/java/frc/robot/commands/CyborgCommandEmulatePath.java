@@ -81,6 +81,10 @@ public class CyborgCommandEmulatePath extends CommandBase {
     Point2D currentLocation = Robot.getRobotContainer().getRobotPositionAndHeading();
     recorder.recordPoint(currentLocation);
 
+    if(!drivetrain.getNavXConnected()) {
+      DriverStation.reportError("NAVX NOT CONNECTED! EMUALTE WILL NOT WORK!", true);
+    }
+
     //resolve the point that the robot is currently at and where we want to aim
     if(currentPointIndex < points.length - 1) {
       double currentDirection = forwardsify(currentLocation.getHeading());
@@ -116,7 +120,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
     for(int i=1; i<immediatePath.length; i++) {
       immediatePath[i] = nextPoints[i - 1];
     }
-
+    
     //get an "arc" that closely fits the path. The arc will be used to calculate the left and right velocities.
     double immediateDistance = getDistanceOfPath(immediatePath); //unit: in
     double immediateTurn = getTurnOfPath(immediatePath); //unit: degrees

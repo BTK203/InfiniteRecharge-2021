@@ -51,6 +51,12 @@ public class SubsystemJevois extends SubsystemBase {
       DriverStation.reportError("SubsystemJevois' port was not initalized!", true);
     }
 
-    SmartDashboard.putString("Jevois data", currentMessage);
+    int lastNewline = currentMessage.lastIndexOf("\n");
+    int secondLastNewline = currentMessage.lastIndexOf("\n", lastNewline - 1);
+    if(lastNewline >= 0 && secondLastNewline >= 0) {
+      lastCompletedMessage = currentMessage.substring(secondLastNewline + 1, lastNewline);
+      currentMessage = currentMessage.substring(lastNewline);
+    }
+    SmartDashboard.putString("Jevois data", lastCompletedMessage);
   }
 }
