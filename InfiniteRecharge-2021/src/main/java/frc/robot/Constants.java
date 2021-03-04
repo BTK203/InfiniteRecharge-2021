@@ -79,7 +79,7 @@ public final class Constants {
         JEVOIS_BAUD_RATE = 115200;
 
     public static final Port
-        JEVOIS_PORT = Port.kUSB1;
+        JEVOIS_PORT = Port.kUSB;
     
     /**
      * Drivetrain motor inverts

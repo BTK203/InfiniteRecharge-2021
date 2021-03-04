@@ -23,6 +23,7 @@ public class SubsystemJevois extends SubsystemBase {
     lastCompletedMessage;
 
   private boolean portInitalized;
+  private long lastUpdatedTime;
 
   /** Creates a new SubsystemJevois. */
   public SubsystemJevois() {
@@ -32,6 +33,7 @@ public class SubsystemJevois extends SubsystemBase {
     currentMessage = "";
     lastCompletedMessage = "No Message!";
     portInitalized = false;
+    lastUpdatedTime = 0;
 
     try {
       port = new SerialPort(Constants.JEVOIS_BAUD_RATE, Constants.JEVOIS_PORT);
@@ -56,7 +58,42 @@ public class SubsystemJevois extends SubsystemBase {
     if(lastNewline >= 0 && secondLastNewline >= 0) {
       lastCompletedMessage = currentMessage.substring(secondLastNewline + 1, lastNewline);
       currentMessage = currentMessage.substring(lastNewline);
+      
+      if(!lastCompletedMessage.contains("None")) {
+        lastUpdatedTime = System.currentTimeMillis();
+
+        // //process the string and grab the x coordinate, y coordinate, and radius
+        // int lastOpenBracket = lastCompletedMessage.lastIndexOf("[");
+        // int firstCloseBracket = lastCompletedMessage.indexOf("]");
+
+        // String contentsOfMessage = lastCompletedMessage.substring(lastOpenBracket + 1, firstCloseBracket);
+        // contentsOfMessage = reduceSpaces(contentsOfMessage);
+        // String[] segments = contentsOfMessage.split(" ");
+        // closest
+      }
     }
-    SmartDashboard.putString("Jevois data", lastCompletedMessage);
+
+    SmartDashboard.putString("Jevois data", lastCompletedMessage);    
   }
+
+  private String reduceSpaces(String str) {
+    boolean spaceUsed = false;
+    String newString = "";
+    for(int i=0; i<str.length(); i++) {
+      char character = str.charAt(i);
+      if(character != ' ') {
+        newString += character;
+        spaceUsed = false;
+      } else {
+        if(!spaceUsed) {
+          newString += character;
+          spaceUsed = true;
+        }
+      }
+    }
+
+    return newString;
+  }
+
+
 }

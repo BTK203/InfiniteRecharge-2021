@@ -75,7 +75,7 @@ public class RobotContainer {
   private final SubsystemClimb     SUB_CLIMB    = new SubsystemClimb();
   private final SubsystemReceiver  SUB_RECEIVER = new SubsystemReceiver();
   private final SubsystemJevois    SUB_JEVOIS   = new SubsystemJevois();
-  private final CameraHub          CAMERA_HUB   = new CameraHub();
+  // private final CameraHub          CAMERA_HUB   = new CameraHub();
 
   /**
    * Utilities
