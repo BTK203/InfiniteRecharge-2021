@@ -63,12 +63,9 @@ public class SubsystemReceiver extends SubsystemBase {
         try {
           DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length); //create a new packet for the receiving data 
           serverSocket.receive(receivePacket); //receive the packet from the Socket
-          // DriverStation.reportError("I GOT PI DATA", false);
           String segment = new String(receivePacket.getData()).replaceAll("\\s+",""); //remove whitespace and place data in 'segment'
-          // DriverStation.reportWarning("new data: " + segment, false);
           latestSegment = segment.substring(segment.indexOf(":") + 1, segment.indexOf(";")); // store segment without borders
           latestTime = System.currentTimeMillis(); // add timestamp for stored segment
-          // DriverStation.reportWarning("Seconds since update: " + getSecondsSinceUpdate(), false);
           String formattedString = segment.substring(segment.indexOf(":") + 1, segment.indexOf(";"));
           SmartDashboard.putString("RPi Data", formattedString); // put string on dashboard without borders
           latestData = analyzeData(formattedString);

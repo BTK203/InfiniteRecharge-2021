@@ -4,9 +4,6 @@
 
 package frc.robot.commands;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -15,10 +12,12 @@ import frc.robot.subsystems.SubsystemDrive;
 import frc.robot.util.PathRecorder;
 import frc.robot.util.Point2D;
 import frc.robot.util.Util;
+import frc.robot.util.Path;
 
 public class CyborgCommandEmulatePath extends CommandBase {
   private SubsystemDrive drivetrain;
-  private Point2D[] points;
+  // private Point2D[] points;
+  private Path path;
   private int currentPointIndex;
   private boolean isForwards;
   private String pointsFilePath;
@@ -34,7 +33,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
   }
 
   public CyborgCommandEmulatePath(SubsystemDrive drivetrain) {
-    this(drivetrain, Constants.EMULATE_DEFAULT_POINTS_FILE_PATH);
+    this(drivetrain, Constants.PATH_RECORD_LOCATION);
   }
 
   // Called when the command is initially scheduled.
@@ -43,17 +42,23 @@ public class CyborgCommandEmulatePath extends CommandBase {
     currentPointIndex = 1;
     recorder.init();
 
-    try {
-      String fileContents = Files.readString(Path.of(pointsFilePath));
+    // try {
+    //   String fileContents = Files.readString(Path.of(pointsFilePath));
 
-      //create array of points based on fileContents
-      String pointStrings[] = fileContents.split("\n");
-      points = new Point2D[pointStrings.length];
-      for(int i=0; i<pointStrings.length; i++) {
-        points[i] = Point2D.fromString(pointStrings[i]);
-      }
-    } catch (IOException ex) {
-      DriverStation.reportError("IO EXCEPTION", true);
+    //   //create array of points based on fileContents
+    //   String pointStrings[] = fileContents.split("\n");
+    //   points = new Point2D[pointStrings.length];
+    //   for(int i=0; i<pointStrings.length; i++) {
+    //     points[i] = Point2D.fromString(pointStrings[i]);
+    //   }
+    // } catch (IOException ex) {
+    //   DriverStation.reportError("IO EXCEPTION", true);
+    //   return;
+    // }
+
+    path = new Path(pointsFilePath);
+    if(!path.isValid()) {
+      DriverStation.reportError("CyborgCommandEmulatePath: Error parsing path! Will not emulate!", false);
       return;
     }
 
@@ -67,18 +72,17 @@ public class CyborgCommandEmulatePath extends CommandBase {
       outLimitLow  = Util.getAndSetDouble("Drive Velocity Out Limit Low", -1),
       outLimitHigh = Util.getAndSetDouble("Drive Velocity Out Limit High", 1);
 
-    // //drivetrain closed loop ramp
+    //drivetrain closed loop ramp
     drivetrain.setPIDRamp(Util.getAndSetDouble("Drive PID Ramp", 0.5));
     drivetrain.setPIDConstants(kP, kI, kD, kF, izone, outLimitLow, outLimitHigh);
-    // Robot.getRobotContainer().zeroAllDrivetrain();
-
-    isForwards = new Point2D(0, 0, 0).getHeadingTo(points[1]) < 90;
+    isForwards = new Point2D(0, 0, 0).getHeadingTo(path.getPoints()[1]) < 90;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     Point2D currentLocation = Robot.getRobotContainer().getRobotPositionAndHeading();
+    Point2D[] points = path.getPoints();
     recorder.recordPoint(currentLocation);
 
     if(!drivetrain.getNavXConnected()) {
@@ -200,12 +204,21 @@ public class CyborgCommandEmulatePath extends CommandBase {
     drivetrain.setLeftPercentOutput(0);
     drivetrain.setRightPercentOutput(0);
     recorder.closeFile();
+
+    //report path to PathVisualizer
+    if(!pointsFilePath.equals(Constants.PATH_RECORD_LOCATION)) {
+      //send target path to PathVisualizer if it is not the default points.txt (If it is the default path then it would already be in Visualizer right now because record)
+      Robot.getRobotContainer().getPVHost().sendPath(path, "Desired Path");
+    }
+
+    frc.robot.util.Path drivenPath = new frc.robot.util.Path(Constants.EMULATE_RESULTS_FILE_PATH);
+    Robot.getRobotContainer().getPVHost().sendPath(drivenPath, "Driven Path");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return currentPointIndex >= points.length - Util.getAndSetDouble("Emulate Points to skip", 2) - 2; //command will finish when the last point is acheived.
+    return currentPointIndex >= path.getPoints().length - Util.getAndSetDouble("Emulate Points to skip", 2) - 2; //command will finish when the last point is acheived.
   }
 
   /**
@@ -295,8 +308,8 @@ public class CyborgCommandEmulatePath extends CommandBase {
    * @param turnRadius The radius of the turn that the robot will take in inches.
    * @return The best speed for the turn in in/sec
    */
-  private static double calculateBestTangentialSpeed(double turnRadius) {
-    double maxSpeed = Util.getAndSetDouble("Emulate Max Speed", 60);
+  private double calculateBestTangentialSpeed(double turnRadius) {
+    double maxSpeed = Util.getAndSetDouble("Emulate Max Speed", 90);
     double minSpeed = Util.getAndSetDouble("Emulate Min Speed", 50);
     if(Double.isNaN(turnRadius)) {
       return maxSpeed;

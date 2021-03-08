@@ -17,8 +17,6 @@ public class PositionTracker {
         y,
         heading;
 
-    Thread updater;
-
     boolean
         zero,
         waitForZeroDrive;
@@ -36,18 +34,6 @@ public class PositionTracker {
         this.heading = heading;
         this.waitForZeroDrive = false;
         this.zero = false;
-
-        //track robot position in new thread
-        this.updater = new Thread(
-            () -> {
-                while(true) {
-                    //update using drivetrain values.
-                    update();
-                }
-            }
-        );
-
-        this.updater.start();
     }
 
     /**
@@ -87,6 +73,9 @@ public class PositionTracker {
 
     /**
      * Updates the position of the robot using a distance travelled and heading travelled in.
+     * This can be run in a separate thread, but it would be bottlenecked by how fast the drive
+     * encoder positions update. This is currently every robot frame, and should not be faster
+     * to ensure that CAN traffic remains managable.
      * @param driveDistance The average of the drive distance of the two sides of the drivetrain.
      * @param rotation The current rotation of the robot.
      */
