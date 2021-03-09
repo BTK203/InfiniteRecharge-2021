@@ -49,9 +49,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    robotContainer.printAllSystemsGo();
-    robotContainer.updateDriveSchemeIndicators();
-    robotContainer.updatePositionIndicator();
+    robotContainer.update();
   }
 
   /**
@@ -93,7 +91,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    CommandScheduler.getInstance().run();
   }
 
   @Override

@@ -163,6 +163,13 @@ public final class Constants {
     public static final int
         TURRET_YAW_AMP_LIMIT = 100;
 
+    /**
+     * Socket ports
+     */
+    public static final int
+        KIWILIGHT_PORT = 3695,
+        PV_PORT        = 5963;
+
     /*
     * FORMAT: Red_Min, Green_Min, Blue_Min, Red_Max, Green_Max, Blue_Max.
     */
@@ -241,7 +248,7 @@ public final class Constants {
         EMULATE_MAX_HEADING_TO_TURN_DIFFERENCE = 75;
 
     public static final String
-        EMULATE_DEFAULT_POINTS_FILE_PATH = "/home/lvuser/points.txt",
+        PATH_RECORD_LOCATION = "/home/lvuser/points.txt",
         EMULATE_RESULTS_FILE_PATH = "/home/lvuser/results.txt";
 
     /**

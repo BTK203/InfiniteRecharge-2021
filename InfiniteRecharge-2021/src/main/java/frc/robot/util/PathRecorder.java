@@ -9,7 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
-import frc.robot.Robot;
 
 /** Add your docs here. */
 public class PathRecorder {

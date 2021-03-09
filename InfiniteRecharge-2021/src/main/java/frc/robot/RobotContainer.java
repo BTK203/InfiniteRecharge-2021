@@ -56,6 +56,7 @@ import frc.robot.util.Util;
 import frc.robot.util.Xbox;
 import frc.robot.util.PositionTracker;
 import frc.robot.util.Point2D;
+import frc.robot.util.PVHost;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -81,7 +82,8 @@ public class RobotContainer {
   /**
    * Utilities
    */
-  private final PositionTracker POSITION_TRACKER = new PositionTracker(SUB_DRIVE);
+  private final PositionTracker POSITION_TRACKER     = new PositionTracker(SUB_DRIVE);
+  private final PVHost          PATH_VISUALIZER_HOST = new PVHost(Constants.PV_PORT);
 
   /**
    * Controllers
@@ -126,8 +128,34 @@ public class RobotContainer {
     controllersGood = false;
   }
 
+  /**
+   * Updates the robot.
+   * Updates the PathVisualizer client,
+   * Updates the robot position,
+   * Prints All Systems Go indicators,
+   * Updates the drive scheme safety indicators
+   * Updates the robot position indicator,
+   */
+  public void update() {
+    POSITION_TRACKER.update();
+    PATH_VISUALIZER_HOST.update(getRobotPositionAndHeading());
+    printAllSystemsGo();
+    updateDriveSchemeIndicators();
+    updatePositionIndicator();
+  }
+
+  /**
+   * Returns the robot's current position and heading. Units are in inches for the XY coordinates, and degrees for the heading.
+   */
   public Point2D getRobotPositionAndHeading() {
     return POSITION_TRACKER.getPositionAndHeading();
+  }
+
+  /**
+   * Returns the robot's PathVisualizer host.
+   */
+  public PVHost getPVHost() {
+    return PATH_VISUALIZER_HOST;
   }
 
   /**
@@ -219,11 +247,54 @@ public class RobotContainer {
     return DRIVER2;
   }
 
+  /**
+   * Returns the current user-selected drive scheme. Will either be 
+   * Rocket League drive(xbox controller), or True Tank drive(logitech attack joysticks)
+   */
   public DriveScheme getDriveScheme() {
     return driveChooser.getSelected();
   }
 
-  public void updateDriveSchemeIndicators() {
+  /**
+   * Returns true if the controller configuration is correct, false otherwise
+   */
+  public boolean controllersGood() {
+    return controllersGood;
+  }
+
+  /**
+   * Prints dashboard indicators indicating whether the robot subsystems are ready for a match.
+   * Indicators are to be used for pre-match only. They do not provide an accurite indication
+   * of the state of a subsystem in mid match.
+   */
+  private void printAllSystemsGo() {
+    boolean 
+      driveIsGo     = SUB_DRIVE.getSystemIsGo(),
+      feederIsGo    = SUB_FEEDER.getSystemIsGo(),
+      flywheelIsGo  = SUB_FLYWHEEL.getSystemIsGo(),
+      intakeIsGo    = SUB_INTAKE.getSystemIsGo(),
+      kiwilightIsGo = SUB_RECEIVER.getSystemIsGo(),
+      spinnerIsGo   = SUB_SPINNER.getSystemIsGo(),
+      turretIsGo    = SUB_TURRET.getSystemIsGo();
+
+    boolean allSystemsGo = 
+      driveIsGo &&
+      feederIsGo &&
+      flywheelIsGo &&
+      intakeIsGo &&
+      kiwilightIsGo &&
+      spinnerIsGo &&
+      turretIsGo &&
+      controllersGood;
+    
+    SmartDashboard.putBoolean("All Systems Go", allSystemsGo);
+  }
+
+  /**
+   * Updates the indicators for drive scheme (Controller layout, safe to enable, etc) on the dashboard.
+   * This method is important because it might not be programmings fault if the robot drives full forward on enable and kills people
+   */
+  private void updateDriveSchemeIndicators() {
     DriverStation ds = DriverStation.getInstance();
 
     //report names of devices
@@ -263,43 +334,11 @@ public class RobotContainer {
     SmartDashboard.putBoolean("Controllers", controllersGood);
   }
 
-  public void updatePositionIndicator() {
+  /**
+   * Updates the robot's position on the dashboard.
+   */
+  private void updatePositionIndicator() {
     SmartDashboard.putString("Robot Position", getRobotPositionAndHeading().toString());
-  }
-
-  /**
-   * Returns true if the controller configuration is correct, false otherwise
-   */
-  public boolean controllersGood() {
-    return controllersGood;
-  }
-
-  /**
-   * Prints dashboard indicators indicating whether the robot subsystems are ready for a match.
-   * Indicators are to be used for pre-match only. They do not provide an accurite indication
-   * of the state of a subsystem in mid match.
-   */
-  public void printAllSystemsGo() {
-    boolean 
-      driveIsGo     = SUB_DRIVE.getSystemIsGo(),
-      feederIsGo    = SUB_FEEDER.getSystemIsGo(),
-      flywheelIsGo  = SUB_FLYWHEEL.getSystemIsGo(),
-      intakeIsGo    = SUB_INTAKE.getSystemIsGo(),
-      kiwilightIsGo = SUB_RECEIVER.getSystemIsGo(),
-      spinnerIsGo   = SUB_SPINNER.getSystemIsGo(),
-      turretIsGo    = SUB_TURRET.getSystemIsGo();
-
-    boolean allSystemsGo = 
-      driveIsGo &&
-      feederIsGo &&
-      flywheelIsGo &&
-      intakeIsGo &&
-      kiwilightIsGo &&
-      spinnerIsGo &&
-      turretIsGo &&
-      controllersGood;
-    
-    SmartDashboard.putBoolean("All Systems Go", allSystemsGo);
   }
 
   /**
@@ -372,6 +411,9 @@ public class RobotContainer {
     SmartDashboard.putData("Test Chase", new CyborgCommandChaseBall(SUB_DRIVE, SUB_JEVOIS));
   }
   
+  /**
+   * Defines auto dropdown and drive scheme dropdown on the dashboard.
+   */
   private void configureChoosers() {
     //declare the different autos we will choose from
     autoChooser = new SendableChooser<AutoMode>();

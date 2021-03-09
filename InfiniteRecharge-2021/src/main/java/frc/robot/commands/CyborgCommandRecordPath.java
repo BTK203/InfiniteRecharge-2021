@@ -8,6 +8,9 @@ import java.io.IOException;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+import frc.robot.Robot;
+import frc.robot.util.Path;
 import frc.robot.util.PathRecorder;
 import frc.robot.util.PositionTracker;
 
@@ -17,8 +20,7 @@ public class CyborgCommandRecordPath extends CommandBase {
 
   /** Creates a new CyborgCommandRecordPath. */
   public CyborgCommandRecordPath(PositionTracker tracker) {
-    // this.recorder = new PathRecorder("D:\\_Users\\Brach\\projects\\Test\\FRC\\out.txt"); //TODO: DELETE
-    this.recorder = new PathRecorder("/home/lvuser/points.txt");
+    this.recorder = new PathRecorder(Constants.PATH_RECORD_LOCATION);
     this.tracker = tracker;
   }
 
@@ -40,7 +42,8 @@ public class CyborgCommandRecordPath extends CommandBase {
     try {
       recorder.flushFile();
       recorder.closeFile();
-      DriverStation.reportError("RECORDER FLUSHED", false);
+      Path newlyRecordedPath = new Path(Constants.PATH_RECORD_LOCATION);
+      Robot.getRobotContainer().getPVHost().sendPath(newlyRecordedPath, "Recorded Path");
     } catch (IOException ex) {
       DriverStation.reportWarning("IO EXCEPTION OCCURRED", true);
     }
