@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class SubsystemJevois extends SubsystemBase {
-  SerialPort port;
+  private SerialPort port;
   private int
     closestBallX,
     closestBallY,
@@ -38,62 +38,106 @@ public class SubsystemJevois extends SubsystemBase {
     try {
       port = new SerialPort(Constants.JEVOIS_BAUD_RATE, Constants.JEVOIS_PORT);
       portInitalized = true;
+
+      //run serial and parsing code in a separate thread
+      new Thread(
+        () -> {
+          while(true) {
+            if(portInitalized) {
+              currentMessage += port.readString();
+            }
+        
+            int newline = currentMessage.lastIndexOf("\n");
+            if(newline >= 0) {
+              lastCompletedMessage = currentMessage.substring(0, newline);
+              currentMessage = currentMessage.substring(newline + 1);
+              
+              lastUpdatedTime = System.currentTimeMillis();
+        
+              if(!lastCompletedMessage.contains("None")) {
+                String[] segments = lastCompletedMessage.split("]");
+                int closestX = Integer.MAX_VALUE;
+                int closestY = 0;
+                int closestRadius = 0;
+                for(String segment : segments) {
+                  if(!segment.isEmpty()) {
+                    segment = segment.substring(segment.indexOf("[") + 1);
+
+                    String[] data = segment.split(",");
+                    try {
+                      int x = (int) Double.parseDouble(data[0]);
+                      int y = (int) Double.parseDouble(data[1]);
+                      int radius = (int) Double.parseDouble(data[2]);
+          
+                      int centeredX = x - (Constants.JEVOIS_RESOLUTION_X / 2);
+          
+                      if(Math.abs(centeredX) < Math.abs(closestX)) {
+                        closestX = centeredX;
+                        closestY = y;
+                        closestRadius = radius;
+                      }
+                    } catch(NumberFormatException ex) {
+                      // DriverStation.reportError("SubsystemJevois could not parse data!", true); //TODO either fix this or delete it forever
+                    }
+                  } 
+                }
+
+                closestBallX = closestX;
+                closestBallY = closestY;
+                closestBallRadius = closestRadius;
+              } else {
+                closestBallX = -9999;
+                closestBallY = -1;
+                closestBallRadius = -1;
+              }
+            }
+        
+            if(!portInitalized) {
+              DriverStation.reportWarning("Jevois Port not initalized! Loop will not run", false);
+            }        
+          }
+        }
+      ).start();
     } catch(UncleanStatusException ex) {
       DriverStation.reportError("Unclean Status! Is the right Port specified?", true);
       DriverStation.reportError(ex.getMessage(), false);
     }
   }
 
-  //[x,y,r],[x,y,r]
   @Override
   public void periodic() {
-    if(portInitalized) {
-      currentMessage += port.readString();
-    } else {
-      DriverStation.reportError("SubsystemJevois' port was not initalized!", true);
-    }
-
-    int lastNewline = currentMessage.lastIndexOf("\n");
-    int secondLastNewline = currentMessage.lastIndexOf("\n", lastNewline - 1);
-    if(lastNewline >= 0 && secondLastNewline >= 0) {
-      lastCompletedMessage = currentMessage.substring(secondLastNewline + 1, lastNewline);
-      currentMessage = currentMessage.substring(lastNewline);
-      
-      if(!lastCompletedMessage.contains("None")) {
-        lastUpdatedTime = System.currentTimeMillis();
-
-        // //process the string and grab the x coordinate, y coordinate, and radius
-        // int lastOpenBracket = lastCompletedMessage.lastIndexOf("[");
-        // int firstCloseBracket = lastCompletedMessage.indexOf("]");
-
-        // String contentsOfMessage = lastCompletedMessage.substring(lastOpenBracket + 1, firstCloseBracket);
-        // contentsOfMessage = reduceSpaces(contentsOfMessage);
-        // String[] segments = contentsOfMessage.split(" ");
-        // closest
-      }
-    }
-
-    SmartDashboard.putString("Jevois data", lastCompletedMessage);    
+    SmartDashboard.putString("Jevois Data", lastCompletedMessage);
+    SmartDashboard.putNumber("Jevois X", closestBallX);
+    SmartDashboard.putNumber("Jevois Y", closestBallY);
+    SmartDashboard.putNumber("Jevois Radius", closestBallRadius);
+    SmartDashboard.putBoolean("Jevois Updated", updated());
+    SmartDashboard.putString("Jevois current message", currentMessage);
   }
 
-  private String reduceSpaces(String str) {
-    boolean spaceUsed = false;
-    String newString = "";
-    for(int i=0; i<str.length(); i++) {
-      char character = str.charAt(i);
-      if(character != ' ') {
-        newString += character;
-        spaceUsed = false;
-      } else {
-        if(!spaceUsed) {
-          newString += character;
-          spaceUsed = true;
-        }
-      }
-    }
-
-    return newString;
+  /**
+   * Returns whether or not the Jevois has spotted a ball.
+   * @return True if a ball is spotted, false otherwise.
+   */
+  public boolean ballSpotted() {
+    return closestBallRadius > -1;
   }
 
+  /**
+   * Returns the x-coordinate of the closest ball.
+   * A return value of 0 indicates that the ball is exactly in the center of the screen,
+   * a negative value indicates that the ball is left of center, and a positive value indicates 
+   * that the ball is right of center.
+   * @return The x coordinate of the closeset ball in pixels.
+   */
+  public int getHorizontalPosition() {
+    return closestBallX;
+  }
 
+  /**
+   * Returns whether or not data has recently been received from the Jevois.
+   * @return True if data has been recently received, false otherwise.
+   */
+  public boolean updated() {
+    return System.currentTimeMillis() - lastUpdatedTime < 250;
+  }
 }

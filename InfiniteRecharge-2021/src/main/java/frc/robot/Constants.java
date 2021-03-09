@@ -76,7 +76,8 @@ public final class Constants {
      * Jevois ID and baud rate
      */
     public static final int
-        JEVOIS_BAUD_RATE = 115200;
+        JEVOIS_BAUD_RATE = 115200,
+        JEVOIS_RESOLUTION_X = 640;
 
     public static final Port
         JEVOIS_PORT = Port.kUSB;
