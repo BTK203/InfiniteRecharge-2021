@@ -25,6 +25,7 @@ import frc.robot.auto.JudgementAuto;
 import frc.robot.auto.SixBallSimpleAuto;
 import frc.robot.auto.TraditionalJudgementAuto;
 import frc.robot.auto.TrenchAuto;
+import frc.robot.commands.ButtonCommandBoost;
 import frc.robot.commands.ButtonCommandGroupRunIntakeFeeder;
 import frc.robot.commands.ButtonCommandMoveClimber;
 import frc.robot.commands.ConstantCommandDriveIntake;
@@ -354,7 +355,8 @@ public class RobotContainer {
     //manual commands
     SUB_DRIVE.setDefaultCommand(new ManualCommandDrive(SUB_DRIVE));
 
-
+    JoystickButton turb0_B00$t = new JoystickButton(DRIVER, Xbox.B); //zach wanted the name
+      turb0_B00$t.whileHeld(new ButtonCommandBoost(SUB_DRIVE));
 
     SUB_SPINNER.setDefaultCommand(
       new RunCommand(() -> SUB_SPINNER.driveByController(DRIVER), SUB_SPINNER)

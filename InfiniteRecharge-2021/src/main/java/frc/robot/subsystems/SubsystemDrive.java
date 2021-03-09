@@ -36,7 +36,10 @@ public class SubsystemDrive extends SubsystemBase {
     rightVelocity,
     netVelocity,
     fastestSpeed,
-    lastThrottle;
+    lastThrottle,
+    boostInhibitor;
+
+  private static boolean boosting;
 
   private static long
     lastRampTime;
@@ -150,6 +153,10 @@ public class SubsystemDrive extends SubsystemBase {
     driveLeft = (driveLeft < -1 ? -1 : (driveLeft > 1 ? 1 : driveLeft));
 
     double inhibitor = Util.getAndSetDouble("Drive Inhibitor", 1);
+    if(boosting) {
+      inhibitor = boostInhibitor;
+    }
+
     driveRight *= inhibitor;
     driveLeft *= inhibitor;
 
@@ -199,6 +206,22 @@ public class SubsystemDrive extends SubsystemBase {
     leftSlave.set(leftDrive);
     rightMaster.set(rightDrive);
     rightSlave.set(rightDrive);
+  }
+
+  /**
+   * Enables boost (basically a drive inhibitor override) and sets the boost inhibitor.
+   * @param newInhibitor The value of the boost inhibitor
+   */
+  public void setBoosting(double newInhibitor) {
+    boostInhibitor = newInhibitor;
+    boosting = true;
+  }
+
+  /**
+   * Disables the boost.
+   */
+  public void stopBoosting() {
+    boosting = false;
   }
 
   /**

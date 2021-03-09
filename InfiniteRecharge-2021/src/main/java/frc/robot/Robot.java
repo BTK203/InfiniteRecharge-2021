@@ -104,6 +104,5 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    DriverStation.reportError("bruh: " + Double.valueOf(Util.getAngleToHeading(92, -89)).toString(), false);
   }
 }

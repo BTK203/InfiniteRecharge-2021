@@ -111,20 +111,12 @@ public class SubsystemTurret extends SubsystemBase {
     speedx = Xbox.LEFT_X(controller);
     speedy = Xbox.RIGHT_Y(controller);
 
-    DriverStation.reportWarning("bruh: " + Double.valueOf(speedx), false);
-
     speedx *= Constants.TURRET_YAW_ABSOLUTE_MAX_OUTPUT;
-
-    DriverStation.reportWarning("bruh 2: " + Double.valueOf(speedx), false);
 
     speedx = speedx * Util.getAndSetDouble("Turret Spin Inhibitor Yaw", 0.7);
     speedy = speedy * Util.getAndSetDouble("Turret Spin Inhibitor Pitch", 1);
 
-    DriverStation.reportWarning("bruh 3: " + Double.valueOf(speedx), false);
-
     speedx = (speedx < -1 * Constants.TURRET_YAW_ABSOLUTE_MAX_OUTPUT ? -1 * Constants.TURRET_YAW_ABSOLUTE_MAX_OUTPUT : (speedx > Constants.TURRET_YAW_ABSOLUTE_MAX_OUTPUT ? Constants.TURRET_YAW_ABSOLUTE_MAX_OUTPUT : speedx));
-
-    DriverStation.reportWarning("bruh 4: " + Double.valueOf(speedx), false);
 
     turretYaw.set(ControlMode.PercentOutput, speedx);
     turretPitch.set(ControlMode.PercentOutput, speedy);
