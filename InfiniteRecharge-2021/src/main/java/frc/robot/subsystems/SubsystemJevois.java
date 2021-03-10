@@ -4,25 +4,25 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.hal.util.UncleanStatusException;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
+
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class SubsystemJevois extends SubsystemBase {
-  private SerialPort port;
+  private DatagramSocket jevois;
   private int
     closestBallX,
     closestBallY,
     closestBallRadius;
 
-  private String 
-    currentMessage,
-    lastCompletedMessage;
+  private String lastCompletedMessage;
 
-  private boolean portInitalized;
   private long lastUpdatedTime;
 
   /** Creates a new SubsystemJevois. */
@@ -30,76 +30,31 @@ public class SubsystemJevois extends SubsystemBase {
     closestBallX = -1;
     closestBallY = -1;
     closestBallRadius = -1;
-    currentMessage = "";
     lastCompletedMessage = "No Message!";
-    portInitalized = false;
     lastUpdatedTime = 0;
 
     try {
-      port = new SerialPort(Constants.JEVOIS_BAUD_RATE, Constants.JEVOIS_PORT);
-      portInitalized = true;
+      jevois = new DatagramSocket(Constants.JEVOIS_PORT);
 
       //run serial and parsing code in a separate thread
       new Thread(
         () -> {
           while(true) {
-            if(portInitalized) {
-              currentMessage += port.readString();
-            }
-        
-            int newline = currentMessage.lastIndexOf("\n");
-            if(newline >= 0) {
-              lastCompletedMessage = currentMessage.substring(0, newline);
-              currentMessage = currentMessage.substring(newline + 1);
-              
+            try {
+              DatagramPacket packet = new DatagramPacket(new byte[Constants.JEVOIS_BYTES], Constants.JEVOIS_BYTES);
+              jevois.receive(packet);
+              String incomingData = new String(packet.getData());
               lastUpdatedTime = System.currentTimeMillis();
-        
-              if(!lastCompletedMessage.contains("None")) {
-                String[] segments = lastCompletedMessage.split("]");
-                int closestX = Integer.MAX_VALUE;
-                int closestY = 0;
-                int closestRadius = 0;
-                for(String segment : segments) {
-                  if(!segment.isEmpty()) {
-                    segment = segment.substring(segment.indexOf("[") + 1);
-
-                    String[] data = segment.split(",");
-                    try {
-                      int x = (int) Double.parseDouble(data[0]);
-                      int y = (int) Double.parseDouble(data[1]);
-                      int radius = (int) Double.parseDouble(data[2]);
-          
-                      int centeredX = x - (Constants.JEVOIS_RESOLUTION_X / 2);
-          
-                      if(Math.abs(centeredX) < Math.abs(closestX)) {
-                        closestX = centeredX;
-                        closestY = y;
-                        closestRadius = radius;
-                      }
-                    } catch(NumberFormatException ex) {
-                      // DriverStation.reportError("SubsystemJevois could not parse data!", true); //TODO either fix this or delete it forever
-                    }
-                  } 
-                }
-
-                closestBallX = closestX;
-                closestBallY = closestY;
-                closestBallRadius = closestRadius;
-              } else {
-                closestBallX = -9999;
-                closestBallY = -1;
-                closestBallRadius = -1;
-              }
+              SmartDashboard.putString("Jevois current message", incomingData);
+              update(incomingData);
+            } catch(IOException ex) {
+              DriverStation.reportError("Subsystem Jevois IOException", false);
             }
-        
-            if(!portInitalized) {
-              DriverStation.reportWarning("Jevois Port not initalized! Loop will not run", false);
-            }        
           }
         }
       ).start();
-    } catch(UncleanStatusException ex) {
-      DriverStation.reportError("Unclean Status! Is the right Port specified?", true);
+    } catch(SocketException ex) {
+      DriverStation.reportError("Socket Exception", true);
       DriverStation.reportError(ex.getMessage(), false);
     }
   }
@@ -111,7 +66,6 @@ public class SubsystemJevois extends SubsystemBase {
     SmartDashboard.putNumber("Jevois Y", closestBallY);
     SmartDashboard.putNumber("Jevois Radius", closestBallRadius);
     SmartDashboard.putBoolean("Jevois Updated", updated());
-    SmartDashboard.putString("Jevois current message", currentMessage);
   }
 
   /**
@@ -139,5 +93,53 @@ public class SubsystemJevois extends SubsystemBase {
    */
   public boolean updated() {
     return System.currentTimeMillis() - lastUpdatedTime < 250;
+  }
+
+  private void parseData(String[] segments) {
+    int closestX = Integer.MAX_VALUE;
+    int closestY = 0;
+    int closestRadius = 0;
+    for(String segment : segments) {
+      if(!segment.isEmpty()) {
+        segment = segment.substring(segment.indexOf("[") + 1);
+
+        String[] data = segment.split(",");
+        try {
+          int x = (int) Double.parseDouble(data[0]);
+          int y = (int) Double.parseDouble(data[1]);
+          int radius = (int) Double.parseDouble(data[2]);
+
+          int centeredX = x - (Constants.JEVOIS_RESOLUTION_X / 2);
+
+          if(Math.abs(centeredX) < Math.abs(closestX)) {
+            closestX = centeredX;
+            closestY = y;
+            closestRadius = radius;
+          }
+        } catch(NumberFormatException ex) {
+          DriverStation.reportError("SubsystemJevois could not parse data!", true); //TODO either fix this or delete it forever
+        }
+      } 
+    }
+
+    closestBallX = closestX;
+    closestBallY = closestY;
+    closestBallRadius = closestRadius;
+  }
+
+  private void update(String incoming) {
+    incoming = incoming.substring(0, incoming.indexOf(";"));
+
+    DriverStation.reportWarning("current message: " + incoming, false);
+
+    
+    if(!lastCompletedMessage.contains("None")) {
+      String[] segments = lastCompletedMessage.split("]");
+      parseData(segments);
+    } else {
+      closestBallX = -9999;
+      closestBallY = -1;
+      closestBallRadius = -1;
+    }    
   }
 }

@@ -410,7 +410,7 @@ public class RobotContainer {
     SmartDashboard.putData("Run Intake", new ConstantCommandDriveIntake(SUB_INTAKE, SUB_FEEDER));
     SmartDashboard.putData("Test DD", new CyborgCommandDriveDistance(SUB_DRIVE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_DISTANCE, Constants.JUDGEMENT_AUTO_SHOOT_DRIVE_POWER));
     SmartDashboard.putData("Test SDD", new CyborgCommandSmartDriveDistance(SUB_DRIVE));
-    SmartDashboard.putData("Test Chase", new CyborgCommandChaseBall(SUB_DRIVE, SUB_JEVOIS));
+    // SmartDashboard.putData("Test Chase", new CyborgCommandChaseBall(SUB_DRIVE, SUB_JEVOIS));
   }
   
   /**
