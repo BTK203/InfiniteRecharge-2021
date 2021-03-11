@@ -392,14 +392,22 @@ public class SubsystemDrive extends SubsystemBase {
   }
 
   /**
-   * Configures the ramp rate of the motors.
+   * Sets the ramp rates to a custom value.
+   * @param ramp time in seconds for motors to go from 0 to full power.
    */
-  private void setRamps() {
-    double ramp = Util.getAndSetDouble("Drive Ramp", 0.25);
+  public void setRamps(double ramp) {
     leftMaster.setOpenLoopRampRate(ramp);
     leftSlave.setOpenLoopRampRate(ramp);
     rightMaster.setOpenLoopRampRate(ramp);
     rightSlave.setOpenLoopRampRate(ramp);
+  }
+
+  /**
+   * Configures the ramp rate of the motors.
+   */
+  public void setRamps() {
+    double ramp = Util.getAndSetDouble("Drive Ramp", 0.25);
+    setRamps(ramp);
   }
 
   /**

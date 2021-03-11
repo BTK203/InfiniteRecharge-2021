@@ -129,12 +129,9 @@ public class SubsystemJevois extends SubsystemBase {
 
   private void update(String incoming) {
     incoming = incoming.substring(0, incoming.indexOf(";"));
-
-    DriverStation.reportWarning("current message: " + incoming, false);
-
     
-    if(!lastCompletedMessage.contains("None")) {
-      String[] segments = lastCompletedMessage.split("]");
+    if(incoming.contains("]")) {
+      String[] segments = incoming.split("]");
       parseData(segments);
     } else {
       closestBallX = -9999;

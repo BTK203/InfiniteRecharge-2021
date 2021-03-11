@@ -82,6 +82,9 @@ public final class Constants {
     public static final int
         JEVOIS_PORT = 3696,
         JEVOIS_BYTES = 1024;
+
+    public static final int
+        JEVOIS_SUCK_TIME = 1000;
     
     /**
      * Drivetrain motor inverts
