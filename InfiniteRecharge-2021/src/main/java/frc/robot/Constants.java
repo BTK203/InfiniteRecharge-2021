@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.SerialPort.Port;
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants. This class should not be used for any other
@@ -287,6 +285,13 @@ public final class Constants {
     public static final String
         TRAD_JUDGEMENT_AUTO_DRIVE_TO_POWER_CELLS_FILE = "/home/lvuser/ja2_collectCells.txt",
         TRAD_JUDGEMENT_AUTO_DRIVE_TO_SITE_FILE        = "/home/lvuser/ja2_driveToSite.txt";
+
+    /**
+     * Shooting challenge
+     */
+    public static final String
+        DRIVE_INTO_SHOOTING_ZONE_FILE = "/home/lvuser/sc_driveIntoShootingZone.txt",
+        DRIVE_INTO_COLLECT_ZONE_FILE  = "/home/lvuser/sc_driveIntoCollectZone.txt";
 
     /**
      * Camera Stuff

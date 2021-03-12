@@ -363,11 +363,26 @@ public class RobotContainer {
     );
 
     //button commands
-    JoystickButton moveClimberUp = new JoystickButton(DRIVER, Xbox.START);
-    moveClimberUp.toggleWhenPressed(new ButtonCommandMoveClimber(SUB_CLIMB, 1));
+    JoystickButton moveClimberUp = new JoystickButton(DRIVER, Xbox.RB);
+      moveClimberUp.toggleWhenPressed(new ButtonCommandMoveClimber(SUB_CLIMB, 1));
 
-    JoystickButton moveClimberDown = new JoystickButton(DRIVER, Xbox.BACK);
-    moveClimberDown.toggleWhenPressed(new ButtonCommandMoveClimber(SUB_CLIMB, -1));
+    JoystickButton moveClimberDown = new JoystickButton(DRIVER, Xbox.LB);
+      moveClimberDown.toggleWhenPressed(new ButtonCommandMoveClimber(SUB_CLIMB, -1));
+
+    //commands to enter and exit the shooting zone for the power port challenge.
+    CyborgCommandEmulatePath enterShootingZone = new CyborgCommandEmulatePath(SUB_DRIVE, Constants.DRIVE_INTO_SHOOTING_ZONE_FILE);
+    CyborgCommandEmulatePath enterCollectZone  = new CyborgCommandEmulatePath(SUB_DRIVE, Constants.DRIVE_INTO_COLLECT_ZONE_FILE);
+    CyborgCommandSmartDriveDistance straightenOut = new CyborgCommandSmartDriveDistance(SUB_DRIVE, 40, 0.2, 0, 1);
+    CyborgCommandSmartDriveDistance straightenOutBackward = new CyborgCommandSmartDriveDistance(SUB_DRIVE, -40, 0.2, 0, 1);
+
+    Command enterShootingZoneCommand = enterShootingZone.andThen(straightenOut);
+    Command enterCollectZoneCommand  = enterCollectZone.andThen(straightenOutBackward);
+
+    JoystickButton enterShootingZoneButton = new JoystickButton(DRIVER, Xbox.START);
+      enterShootingZoneButton.toggleWhenPressed(enterShootingZoneCommand);
+
+    JoystickButton exitShootingZone = new JoystickButton(DRIVER, Xbox.BACK);
+      exitShootingZone.toggleWhenPressed(enterCollectZoneCommand);
 
     /**
      * OPERATOR controls
@@ -399,6 +414,7 @@ public class RobotContainer {
     SmartDashboard.putData("Zero Turret", new CyborgCommandZeroTurret(SUB_TURRET));
     SmartDashboard.putData("Zero Yaw Encoder", new InstantCommand(() -> SUB_TURRET.setCurrentYawEncoderPosition(0), SUB_TURRET));
     SmartDashboard.putData("Zero Drivetrain Encoders", new InstantCommand(() -> SUB_DRIVE.zeroEncoders()));
+    SmartDashboard.putData("Zero Gyro", new InstantCommand(() -> SUB_DRIVE.zeroGyro()));
     SmartDashboard.putData("Zero All Drivetrain", new InstantCommand(() -> zeroAllDrivetrain()));
     SmartDashboard.putData("Record Path", new CyborgCommandRecordPath(POSITION_TRACKER));
     SmartDashboard.putData("Emulate Path", new CyborgCommandEmulatePath(SUB_DRIVE));
