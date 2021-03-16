@@ -372,11 +372,12 @@ public class RobotContainer {
     //commands to enter and exit the shooting zone for the power port challenge.
     CyborgCommandEmulatePath enterShootingZone = new CyborgCommandEmulatePath(SUB_DRIVE, Constants.DRIVE_INTO_SHOOTING_ZONE_FILE);
     CyborgCommandEmulatePath enterCollectZone  = new CyborgCommandEmulatePath(SUB_DRIVE, Constants.DRIVE_INTO_COLLECT_ZONE_FILE);
-    CyborgCommandSmartDriveDistance straightenOut = new CyborgCommandSmartDriveDistance(SUB_DRIVE, 40, 0.2, 0, 1);
-    CyborgCommandSmartDriveDistance straightenOutBackward = new CyborgCommandSmartDriveDistance(SUB_DRIVE, -40, 0.2, 0, 1);
+    CyborgCommandSmartDriveDistance straightenOut = new CyborgCommandSmartDriveDistance(SUB_DRIVE, 48, 0.2, 0, 1);
+    CyborgCommandSmartDriveDistance straightenOutBackward = new CyborgCommandSmartDriveDistance(SUB_DRIVE, -48, 0.2, -45, 1);
 
     Command enterShootingZoneCommand = enterShootingZone.andThen(straightenOut);
-    Command enterCollectZoneCommand  = enterCollectZone.andThen(straightenOutBackward);
+    // Command enterCollectZoneCommand  = enterCollectZone.andThen(straightenOutBackward);
+    Command enterCollectZoneCommand = enterCollectZone;
 
     JoystickButton enterShootingZoneButton = new JoystickButton(DRIVER, Xbox.START);
       enterShootingZoneButton.toggleWhenPressed(enterShootingZoneCommand);

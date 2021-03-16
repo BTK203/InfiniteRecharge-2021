@@ -180,6 +180,21 @@ public final class Constants {
         TARGET_GREEN  = { 42 , 126, 56 , 62 , 146, 76  },
         TARGET_BLUE   = { 36 , 103, 85 , 56 , 123, 105 },
         TARGET_YELLOW = { 75 , 127, 22 , 95 , 147, 42  };
+
+    /**
+     * PathVisualizer Constants
+     */
+    public static final int
+        SOCKET_BUFFER_SIZE = 128000;
+
+    /**
+     * Message Format Constants. These should exactly match those from the PathVisualizer code.
+     */
+    public static final String
+        START_SEQUENCE = "[",
+        END_SEQUENCE = "]",
+        SPLIT_SEQUENCE = ":::",
+        SUBJECT_SEQUENCE = "---";
     
     /**
      * Physical traits of the robot
