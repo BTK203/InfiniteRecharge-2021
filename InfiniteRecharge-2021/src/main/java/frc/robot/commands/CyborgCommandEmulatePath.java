@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -41,20 +42,6 @@ public class CyborgCommandEmulatePath extends CommandBase {
   public void initialize() {
     currentPointIndex = 1;
     recorder.init();
-
-    // try {
-    //   String fileContents = Files.readString(Path.of(pointsFilePath));
-
-    //   //create array of points based on fileContents
-    //   String pointStrings[] = fileContents.split("\n");
-    //   points = new Point2D[pointStrings.length];
-    //   for(int i=0; i<pointStrings.length; i++) {
-    //     points[i] = Point2D.fromString(pointStrings[i]);
-    //   }
-    // } catch (IOException ex) {
-    //   DriverStation.reportError("IO EXCEPTION", true);
-    //   return;
-    // }
 
     path = new Path(pointsFilePath);
     if(!path.isValid()) {
@@ -142,6 +129,8 @@ public class CyborgCommandEmulatePath extends CommandBase {
       immediateTurn += positionalCorrection;
       immediateTurn *= Util.getAndSetDouble("Emulate Overturn", 1.2);
     }
+
+    SmartDashboard.putNumber("Emulate turn", immediateTurn);
 
     //We found that the algorithm calculates a backwards turn to be half as much as a fowards turn, so we correct that here. When the season is over, we will find the actual reason that this happens.
     if(!isForwards) {
