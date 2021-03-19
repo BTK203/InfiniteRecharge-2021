@@ -58,7 +58,7 @@
               ]
             }
           },
-          "7,4": {
+          "7,0": {
             "size": [
               2,
               2
@@ -73,86 +73,7 @@
               "Visuals/Counter clockwise": false
             }
           },
-          "7,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Emulate current point",
-              "_title": "/SmartDashboard/Emulate current point"
-            }
-          },
-          "8,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Emulate points",
-              "_title": "/SmartDashboard/Emulate points"
-            }
-          },
-          "5,0": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Emulate Forward",
-              "_title": "/SmartDashboard/Emulate Forward",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "7,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Robot Position",
-              "_title": "/SmartDashboard/Robot Position"
-            }
-          },
           "7,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Emulate target point",
-              "_title": "/SmartDashboard/Emulate target point"
-            }
-          },
-          "7,3": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Right Output",
-              "_title": "/SmartDashboard/Right Output"
-            }
-          },
-          "5,3": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Left Output",
-              "_title": "/SmartDashboard/Left Output"
-            }
-          },
-          "7,6": {
             "size": [
               2,
               1
@@ -165,173 +86,6 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "5,4": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Run Intake",
-              "_title": "SmartDashboard/Run Intake"
-            }
-          },
-          "5,5": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Test DD",
-              "_title": "SmartDashboard/Test DD"
-            }
-          },
-          "5,6": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Test SDD",
-              "_title": "SmartDashboard/Test SDD"
-            }
-          },
-          "5,7": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Test Turret Position",
-              "_title": "SmartDashboard/Test Turret Position"
-            }
-          },
-          "4,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Yaw PID Target",
-              "_title": "SmartDashboard/Yaw PID Target"
-            }
-          },
-          "5,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Yaw PID Error",
-              "_title": "SmartDashboard/Yaw PID Error"
-            }
-          },
-          "7,7": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Yaw Out",
-              "_title": "SmartDashboard/Yaw Out"
-            }
-          },
-          "0,0": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Jevois Updated",
-              "_title": "SmartDashboard/Jevois Updated",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "3,4": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Jevois current message",
-              "_title": "SmartDashboard/Jevois current message"
-            }
-          },
-          "3,3": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Jevois Data",
-              "_title": "SmartDashboard/Jevois Data"
-            }
-          },
-          "4,5": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Jevois Radius",
-              "_title": "SmartDashboard/Jevois Radius"
-            }
-          },
-          "4,6": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Jevois X",
-              "_title": "SmartDashboard/Jevois X"
-            }
-          },
-          "4,7": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Jevois Y",
-              "_title": "SmartDashboard/Jevois Y"
-            }
-          },
-          "2,7": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Test Chase",
-              "_title": "SmartDashboard/Test Chase"
-            }
-          },
-          "3,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Heading Correction",
-              "_title": "SmartDashboard/Heading Correction"
-            }
-          },
           "12,0": {
             "size": [
               5,
@@ -342,6 +96,19 @@
               "_source0": "network_table:///Preferences",
               "_title": "Preferences",
               "Miscellaneous/Show search box": true
+            }
+          },
+          "5,1": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Aligning",
+              "_title": "/SmartDashboard/Aligning",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
             }
           }
         }
@@ -1040,7 +807,7 @@
   "windowGeometry": {
     "x": -1928.0,
     "y": -8.0,
-    "width": 1936.0,
-    "height": 1056.0
+    "width": 1940.0,
+    "height": 1066.0
   }
 }

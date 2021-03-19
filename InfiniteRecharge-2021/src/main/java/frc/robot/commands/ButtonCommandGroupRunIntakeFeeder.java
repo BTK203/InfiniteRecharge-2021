@@ -9,7 +9,9 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemFeeder;
+import frc.robot.subsystems.SubsystemFlywheel;
 import frc.robot.subsystems.SubsystemIntake;
 import frc.robot.subsystems.SubsystemTurret;
 import frc.robot.util.Util;
@@ -19,15 +21,17 @@ public class ButtonCommandGroupRunIntakeFeeder extends CommandBase {
   private SubsystemIntake intake;
   private SubsystemFeeder feeder;
   private SubsystemTurret turret;
+  private SubsystemFlywheel flywheel;
   private Joystick controller;
 
   /**
    * Creates a new ButtonCommandGroupRunIntakeFeeder.
    */
-  public ButtonCommandGroupRunIntakeFeeder(SubsystemIntake intake, SubsystemFeeder feeder, SubsystemTurret turret, Joystick controller) {
+  public ButtonCommandGroupRunIntakeFeeder(SubsystemIntake intake, SubsystemFeeder feeder, SubsystemTurret turret, SubsystemFlywheel flywheel, Joystick controller) {
     this.intake = intake;
     this.feeder = feeder;
     this.turret = turret;
+    this.flywheel = flywheel;
     this.controller = controller;
     addRequirements(this.intake);
     addRequirements(this.feeder);
@@ -54,9 +58,11 @@ public class ButtonCommandGroupRunIntakeFeeder extends CommandBase {
     }
 
     if(controller.getRawButton(Xbox.X)) {
-      slapSpeed = Util.getAndSetDouble("Slap Speed", 0.33);
-      beatSpeed = Util.getAndSetDouble("Beat Speed", 0.5);
-      feedSpeed = Util.getAndSetDouble("Feed Speed", 0.5);
+      if(flywheel.getVelocity() > 5550 || Constants.AUTO_OVERREV_TURRET) { 
+        slapSpeed = Util.getAndSetDouble("Slap Speed", 0.33);
+        beatSpeed = Util.getAndSetDouble("Beat Speed", 0.5);
+        feedSpeed = Util.getAndSetDouble("Feed Speed", 0.5);
+      }
 
       //disable height adjustment on aligning
       turret.setPitchPositioningDisabled(true);

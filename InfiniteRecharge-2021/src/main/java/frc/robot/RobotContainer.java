@@ -370,20 +370,20 @@ public class RobotContainer {
       moveClimberDown.toggleWhenPressed(new ButtonCommandMoveClimber(SUB_CLIMB, -1));
 
     //commands to enter and exit the shooting zone for the power port challenge.
-    CyborgCommandEmulatePath enterShootingZone = new CyborgCommandEmulatePath(SUB_DRIVE, Constants.DRIVE_INTO_SHOOTING_ZONE_FILE);
-    CyborgCommandEmulatePath enterCollectZone  = new CyborgCommandEmulatePath(SUB_DRIVE, Constants.DRIVE_INTO_COLLECT_ZONE_FILE);
-    CyborgCommandSmartDriveDistance straightenOut = new CyborgCommandSmartDriveDistance(SUB_DRIVE, 48, 0.2, 0, 1);
-    CyborgCommandSmartDriveDistance straightenOutBackward = new CyborgCommandSmartDriveDistance(SUB_DRIVE, -48, 0.2, -45, 1);
+    // CyborgCommandEmulatePath enterShootingZone = new CyborgCommandEmulatePath(SUB_DRIVE, Constants.DRIVE_INTO_SHOOTING_ZONE_FILE);
+    // CyborgCommandEmulatePath enterCollectZone  = new CyborgCommandEmulatePath(SUB_DRIVE, Constants.DRIVE_INTO_COLLECT_ZONE_FILE);
+    // CyborgCommandSmartDriveDistance straightenOut = new CyborgCommandSmartDriveDistance(SUB_DRIVE, 48, 0.2, 0, 1);
+    // CyborgCommandSmartDriveDistance straightenOutBackward = new CyborgCommandSmartDriveDistance(SUB_DRIVE, -48, 0.2, -45, 1);
 
-    Command enterShootingZoneCommand = enterShootingZone.andThen(straightenOut);
-    // Command enterCollectZoneCommand  = enterCollectZone.andThen(straightenOutBackward);
-    Command enterCollectZoneCommand = enterCollectZone;
+    // Command enterShootingZoneCommand = enterShootingZone.andThen(straightenOut);
+    // // Command enterCollectZoneCommand  = enterCollectZone.andThen(straightenOutBackward);
+    // Command enterCollectZoneCommand = enterCollectZone;
 
-    JoystickButton enterShootingZoneButton = new JoystickButton(DRIVER, Xbox.START);
-      enterShootingZoneButton.toggleWhenPressed(enterShootingZoneCommand);
+    // JoystickButton enterShootingZoneButton = new JoystickButton(DRIVER, Xbox.START);
+    //   enterShootingZoneButton.toggleWhenPressed(enterShootingZoneCommand);
 
-    JoystickButton exitShootingZone = new JoystickButton(DRIVER, Xbox.BACK);
-      exitShootingZone.toggleWhenPressed(enterCollectZoneCommand);
+    // JoystickButton exitShootingZone = new JoystickButton(DRIVER, Xbox.BACK);
+    //   exitShootingZone.toggleWhenPressed(enterCollectZoneCommand);
 
     /**
      * OPERATOR controls
@@ -391,7 +391,7 @@ public class RobotContainer {
     SUB_TURRET.setDefaultCommand(new RunCommand(() -> { SUB_TURRET.moveTurret(OPERATOR); }, SUB_TURRET));
 
     SUB_INTAKE.setDefaultCommand(
-      new ButtonCommandGroupRunIntakeFeeder(SUB_INTAKE, SUB_FEEDER, SUB_TURRET, OPERATOR)
+      new ButtonCommandGroupRunIntakeFeeder(SUB_INTAKE, SUB_FEEDER, SUB_TURRET, SUB_FLYWHEEL, OPERATOR)
     );
 
     //toggle commands
