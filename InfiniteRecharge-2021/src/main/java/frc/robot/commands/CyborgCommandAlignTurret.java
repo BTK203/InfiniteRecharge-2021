@@ -133,12 +133,28 @@ public class CyborgCommandAlignTurret extends CommandBase {
       double newPitchPosition = turret.getPitchPosition();
       if(targetDistance > 5) {
         //use the cool parabola equation to calculate the pitch position
-        
-        double ax2 = 0.1995 * Math.pow(targetDistance, 2);
-        double bx  = -64.89 * targetDistance;
-        double c   = -3703;
+        double
+          ax2 = 0,
+          bx = 0,
+          c = 0;
+          
+        switch(Robot.getRobotContainer().getAlignModel()) {
+          case NORMAL: {
+              ax2 = 0.1995 * Math.pow(targetDistance, 2);
+              bx  = -64.89 * targetDistance;
+              c   = -3703;
+            }
+            break;
+          case NEW_BALLS: {
+              ax2 = 0.1299 * Math.pow(targetDistance, 2);
+              bx = -49.79 * targetDistance;
+              c = -5627;
+            }
+            break;
+        }
 
         newPitchPosition = ax2 + bx + c;
+
 
         SmartDashboard.putNumber("Vision Pitch Target", newPitchPosition);
 

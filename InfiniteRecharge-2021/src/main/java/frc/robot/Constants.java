@@ -160,7 +160,7 @@ public final class Constants {
      * Turret Constant Inhibitors and Amp Limits
      */
     public static final double
-        TURRET_YAW_ABSOLUTE_MAX_OUTPUT = 0.5;
+        TURRET_YAW_ABSOLUTE_MAX_OUTPUT = 0.65;
 
     public static final int
         TURRET_YAW_AMP_LIMIT = 100;

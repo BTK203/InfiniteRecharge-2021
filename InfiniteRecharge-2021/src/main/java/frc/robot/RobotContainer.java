@@ -44,6 +44,7 @@ import frc.robot.commands.ManualCommandDrive;
 import frc.robot.commands.ToggleCommandDriveClimber;
 import frc.robot.enumeration.AutoMode;
 import frc.robot.enumeration.DriveScheme;
+import frc.robot.enumeration.AlignModel;
 import frc.robot.subsystems.SubsystemClimb;
 import frc.robot.subsystems.SubsystemDrive;
 import frc.robot.subsystems.SubsystemFeeder;
@@ -104,6 +105,7 @@ public class RobotContainer {
    */
   private SendableChooser<AutoMode> autoChooser;
   private SendableChooser<DriveScheme> driveChooser;
+  private SendableChooser<AlignModel> alignModelChooser;
 
   /**
    * Auto
@@ -254,6 +256,10 @@ public class RobotContainer {
    */
   public DriveScheme getDriveScheme() {
     return driveChooser.getSelected();
+  }
+
+  public AlignModel getAlignModel() {
+    return alignModelChooser.getSelected();
   }
 
   /**
@@ -449,6 +455,12 @@ public class RobotContainer {
     driveChooser.setDefaultOption("Rocket League", DriveScheme.RL);
     driveChooser.addOption("True Tank", DriveScheme.TRUE_TANK);
     SmartDashboard.putData("Drive Scheme", driveChooser);
+
+    //declare the different align modes available
+    alignModelChooser = new SendableChooser<AlignModel>();
+    alignModelChooser.setDefaultOption(AlignModel.NORMAL.getName(), AlignModel.NORMAL);
+    alignModelChooser.addOption(AlignModel.NEW_BALLS.getName(), AlignModel.NEW_BALLS);
+    SmartDashboard.putData("Aligning Model", alignModelChooser);
 
     //set drivetrain lock override to false for safety
     Preferences.getInstance().putBoolean("Override Drive Lock", false);
