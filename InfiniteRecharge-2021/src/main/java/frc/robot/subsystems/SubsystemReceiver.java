@@ -194,7 +194,7 @@ public class SubsystemReceiver extends SubsystemBase {
 
     try {
       for(int i=0; i<stringData.length; i++) {
-        newData[i] = Integer.parseInt(stringData[i]);
+        newData[i] = Double.parseDouble(stringData[i]);
       }
     } catch(Exception ex) {
       DriverStation.reportWarning("PARSING DATA ERROR: " + ex.getMessage(), true);

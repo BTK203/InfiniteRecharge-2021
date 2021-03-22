@@ -38,7 +38,7 @@ public class CyborgCommandTestVelocity extends CommandBase {
   public void initialize() {
     //grab pid constants
     double 
-      kP           = Util.getAndSetDouble("Drive Velocity kP", 0),
+      kP           = Util.getAndSetDouble("Drive Velocity kP", 0.0004),
       kI           = Util.getAndSetDouble("Drive Velocity kI", 0),
       kD           = Util.getAndSetDouble("Drive Velocity kD", 0),
       kF           = Util.getAndSetDouble("Drive Velocity kF", 0),
@@ -69,6 +69,8 @@ public class CyborgCommandTestVelocity extends CommandBase {
     double velocitySetpoint = Util.getAndSetDouble("Drive Velocity Setpoint", 12);
     velocitySetpoint *= Constants.DRIVE_ROTATIONS_PER_INCH; //convert to rotations per second
     velocitySetpoint *= 60; //convert to rotations per minute
+
+    velocitySetpoint = curveVelocity(velocitySetpoint);
 
     //correct heading
     double headingCorrection = headingController.calculate(drivetrain.getGyroAngle());
@@ -110,5 +112,9 @@ public class CyborgCommandTestVelocity extends CommandBase {
   @Override
   public boolean isFinished() {
     return this.currentDistance >= targetDistance;
+  }
+
+  private double curveVelocity(double velocitySetpoint) {
+    return (velocitySetpoint > 1132 ? velocitySetpoint += (velocitySetpoint - 40) * 0.4 : velocitySetpoint); //1132 RPM ~= 45 in/sec
   }
 }

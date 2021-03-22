@@ -71,17 +71,18 @@ public class CyborgCommandAlignTurret extends CommandBase {
   @Override
   public void initialize() {
     //set yaw pid
-    double yawkP = Util.getAndSetDouble("Yaw Position kP", 0.004);
+    double yawkP = Util.getAndSetDouble("Yaw Position kP", 0.009);
     double yawkI = Util.getAndSetDouble("Yaw Position kI", 0.001);
     double yawIZone = Util.getAndSetDouble("Yaw Position IZone", 100000);
     double yawkD = Util.getAndSetDouble("Yaw Position KD", 0);
     double yawkF = Util.getAndSetDouble("Yaw Position KF", 0);
-    double yawhighOutLimit = Util.getAndSetDouble("Yaw High Output", 1);
+    double yawhighOutLimit = Util.getAndSetDouble("Turret Spin Inhibitor Yaw", 1);
+    yawhighOutLimit *= Constants.TURRET_YAW_ABSOLUTE_MAX_OUTPUT;
 
     turret.setYawPIDF(yawkP, yawkI, yawkD, yawkF, yawhighOutLimit, (int) yawIZone);
 
     //pitch pid
-    double pitchkP = Util.getAndSetDouble("Pitch Position kP", 12);
+    double pitchkP = Util.getAndSetDouble("Pitch Position kP", 5);
     double pitchkI = Util.getAndSetDouble("Pitch Position kI", 0);
     double pitchIZone = Util.getAndSetDouble("Pitch Position IZone", 75);
     double pitchkD = Util.getAndSetDouble("Pitch Position kD", 0);

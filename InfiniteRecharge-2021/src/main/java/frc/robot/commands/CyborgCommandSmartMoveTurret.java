@@ -39,7 +39,7 @@ public class CyborgCommandSmartMoveTurret extends CommandBase {
     this.desiredPitchPosition = turret.getPitchPosition();
 
     //pitch pid
-    double pitchkP = Util.getAndSetDouble("Pitch Position kP", 0);
+    double pitchkP = Util.getAndSetDouble("Pitch Position kP", 5);
     double pitchkI = Util.getAndSetDouble("Pitch Position kI", 0);
     double pitchIZone = Util.getAndSetDouble("Pitch Position IZone", 75);
     double pitchkD = Util.getAndSetDouble("Pitch Position kD", 0);

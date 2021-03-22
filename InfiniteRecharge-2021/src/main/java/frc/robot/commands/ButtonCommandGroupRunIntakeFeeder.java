@@ -58,7 +58,7 @@ public class ButtonCommandGroupRunIntakeFeeder extends CommandBase {
     }
 
     if(controller.getRawButton(Xbox.X)) {
-      if(flywheel.getVelocity() > 5550 || Constants.AUTO_OVERREV_TURRET) { 
+      if(flywheel.getVelocity() > 5550 || Util.getAndSetBoolean("Override RPM Threshold", true)) { 
         slapSpeed = Util.getAndSetDouble("Slap Speed", 0.33);
         beatSpeed = Util.getAndSetDouble("Beat Speed", 0.5);
         feedSpeed = Util.getAndSetDouble("Feed Speed", 0.5);

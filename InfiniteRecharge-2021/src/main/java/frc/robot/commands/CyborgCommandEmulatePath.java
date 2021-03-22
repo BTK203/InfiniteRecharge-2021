@@ -51,7 +51,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     //update the PID Constants for heading.
     double 
-      kP           = Util.getAndSetDouble("Drive Velocity kP", 0),
+      kP           = Util.getAndSetDouble("Drive Velocity kP", 0.0004),
       kI           = Util.getAndSetDouble("Drive Velocity kI", 0),
       kD           = Util.getAndSetDouble("Drive Velocity kD", 0),
       kF           = Util.getAndSetDouble("Drive Velocity kF", 0),
@@ -121,14 +121,14 @@ public class CyborgCommandEmulatePath extends CommandBase {
     double turnToHeadingDifference = Math.abs(Util.getAngleToHeading(headingChange, immediateTurn));
     boolean shouldZeroTurn = turnToHeadingDifference > Constants.EMULATE_MAX_HEADING_TO_TURN_DIFFERENCE;    
 
-    if(immediateTurn < Util.getAndSetDouble("Positional Correction Threshold", 20)) {
-      //add positional correction to heading by aiming for 2 points ahead of us
-      Point2D targetPoint = points[currentPointIndex + 2];
+    //add positional correction to heading by aiming for 2 points ahead of us
+    Point2D targetPoint = points[currentPointIndex + 2];
+    if(currentLocation.getDistanceFrom(targetPoint) > Util.getAndSetDouble("Emulate Positional Correction Distance", 24)) {
       double positionalCorrection = Util.getAngleToHeading(forwardsify(currentLocation.getHeading()), currentLocation.getHeadingTo(targetPoint));
       positionalCorrection *= currentLocation.getDistanceFrom(targetPoint) * Util.getAndSetDouble("Emulate Positional Correction Inhibitor", 1);
       immediateTurn += positionalCorrection;
-      immediateTurn *= Util.getAndSetDouble("Emulate Overturn", 1.2);
     }
+      immediateTurn *= Util.getAndSetDouble("Emulate Overturn", 1.2);
 
     SmartDashboard.putNumber("Emulate turn", immediateTurn);
 
