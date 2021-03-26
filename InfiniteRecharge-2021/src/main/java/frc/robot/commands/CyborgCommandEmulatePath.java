@@ -17,7 +17,6 @@ import frc.robot.util.Path;
 
 public class CyborgCommandEmulatePath extends CommandBase {
   private SubsystemDrive drivetrain;
-  // private Point2D[] points;
   private Path path;
   private int currentPointIndex;
   private boolean isForwards;
@@ -128,9 +127,8 @@ public class CyborgCommandEmulatePath extends CommandBase {
       positionalCorrection *= currentLocation.getDistanceFrom(targetPoint) * Util.getAndSetDouble("Emulate Positional Correction Inhibitor", 1);
       immediateTurn += positionalCorrection;
     }
-      immediateTurn *= Util.getAndSetDouble("Emulate Overturn", 1.2);
-
-    SmartDashboard.putNumber("Emulate turn", immediateTurn);
+    
+    immediateTurn *= Util.getAndSetDouble("Emulate Overturn", 1.2);
 
     //We found that the algorithm calculates a backwards turn to be half as much as a fowards turn, so we correct that here. When the season is over, we will find the actual reason that this happens.
     if(!isForwards) {
@@ -146,7 +144,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
       double leftDisplacement = 0;
       double rightDisplacement = 0;
 
-      double baseVelocity = calculateBestTangentialSpeed(radius);
+      double baseVelocity = calculateBestTangentialSpeed(radius); //unit: in/sec
 
       if(isForwards) {
         leftDisplacement  = immediateTurn * (radius - (Constants.DRIVETRAIN_WHEEL_BASE_WIDTH / 2)); //unit: in
@@ -161,7 +159,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
       double leftVelocity  = leftDisplacement / timeInterval; //unit: in/sec
       double rightVelocity = rightDisplacement / timeInterval;
 
-      if(shouldZeroTurn) {
+      if(shouldZeroTurn) { //TODO when we have the robot, move this to line 139 and determine if it works there. Doing this would optimize the algorithm a bit
         double vel = (isForwards ? baseVelocity : -1 * baseVelocity);
         leftVelocity = vel;
         rightVelocity = vel;
@@ -262,7 +260,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
    * @return The curved velocity setpoint in RPM
    */
   private double curveVelocity(double velocitySetpoint) {
-    return (velocitySetpoint > 1132 ? velocitySetpoint += (velocitySetpoint - 40) * 0.4 : velocitySetpoint); //1132 RPM ~= 45 in/sec
+    return (velocitySetpoint > 1132 ? velocitySetpoint += (velocitySetpoint - 40) * 0.4 : velocitySetpoint); //1132 RPM ~= 45 in/sec TODO review this. The velocitySetpoint - 40 part may be wrong but its working as of right now
   }
 
   /**
@@ -306,12 +304,12 @@ public class CyborgCommandEmulatePath extends CommandBase {
     }
 
     //gather needed variables (coefficient of friction, normal force, and mass) and convert to SI units.
-    double coefficientOfFriction = Util.getAndSetDouble("Emulate Coefficient of Friction", 1); //defaults to the approximate CoE of rubber on concrete. No Unit.
+    double coefficientOfFriction = Util.getAndSetDouble("Emulate Coefficient of Friction", 1); //defaults to the approximate CoF of rubber on concrete. No Unit.
     double normalForce = Util.poundForceToNewtons(Constants.ROBOT_WEIGHT_POUND_FORCE); //unit: N. There is no extra downwards force on the robot so Fn == Fg
     double robotMass   = Util.weightLBFToMassKG(Constants.ROBOT_WEIGHT_POUND_FORCE); //unit: kg
     double radius      = Math.abs(Util.inchesToMeters(turnRadius)); //unit: m. We can absolute value it because we dont care about the direction of the arc.
 
-    //formula: v = sqrt( (r * CoE * Fn) / m )
+    //formula: v = sqrt( (r * CoF * Fn) / m )
     double bestSpeed = Math.sqrt( ( radius * coefficientOfFriction * normalForce ) / robotMass ); //unit: m/s
 
     //convert best speed to in/s
@@ -319,13 +317,5 @@ public class CyborgCommandEmulatePath extends CommandBase {
     bestSpeed = (bestSpeed > maxSpeed ? maxSpeed : (bestSpeed < minSpeed ? minSpeed : bestSpeed));
 
     return bestSpeed;
-  }
-
-  //TESTING
-  /**
-   * Prints test values. This method is temporary.
-   */
-  public boolean test() {
-    return true;
   }
 }
