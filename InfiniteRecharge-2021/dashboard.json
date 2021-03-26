@@ -121,6 +121,19 @@
               "_title": "SmartDashboard/Test Velocity"
             }
           },
+          "5,3": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/KIWILIGHT STABLE",
+              "_title": "SmartDashboard/KIWILIGHT STABLE",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
           "12,0": {
             "size": [
               5,
@@ -840,7 +853,7 @@
   "windowGeometry": {
     "x": -1928.0,
     "y": -8.0,
-    "width": 1940.0,
-    "height": 1066.0
+    "width": 1944.0,
+    "height": 1076.0
   }
 }

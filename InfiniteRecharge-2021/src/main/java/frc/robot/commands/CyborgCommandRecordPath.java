@@ -39,14 +39,9 @@ public class CyborgCommandRecordPath extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    try {
-      recorder.flushFile();
-      recorder.closeFile();
-      Path newlyRecordedPath = new Path(Constants.PATH_RECORD_LOCATION);
-      Robot.getRobotContainer().getPVHost().sendPath(newlyRecordedPath, "Recorded Path");
-    } catch (IOException ex) {
-      DriverStation.reportWarning("IO EXCEPTION OCCURRED", true);
-    }
+    recorder.closeFile();
+    Path newlyRecordedPath = new Path(Constants.PATH_RECORD_LOCATION);
+    Robot.getRobotContainer().getPVHost().sendPath(newlyRecordedPath, "Recorded Path");
   }
 
   // Returns true when the command should end.

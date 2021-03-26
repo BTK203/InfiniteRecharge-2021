@@ -192,6 +192,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
   public void end(boolean interrupted) {
     drivetrain.setLeftPercentOutput(0);
     drivetrain.setRightPercentOutput(0);
+    recorder.recordPoint(Robot.getRobotContainer().getRobotPositionAndHeading());
     recorder.closeFile();
 
     //report path to PathVisualizer

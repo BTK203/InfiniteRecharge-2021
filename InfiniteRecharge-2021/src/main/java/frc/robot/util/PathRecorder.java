@@ -37,6 +37,7 @@ public class PathRecorder {
 
     public void closeFile() {
         try {
+            buffer.flush();
             writer.close();
             buffer.close();
         } catch(Exception ex) {

@@ -103,6 +103,10 @@ public class CyborgCommandAlignTurret extends CommandBase {
   public void execute() {
     Joystick operator = Robot.getRobotContainer().getOperator(); //in case no target
 
+    boolean
+      yawAligned = false,
+      pitchAligned = false;
+
     double horizontalAngle = kiwilight.getHorizontalAngleToTarget() * -1;
     horizontalAngle += offset;
     horizontalAngle *= Util.getAndSetDouble("Vision multiplier", 1);
@@ -156,13 +160,6 @@ public class CyborgCommandAlignTurret extends CommandBase {
 
         newPitchPosition = ax2 + bx + c;
 
-
-        SmartDashboard.putNumber("Vision Pitch Target", newPitchPosition);
-
-        SmartDashboard.putNumber("Align Pitch Position", newPitchPosition);
-        SmartDashboard.putNumber("Target Distance", targetDistance);
-
-        SmartDashboard.putNumber("Pitch Error", turret.getPitchPosition() - newPitchPosition);
       } else {
         //use the slightly less cool linear equation to calculate the pitch position
         //equation: f(x) = -9.512x - 65.85 | where: x is the distance kiwilight reports and f returns the pitch position.
