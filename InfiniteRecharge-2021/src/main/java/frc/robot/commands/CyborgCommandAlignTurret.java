@@ -103,10 +103,6 @@ public class CyborgCommandAlignTurret extends CommandBase {
   public void execute() {
     Joystick operator = Robot.getRobotContainer().getOperator(); //in case no target
 
-    boolean
-      yawAligned = false,
-      pitchAligned = false;
-
     double horizontalAngle = kiwilight.getHorizontalAngleToTarget() * -1;
     horizontalAngle += offset;
     horizontalAngle *= Util.getAndSetDouble("Vision multiplier", 1);
