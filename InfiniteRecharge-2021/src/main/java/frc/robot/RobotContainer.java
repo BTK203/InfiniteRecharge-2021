@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.auto.BareMinimumAuto;
+import frc.robot.auto.GalacticSearchAuto;
 import frc.robot.auto.IAuto;
 import frc.robot.auto.InitAuto;
 import frc.robot.auto.JudgementAuto;
@@ -45,6 +46,7 @@ import frc.robot.commands.ManualCommandDrive;
 import frc.robot.commands.ToggleCommandDriveClimber;
 import frc.robot.enumeration.AutoMode;
 import frc.robot.enumeration.DriveScheme;
+import frc.robot.enumeration.GalacticSearchMode;
 import frc.robot.enumeration.AlignModel;
 import frc.robot.subsystems.SubsystemClimb;
 import frc.robot.subsystems.SubsystemDrive;
@@ -107,6 +109,7 @@ public class RobotContainer {
   private SendableChooser<AutoMode> autoChooser;
   private SendableChooser<DriveScheme> driveChooser;
   private SendableChooser<AlignModel> alignModelChooser;
+  private SendableChooser<GalacticSearchMode> galacticSearchChooser;
 
   /**
    * Auto
@@ -188,6 +191,9 @@ public class RobotContainer {
       case FLEX_TIME_TRADIATIONAL:
         currentAuto = new TraditionalJudgementAuto(SUB_DRIVE, SUB_TURRET, SUB_INTAKE, SUB_FEEDER, SUB_FLYWHEEL, SUB_RECEIVER);
         break;
+      case GALACTIC_SEARCH:
+        currentAuto = new GalacticSearchAuto(SUB_DRIVE, SUB_JEVOIS, SUB_INTAKE, SUB_FEEDER);
+        break;
       default:
         currentAuto = new InitAuto(SUB_DRIVE, SUB_TURRET);
         break;
@@ -259,8 +265,20 @@ public class RobotContainer {
     return driveChooser.getSelected();
   }
 
+  /**
+   * Returns the current user-selected align model. Will either be 
+   * The old ball model or the new ball model.
+   */
   public AlignModel getAlignModel() {
     return alignModelChooser.getSelected();
+  }
+
+  /**
+   * Returns the current user-selected galactic search path. Will either
+   * be path A or path B.
+   */
+  public GalacticSearchMode getGalacticSearchMode() {
+    return galacticSearchChooser.getSelected();
   }
 
   /**
@@ -450,6 +468,7 @@ public class RobotContainer {
     autoChooser.addOption("Eight Ball", AutoMode.EIGHT_BALL_TRENCH);
     autoChooser.addOption("Judgement Auto", AutoMode.FLEX_TIME); 
     autoChooser.addOption("Traditional Judgement Auto", AutoMode.FLEX_TIME_TRADIATIONAL);
+    autoChooser.addOption("Galactic Search", AutoMode.GALACTIC_SEARCH);
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     //declare the different drive schemes available
@@ -463,6 +482,12 @@ public class RobotContainer {
     alignModelChooser.setDefaultOption(AlignModel.NORMAL.getName(), AlignModel.NORMAL);
     alignModelChooser.addOption(AlignModel.NEW_BALLS.getName(), AlignModel.NEW_BALLS);
     SmartDashboard.putData("Aligning Model", alignModelChooser);
+
+    //declare the different galactic search modes available
+    galacticSearchChooser = new SendableChooser<GalacticSearchMode>();
+    galacticSearchChooser.setDefaultOption("Set A", GalacticSearchMode.SET_A);
+    galacticSearchChooser.addOption("Set B", GalacticSearchMode.SET_B);
+    SmartDashboard.putData("Galactic Search Mode", galacticSearchChooser);
 
     //set drivetrain lock override to false for safety
     Preferences.getInstance().putBoolean("Override Drive Lock", false);

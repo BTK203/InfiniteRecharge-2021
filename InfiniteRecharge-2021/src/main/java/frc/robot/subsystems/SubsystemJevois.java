@@ -97,7 +97,7 @@ public class SubsystemJevois extends SubsystemBase {
 
   private void parseData(String[] segments) {
     int closestX = Integer.MAX_VALUE;
-    int closestY = 0;
+    int closestY = Integer.MIN_VALUE;
     int closestRadius = 0;
     for(String segment : segments) {
       if(!segment.isEmpty()) {
@@ -111,7 +111,14 @@ public class SubsystemJevois extends SubsystemBase {
 
           int centeredX = x - (Constants.JEVOIS_RESOLUTION_X / 2);
 
-          if(Math.abs(centeredX) < Math.abs(closestX)) {
+          // if(Math.abs(centeredX) < Math.abs(closestX)) {
+          //   closestX = centeredX;
+          //   closestY = y;
+          //   closestRadius = radius;
+          // }
+
+          //find the closest ball to the robot by finding the ball that is closest to the bottom of the image
+          if(y > closestY) {
             closestX = centeredX;
             closestY = y;
             closestRadius = radius;

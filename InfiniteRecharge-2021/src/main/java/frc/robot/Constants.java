@@ -302,6 +302,15 @@ public final class Constants {
         TRAD_JUDGEMENT_AUTO_DRIVE_TO_SITE_FILE        = "/home/lvuser/ja2_driveToSite.txt";
 
     /**
+     * Galactic Search Challenge
+     */
+    public static final String
+        GALACTIC_SEARCH_SET_A_PATH_1 = "/home/lvuser/GS1P1.txt",
+        GALACTIC_SEARCH_SET_A_PATH_2 = "/home/lvuser/GS1P2.txt",
+        GALACTIC_SEARCH_SET_B_PATH_1 = "/home/lvuser/GS2P1.txt",
+        GALACTIC_SEARCH_SET_B_PATH_2 = "/home/lvuser/GS2P2.txt";
+
+    /**
      * Shooting challenge
      */
     public static final String
