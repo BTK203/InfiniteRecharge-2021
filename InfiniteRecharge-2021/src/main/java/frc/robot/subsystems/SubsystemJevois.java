@@ -8,28 +8,25 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.PowerCell;
 
 public class SubsystemJevois extends SubsystemBase {
   private DatagramSocket jevois;
-  private int
-    closestBallX,
-    closestBallY,
-    closestBallRadius;
-
+  private ArrayList<PowerCell> powerCells;
+  private int powerCellsSpotted;
   private String lastCompletedMessage;
-
   private long lastUpdatedTime;
 
   /** Creates a new SubsystemJevois. */
   public SubsystemJevois() {
-    closestBallX = -1;
-    closestBallY = -1;
-    closestBallRadius = -1;
+    powerCells = new ArrayList<PowerCell>();
+    powerCellsSpotted = 0;
     lastCompletedMessage = "No Message!";
     lastUpdatedTime = 0;
 
@@ -45,7 +42,6 @@ public class SubsystemJevois extends SubsystemBase {
               jevois.receive(packet);
               String incomingData = new String(packet.getData());
               lastUpdatedTime = System.currentTimeMillis();
-              SmartDashboard.putString("Jevois current message", incomingData);
               update(incomingData);
             } catch(IOException ex) {
               DriverStation.reportError("Subsystem Jevois IOException", false);
@@ -62,10 +58,18 @@ public class SubsystemJevois extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putString("Jevois Data", lastCompletedMessage);
-    SmartDashboard.putNumber("Jevois X", closestBallX);
-    SmartDashboard.putNumber("Jevois Y", closestBallY);
-    SmartDashboard.putNumber("Jevois Radius", closestBallRadius);
+    SmartDashboard.putNumber("Power cells spotted", powerCellsSpotted);
     SmartDashboard.putBoolean("Jevois Updated", updated());
+
+    //list y-coordinates of power cells in increasing order
+    String powerCellsString = "";
+    for(int i=0; i<powerCells.size(); i++) {
+      powerCellsString += powerCells.get(i).toString();
+      if(i < powerCells.size() - 1) {
+        powerCellsString += ", ";
+      }
+    }
+    SmartDashboard.putString("Power Cells", powerCellsString);
   }
 
   /**
@@ -73,7 +77,7 @@ public class SubsystemJevois extends SubsystemBase {
    * @return True if a ball is spotted, false otherwise.
    */
   public boolean ballSpotted() {
-    return closestBallRadius > -1;
+    return powerCellsSpotted > 0;
   }
 
   /**
@@ -84,7 +88,15 @@ public class SubsystemJevois extends SubsystemBase {
    * @return The x coordinate of the closeset ball in pixels.
    */
   public int getHorizontalPosition() {
-    return closestBallX;
+    return powerCells.get(0).getX();
+  }
+
+  /**
+   * Returns an array of PowerCells that are listed in order of closest to furthest.
+   * @return Some PowerCells.
+   */
+  public ArrayList<PowerCell> getPowerCells() {
+    return powerCells;
   }
 
   /**
@@ -95,10 +107,13 @@ public class SubsystemJevois extends SubsystemBase {
     return System.currentTimeMillis() - lastUpdatedTime < 250;
   }
 
+  /**
+   * Parses incoming data into PowerCells.
+   * @param segments Formatted segments of data.
+   */
   private void parseData(String[] segments) {
-    int closestX = Integer.MAX_VALUE;
-    int closestY = Integer.MIN_VALUE;
-    int closestRadius = 0;
+    DriverStation.reportWarning("segments: " + Integer.valueOf(segments.length), false);
+    ArrayList<PowerCell> powerCellsList = new ArrayList<PowerCell>();
     for(String segment : segments) {
       if(!segment.isEmpty()) {
         segment = segment.substring(segment.indexOf("[") + 1);
@@ -111,29 +126,42 @@ public class SubsystemJevois extends SubsystemBase {
 
           int centeredX = x - (Constants.JEVOIS_RESOLUTION_X / 2);
 
-          // if(Math.abs(centeredX) < Math.abs(closestX)) {
-          //   closestX = centeredX;
-          //   closestY = y;
-          //   closestRadius = radius;
-          // }
+          //create a PowerCell and put it into the list
+          PowerCell newPowerCell = new PowerCell(centeredX, y, radius);
+          DriverStation.reportWarning("sorting " + Integer.valueOf(newPowerCell.getY()).toString(), false);
+          DriverStation.reportWarning("bruh", false);
 
-          //find the closest ball to the robot by finding the ball that is closest to the bottom of the image
-          if(y > closestY) {
-            closestX = centeredX;
-            closestY = y;
-            closestRadius = radius;
+          //do insertion sort
+          boolean inserted = false;
+          for(int i=0; i<powerCellsList.size() - 2; i++) {
+            if(powerCellsList.get(i).getY() < newPowerCell.getY() && powerCellsList.get(i + 1).getY() > newPowerCell.getY()) {
+              powerCellsList.add(i + 1, newPowerCell);
+              inserted = true;
+              DriverStation.reportWarning("inserting at " + Integer.valueOf(i).toString(), false);
+              // break;
+            }
           }
+
+          if(!inserted) {
+            powerCellsList.add(newPowerCell);
+            DriverStation.reportWarning("inserting at end", false);
+          }
+
+          DriverStation.reportWarning("ending sort", false);
         } catch(NumberFormatException ex) {
           DriverStation.reportError("SubsystemJevois could not parse data!", true); //TODO either fix this or delete it forever
         }
       } 
     }
 
-    closestBallX = closestX;
-    closestBallY = closestY;
-    closestBallRadius = closestRadius;
+    powerCellsSpotted = powerCellsList.size();
+    powerCells = powerCellsList;
   }
 
+  /**
+   * Updates powerCells based on the incoming data from the jevois
+   * @param incoming The most recent data on the jevois buffer.
+   */
   private void update(String incoming) {
     incoming = incoming.substring(0, incoming.indexOf(";"));
     
@@ -141,9 +169,7 @@ public class SubsystemJevois extends SubsystemBase {
       String[] segments = incoming.split("]");
       parseData(segments);
     } else {
-      closestBallX = -9999;
-      closestBallY = -1;
-      closestBallRadius = -1;
+      powerCellsSpotted = 0;
     }    
   }
 }
