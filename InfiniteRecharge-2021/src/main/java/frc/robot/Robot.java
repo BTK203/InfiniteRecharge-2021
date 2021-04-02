@@ -95,7 +95,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
-    boolean allTests = true;
+    boolean allTests = getRobotContainer().testJevois();
     DriverStation.reportError((allTests ? "ALL TESTS PASSED" : "SOME TESTS FAILED"), false);
   }
 

@@ -46,7 +46,6 @@ import frc.robot.commands.ManualCommandDrive;
 import frc.robot.commands.ToggleCommandDriveClimber;
 import frc.robot.enumeration.AutoMode;
 import frc.robot.enumeration.DriveScheme;
-import frc.robot.enumeration.GalacticSearchMode;
 import frc.robot.enumeration.AlignModel;
 import frc.robot.subsystems.SubsystemClimb;
 import frc.robot.subsystems.SubsystemDrive;
@@ -109,7 +108,6 @@ public class RobotContainer {
   private SendableChooser<AutoMode> autoChooser;
   private SendableChooser<DriveScheme> driveChooser;
   private SendableChooser<AlignModel> alignModelChooser;
-  private SendableChooser<GalacticSearchMode> galacticSearchChooser;
 
   /**
    * Auto
@@ -271,14 +269,6 @@ public class RobotContainer {
    */
   public AlignModel getAlignModel() {
     return alignModelChooser.getSelected();
-  }
-
-  /**
-   * Returns the current user-selected galactic search path. Will either
-   * be path A or path B.
-   */
-  public GalacticSearchMode getGalacticSearchMode() {
-    return galacticSearchChooser.getSelected();
   }
 
   /**
@@ -483,13 +473,20 @@ public class RobotContainer {
     alignModelChooser.addOption(AlignModel.NEW_BALLS.getName(), AlignModel.NEW_BALLS);
     SmartDashboard.putData("Aligning Model", alignModelChooser);
 
-    //declare the different galactic search modes available
-    galacticSearchChooser = new SendableChooser<GalacticSearchMode>();
-    galacticSearchChooser.setDefaultOption("Set A", GalacticSearchMode.SET_A);
-    galacticSearchChooser.addOption("Set B", GalacticSearchMode.SET_B);
-    SmartDashboard.putData("Galactic Search Mode", galacticSearchChooser);
-
     //set drivetrain lock override to false for safety
     Preferences.getInstance().putBoolean("Override Drive Lock", false);
+  }
+
+
+
+
+
+
+
+  /**
+   * TEST METHODS
+   */
+  public boolean testJevois() {
+    return SUB_JEVOIS.test();
   }
 }

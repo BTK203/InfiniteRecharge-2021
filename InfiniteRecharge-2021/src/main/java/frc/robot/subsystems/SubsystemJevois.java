@@ -128,28 +128,28 @@ public class SubsystemJevois extends SubsystemBase {
 
           //create a PowerCell and put it into the list
           PowerCell newPowerCell = new PowerCell(centeredX, y, radius);
-          DriverStation.reportWarning("sorting " + Integer.valueOf(newPowerCell.getY()).toString(), false);
-          DriverStation.reportWarning("bruh", false);
+
+          if(powerCellsList.size() == 0 || powerCellsList.get(0).getY() < newPowerCell.getY()) {
+            powerCellsList.add(0, newPowerCell);
+            continue;
+          }
 
           //do insertion sort
           boolean inserted = false;
-          for(int i=0; i<powerCellsList.size() - 2; i++) {
-            if(powerCellsList.get(i).getY() < newPowerCell.getY() && powerCellsList.get(i + 1).getY() > newPowerCell.getY()) {
-              powerCellsList.add(i + 1, newPowerCell);
+          for(int i=1; i<powerCellsList.size(); i++) {
+            if(powerCellsList.get(i - 1).getY() >= newPowerCell.getY() && powerCellsList.get(i).getY() <= newPowerCell.getY()) {
+              powerCellsList.add(i, newPowerCell);
               inserted = true;
-              DriverStation.reportWarning("inserting at " + Integer.valueOf(i).toString(), false);
-              // break;
+              break;
             }
           }
 
           if(!inserted) {
             powerCellsList.add(newPowerCell);
-            DriverStation.reportWarning("inserting at end", false);
           }
 
-          DriverStation.reportWarning("ending sort", false);
         } catch(NumberFormatException ex) {
-          DriverStation.reportError("SubsystemJevois could not parse data!", true); //TODO either fix this or delete it forever
+          DriverStation.reportError("SubsystemJevois could not parse data!", true);
         }
       } 
     }
@@ -171,5 +171,55 @@ public class SubsystemJevois extends SubsystemBase {
     } else {
       powerCellsSpotted = 0;
     }    
+  }
+
+  /**
+   * TEST METHODS
+   */
+
+  private boolean testSort(String[] segments) {
+    String str = "";
+    for(String a : segments) {
+      str += a + ", ";
+    }
+
+    System.out.println("Organizing " + str);
+    parseData(segments);
+    
+    String str2 = "";
+    boolean decreasing = true;
+    for(int i=0; i<powerCells.size(); i++) {
+      str2 += Integer.valueOf(powerCells.get(i).getY()).toString();
+      
+      if(i < powerCells.size() - 1) {
+        if(powerCells.get(i).getY() < powerCells.get(i + 1).getY()) {
+          decreasing = false;
+        }
+
+        str2 += ", ";
+      }
+    }
+
+    System.out.println("Result: " + str2);
+    System.out.println("Decreasing: " + (decreasing ? "YES" : "NO"));
+    return decreasing;
+  }
+
+
+  public boolean test() {
+    boolean success = true;
+    for(int i=0; i<5; i++) {
+      int numYs = (int) (Math.random() * 11) +5; //generate anywhere from 5 to 15 ys
+      String[] segments = new String[numYs];
+      for(int n=0; n<numYs; n++) {
+        int y = (int) (Math.random() * 5);
+        String segment = "[0," + Integer.valueOf(y).toString() + ",0";
+        segments[n] = segment;
+      }
+
+      success = success && testSort(segments);
+    }
+
+    return success;
   }
 }
