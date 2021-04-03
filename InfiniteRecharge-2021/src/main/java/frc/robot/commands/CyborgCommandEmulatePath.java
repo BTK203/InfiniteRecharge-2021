@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -96,7 +95,7 @@ public class CyborgCommandEmulatePath extends CommandBase {
 
     //figure out if we need to drive forwards or backwards to acheive the point
     double headingToNextPoint = currentLocation.getHeadingTo(currentDestination);
-    double headingDifference = Util.getAngleToHeading(currentLocation.getHeading(), headingToNextPoint); //add this back in if the new code breaks
+    double headingDifference = Util.getAngleToHeading(currentLocation.getHeading(), headingToNextPoint); 
     this.isForwards = Math.abs(headingDifference) < 90;
 
     //Resolve the path of points that are immediately ahead of the robot. This array will include the robot's location as the first point.

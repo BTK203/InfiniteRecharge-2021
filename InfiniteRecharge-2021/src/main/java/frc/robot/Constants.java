@@ -309,6 +309,14 @@ public final class Constants {
         GALACTIC_SEARCH_SET_A_PATH_2 = "/home/lvuser/GS1P2.txt",
         GALACTIC_SEARCH_SET_B_PATH_1 = "/home/lvuser/GS2P1.txt",
         GALACTIC_SEARCH_SET_B_PATH_2 = "/home/lvuser/GS2P2.txt";
+    
+    /**
+     * AutoNav Challenge
+     */
+    public static final String
+        AUTONAV_SLALOM_FILE = "/home/lvuser/slalom.txt",
+        AUTONAV_BOUNCE_FILE = "/home/lvuser/bounce.txt",
+        AUTONAV_BARREL_FILE = "/home/lvuser/barrel.txt";
 
     /**
      * Shooting challenge
