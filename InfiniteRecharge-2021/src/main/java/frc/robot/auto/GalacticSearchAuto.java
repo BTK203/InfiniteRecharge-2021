@@ -37,26 +37,44 @@ public class GalacticSearchAuto implements IAuto {
      * Returns the command to schedule to run the auto.
      */
     public Command getCommand() {
-        int horizontalPosition = jevois.getHorizontalPosition();
-        if(horizontalPosition > 105) { // path A
-            if(horizontalPosition < 200) {
+        int ballsSeen = jevois.getPowerCells().size();
+        if(ballsSeen < 2 || ballsSeen > 3) { //not valid read, error out driver station, thus not starting auto.
+            DriverStation.reportError("Invalid read!", true);
+            return null;
+        }
+
+        int closeBalls = 0;
+        for(int i=0; i<jevois.getPowerCells().size(); i++) {
+            if(jevois.getPowerCells().get(i).getY() > 300) {
+                closeBalls++;
+            }
+        }
+
+        if(closeBalls >= 1) { // one of the front patterns
+            //for front patterns, look at the placement of the closest power cell to determine which path to run
+            int closestBallX = jevois.getPowerCells().get(0).getX();
+            if(closestBallX > -100) {
                 DriverStation.reportWarning("Set A Path 1", false);
                 drivePath = new CyborgCommandEmulatePath(drivetrain, Constants.GALACTIC_SEARCH_SET_A_PATH_1);
             } else {
-                DriverStation.reportWarning("Set A Path 2", false);
-                drivePath = new CyborgCommandEmulatePath(drivetrain, Constants.GALACTIC_SEARCH_SET_A_PATH_2);
-            }
-        } else { //path B
-            if(horizontalPosition < 0) { //closest ball to robot is on the left, run path 1
                 DriverStation.reportWarning("Set B Path 1", false);
                 drivePath = new CyborgCommandEmulatePath(drivetrain, Constants.GALACTIC_SEARCH_SET_B_PATH_1);
-            } else { //closest ball to the robot is on the right, run path 
+            }
+        } else { //one of the back patterns. The JeVois cannot see the farthest ball because it is too small.
+            //for back patterns, look at the space between the power cells to determine which path to run
+            int distanceBetweenBalls = Math.abs(jevois.getPowerCells().get(0).getX() - jevois.getPowerCells().get(1).getX());
+            DriverStation.reportWarning("distance between balls: " + Integer.valueOf(distanceBetweenBalls).toString(), false);
+            if(distanceBetweenBalls > 250) {
+                DriverStation.reportWarning("Set A Path 2", false);
+                drivePath = new CyborgCommandEmulatePath(drivetrain, Constants.GALACTIC_SEARCH_SET_A_PATH_2);
+            } else {
                 DriverStation.reportWarning("Set B Path 2", false);
                 drivePath = new CyborgCommandEmulatePath(drivetrain, Constants.GALACTIC_SEARCH_SET_B_PATH_2);
             }
         }
 
         return drivePath.raceWith(driveIntake);
+        // return null;
     }
 
     /**

@@ -202,6 +202,17 @@
               "_source0": "network_table:///SmartDashboard/Jevois Y",
               "_title": "SmartDashboard/Jevois Y"
             }
+          },
+          "0,0": {
+            "size": [
+              7,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Power Cells",
+              "_title": "SmartDashboard/Power Cells"
+            }
           }
         }
       }
@@ -910,7 +921,7 @@
   "windowGeometry": {
     "x": -1928.0,
     "y": -8.0,
-    "width": 1936.0,
-    "height": 1056.0
+    "width": 1940.0,
+    "height": 1066.0
   }
 }

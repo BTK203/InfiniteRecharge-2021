@@ -28,7 +28,10 @@ public class Path {
             String[] pointStrings = fileContents.split("\n");
             points = new Point2D[pointStrings.length];
             for(int i=0; i<pointStrings.length; i++) {
-                points[i] = Point2D.fromString(pointStrings[i]);
+                Point2D newPoint = Point2D.fromString(pointStrings[i]);
+                if(newPoint != null) {
+                    points[i] = newPoint;
+                }
             }
 
             valid = true;

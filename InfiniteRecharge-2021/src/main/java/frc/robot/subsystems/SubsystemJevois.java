@@ -112,7 +112,6 @@ public class SubsystemJevois extends SubsystemBase {
    * @param segments Formatted segments of data.
    */
   private void parseData(String[] segments) {
-    DriverStation.reportWarning("segments: " + Integer.valueOf(segments.length), false);
     ArrayList<PowerCell> powerCellsList = new ArrayList<PowerCell>();
     for(String segment : segments) {
       if(!segment.isEmpty()) {
