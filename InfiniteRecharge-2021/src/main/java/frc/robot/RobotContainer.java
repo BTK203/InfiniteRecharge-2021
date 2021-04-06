@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.auto.AutoNavAuto;
 import frc.robot.auto.BareMinimumAuto;
 import frc.robot.auto.GalacticSearchAuto;
 import frc.robot.auto.IAuto;
@@ -191,6 +192,15 @@ public class RobotContainer {
         break;
       case GALACTIC_SEARCH:
         currentAuto = new GalacticSearchAuto(SUB_DRIVE, SUB_JEVOIS, SUB_INTAKE, SUB_FEEDER);
+        break;
+      case AUTONAV_SLALOM:
+        currentAuto = new AutoNavAuto(SUB_DRIVE, Constants.AUTONAV_SLALOM_FILE);
+        break;
+      case AUTONAV_BOUNCE:
+        currentAuto = new AutoNavAuto(SUB_DRIVE, Constants.AUTONAV_BOUNCE_FILE);
+        break;
+      case AUTONAV_BARREL:
+        currentAuto = new AutoNavAuto(SUB_DRIVE, Constants.AUTONAV_BARREL_FILE);
         break;
       default:
         currentAuto = new InitAuto(SUB_DRIVE, SUB_TURRET);
@@ -384,22 +394,6 @@ public class RobotContainer {
     JoystickButton moveClimberDown = new JoystickButton(DRIVER, Xbox.LB);
       moveClimberDown.toggleWhenPressed(new ButtonCommandMoveClimber(SUB_CLIMB, -1));
 
-    //commands to enter and exit the shooting zone for the power port challenge.
-    // CyborgCommandEmulatePath enterShootingZone = new CyborgCommandEmulatePath(SUB_DRIVE, Constants.DRIVE_INTO_SHOOTING_ZONE_FILE);
-    // CyborgCommandEmulatePath enterCollectZone  = new CyborgCommandEmulatePath(SUB_DRIVE, Constants.DRIVE_INTO_COLLECT_ZONE_FILE);
-    // CyborgCommandSmartDriveDistance straightenOut = new CyborgCommandSmartDriveDistance(SUB_DRIVE, 48, 0.2, 0, 1);
-    // CyborgCommandSmartDriveDistance straightenOutBackward = new CyborgCommandSmartDriveDistance(SUB_DRIVE, -48, 0.2, -45, 1);
-
-    // Command enterShootingZoneCommand = enterShootingZone.andThen(straightenOut);
-    // // Command enterCollectZoneCommand  = enterCollectZone.andThen(straightenOutBackward);
-    // Command enterCollectZoneCommand = enterCollectZone;
-
-    // JoystickButton enterShootingZoneButton = new JoystickButton(DRIVER, Xbox.START);
-    //   enterShootingZoneButton.toggleWhenPressed(enterShootingZoneCommand);
-
-    // JoystickButton exitShootingZone = new JoystickButton(DRIVER, Xbox.BACK);
-    //   exitShootingZone.toggleWhenPressed(enterCollectZoneCommand);
-
     /**
      * OPERATOR controls
      */
@@ -459,6 +453,9 @@ public class RobotContainer {
     autoChooser.addOption("Judgement Auto", AutoMode.FLEX_TIME); 
     autoChooser.addOption("Traditional Judgement Auto", AutoMode.FLEX_TIME_TRADIATIONAL);
     autoChooser.addOption("Galactic Search", AutoMode.GALACTIC_SEARCH);
+    autoChooser.addOption("Auto-Nav Slalom", AutoMode.AUTONAV_SLALOM);
+    autoChooser.addOption("Auto-Nav Bounce", AutoMode.AUTONAV_BOUNCE);
+    autoChooser.addOption("Auto-Nav Barrel", AutoMode.AUTONAV_BARREL);
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     //declare the different drive schemes available
@@ -475,18 +472,5 @@ public class RobotContainer {
 
     //set drivetrain lock override to false for safety
     Preferences.getInstance().putBoolean("Override Drive Lock", false);
-  }
-
-
-
-
-
-
-
-  /**
-   * TEST METHODS
-   */
-  public boolean testJevois() {
-    return SUB_JEVOIS.test();
   }
 }
