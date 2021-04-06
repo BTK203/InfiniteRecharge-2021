@@ -1,0 +1,1 @@
+Load these files onto a JeVois into a module called "BallFinder" by "Foximus3695". If you do not need retro-reflective vision image preprocessing, disable the "FirstPython" module at the bottom of "videomappings.cfg."
