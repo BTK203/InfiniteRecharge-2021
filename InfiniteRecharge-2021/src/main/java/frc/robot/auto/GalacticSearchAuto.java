@@ -37,11 +37,11 @@ public class GalacticSearchAuto implements IAuto {
      * Returns the command to schedule to run the auto.
      */
     public Command getCommand() {
-        int ballsSeen = jevois.getPowerCells().size();
-        if(ballsSeen < 2 || ballsSeen > 3) { //not valid read, error out driver station, thus not starting auto.
-            DriverStation.reportError("Invalid read!", true);
-            return null;
-        }
+        // int ballsSeen = jevois.getPowerCells().size();
+        // if(ballsSeen < 2 || ballsSeen > 3) { //not valid read, error out driver station, thus not starting auto.
+        //     DriverStation.reportError("Invalid read!", true);
+        //     return null;
+        // }
 
         int closeBalls = 0;
         for(int i=0; i<jevois.getPowerCells().size(); i++) {
