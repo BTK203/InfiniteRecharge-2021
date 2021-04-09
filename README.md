@@ -8,3 +8,7 @@ The 2020 Programming repository of FRC Team 3695 for the 2020 game, Infinite Rec
 * Marc Pezcka - [*MSP1167*](https://github.com/MSP1167/)
 * Jordan Price - [*Price9*](https://github.com/Price9)
 * Dylan Middendorf
+
+### Auto
+* Looking for our autonomous driving code? Check out Foximus' neatly packaged, home-grown library, [*Hyperdrive*](https://github.com/BTK203/Hyperdrive), which will be completed sometime this month.
+* Looking for our vision code? Check out our home-grown vision solution, [*KiwiLight*](https://github.com/wh1ter0se/KiwiLight).
