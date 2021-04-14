@@ -1,0 +1,1 @@
+Run the Python file on a Raspberry Pi with a JeVois connected to send the Jevois' serial data to the roboRIO. The program assumes the robot's IP address is 10.36.95.2 and the port is 3696. Change if needed.
